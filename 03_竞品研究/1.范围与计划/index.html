@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>竞品分析方法与决策依据</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, 'PingFang SC', '微软雅黑', sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  padding: 60px 40px;
+}
+.container { max-width: 1000px; margin: 0 auto; }
+.header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+.header h1 {
+  font-size: 44px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 16px;
+  text-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+.header p { font-size: 18px; color: rgba(255,255,255,0.85); line-height: 1.6; }
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 28px;
+}
+.card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+  transition: all 0.3s;
+  cursor: pointer;
+}
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+}
+.card-icon { font-size: 40px; margin-bottom: 16px; }
+.card-title { font-size: 22px; font-weight: 600; color: #1f2937; margin-bottom: 10px; }
+.card-desc { font-size: 15px; color: #6b7280; line-height: 1.6; margin-bottom: 20px; }
+.card-link {
+  font-size: 15px;
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 600;
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>竞品分析方法与决策依据</h1>
+    <p>研究方法论、范围定义、封版决策依据——<br>解释为什么选择这三条主线，边界如何确定</p>
+  </div>
+
+  <div class="card-grid">
+    <div class="card" onclick="window.open('00_竞品分析与设计策略.html', '_blank')">
+      <div class="card-icon">🔬</div>
+      <div class="card-title">分析方法论</div>
+      <div class="card-desc">竞品分析框架与设计策略，说明如何从竞品中提炼可用的设计模式</div>
+      <a class="card-link" href="00_竞品分析与设计策略.html" target="_blank">查看方法论 →</a>
+    </div>
+
+    <div class="card" onclick="window.open('01_Flow范围定稿.html', '_blank')">
+      <div class="card-icon">🎯</div>
+      <div class="card-title">Flow 范围定稿</div>
+      <div class="card-desc">Flow A/B/C 为什么选这三条主线、边界在哪里、排除了什么</div>
+      <a class="card-link" href="01_Flow范围定稿.html" target="_blank">查看范围定义 →</a>
+    </div>
+
+    <div class="card" onclick="window.open('04_封版检查表.html', '_blank')">
+      <div class="card-icon">✅</div>
+      <div class="card-title">封版检查表</div>
+      <div class="card-desc">每个 Flow 封版前的检查记录，确保决策有依据、范围不跑偏</div>
+      <a class="card-link" href="04_封版检查表.html" target="_blank">查看检查表 →</a>
+    </div>
+  </div>
+</div>
+</body>
+</html>
