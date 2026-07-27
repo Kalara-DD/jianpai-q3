@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>减压星球 · 首页改版原型 P1/P2 · v1</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'PingFang SC','Noto Sans SC',sans-serif; background:#1a1d2e; color:#1f2937; }
+
+/* HERO */
+.hero { background:linear-gradient(160deg,#667eea 0%,#764ba2 100%); padding:48px 40px 40px; text-align:center; position:relative; overflow:hidden; }
+.hero::before { content:''; position:absolute; inset:0; pointer-events:none; background-image:radial-gradient(1px 1px at 12% 18%,rgba(255,255,255,.3) 0%,transparent 100%),radial-gradient(2px 2px at 70% 35%,rgba(255,255,255,.2) 0%,transparent 100%); }
+.hero-badge { display:inline-flex; align-items:center; gap:8px; background:rgba(255,255,255,.15); border:1px solid rgba(255,255,255,.3); border-radius:100px; padding:6px 18px; font-size:12px; font-weight:700; color:#fff; letter-spacing:1px; margin-bottom:20px; position:relative; }
+.hero h1 { font-size:36px; font-weight:900; color:#fff; margin-bottom:10px; position:relative; }
+.hero p { font-size:13px; color:rgba(255,255,255,.75); line-height:1.8; position:relative; }
+.hero-tags { display:flex; gap:10px; justify-content:center; margin-top:18px; flex-wrap:wrap; position:relative; }
+.htag { background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.25); border-radius:20px; padding:5px 14px; font-size:12px; font-weight:700; color:rgba(255,255,255,.85); }
+.htag.g { background:rgba(16,185,129,.25); border-color:rgba(16,185,129,.5); color:#6ee7b7; }
+.htag.o { background:rgba(245,158,11,.25); border-color:rgba(245,158,11,.5); color:#fcd34d; }
+
+/* PAD */
+.pad-stage { padding:32px 40px 48px; display:flex; justify-content:center; }
+.pad-outer { position:relative; width:min(1100px,100%); }
+.pad-label { text-align:center; font-size:11px; font-weight:700; color:#64748b; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:12px; }
+.pad-frame { width:100%; aspect-ratio:16/9; background:#f5f6f8; border-radius:20px; border:2px solid rgba(0,0,0,.08); box-shadow:0 0 0 8px rgba(0,0,0,.04),0 40px 100px rgba(0,0,0,.35); overflow:hidden; position:relative; display:flex; flex-direction:column; }
+.pad-status { display:flex; justify-content:space-between; align-items:center; padding:6px 20px; font-size:11px; color:#94a3b8; font-weight:600; flex-shrink:0; background:rgba(255,255,255,.95); border-bottom:1px solid #eee; }
+.pad-content { flex:1; overflow:hidden; position:relative; }
+
+/* GRADE BAR */
+.gbar { background:#fff; border-bottom:1px solid #f0f0f0; padding:7px 14px; display:flex; align-items:center; gap:6px; flex-shrink:0; }
+.gbar-lbl { font-size:9px; font-weight:800; color:#9ca3af; letter-spacing:.5px; }
+.gtabs { display:flex; gap:4px; }
+.gtab { padding:4px 11px; border-radius:20px; font-size:10px; font-weight:700; cursor:pointer; border:1.5px solid #e5e7eb; background:#f9fafb; color:#9ca3af; transition:all .18s; }
+.gtab.gp.on { background:#fef9c3; border-color:#fbbf24; color:#b45309; }
+.gtab.gm.on { background:#eff6ff; border-color:#60a5fa; color:#1d4ed8; }
+.gtab.gh.on { background:#f5f3ff; border-color:#a78bfa; color:#6d28d9; }
+.gbar-note { font-size:9px; color:#9ca3af; margin-left:auto; }
+.vp,.vm,.vh { display:none; }
+.vp.on,.vm.on,.vh.on { display:block; }
+
+/* LAYOUT */
+.con { height:100%; display:flex; background:#f0f2f8; }
+
+/* SIDEBAR */
+.sb { width:64px; flex-shrink:0; background:#fff; border-right:1px solid #eee; display:flex; flex-direction:column; align-items:center; padding:12px 0; box-shadow:2px 0 8px rgba(0,0,0,.04); }
+.sb-logo { font-size:22px; margin-bottom:16px; }
+.snav { width:44px; height:44px; border-radius:12px; margin-bottom:6px; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; transition:all .2s; gap:2px; }
+.snav.on { background:linear-gradient(135deg,rgba(99,102,241,.12),rgba(99,102,241,.06)); }
+.snav:hover:not(.on) { background:#f3f4f6; }
+.si { font-size:17px; }
+.sl { font-size:7px; font-weight:700; color:#9ca3af; }
+.snav.on .sl { color:#6366f1; }
+.sb-gap { flex:1; }
+.sb-av { width:32px; height:32px; border-radius:50%; background:linear-gradient(135deg,#a855f7,#7c3aed); display:flex; align-items:center; justify-content:center; font-size:14px; margin-bottom:8px; }
+
+/* FEED */
+.feed { flex:1; height:100%; overflow-y:auto; padding:13px 12px 20px; scrollbar-width:thin; scrollbar-color:rgba(99,102,241,.2) transparent; }
+.feed::-webkit-scrollbar { width:3px; }
+.feed::-webkit-scrollbar-thumb { background:rgba(99,102,241,.2); border-radius:2px; }
+.f-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:11px; }
+.f-greet { font-size:14px; font-weight:800; color:#1e293b; }
+.streak { background:#fff; border:1px solid #fbbf24; border-radius:20px; padding:3px 10px; font-size:10px; font-weight:700; color:#d97706; display:flex; align-items:center; gap:4px; }
+
+/* CHECKIN */
+.ci { background:#fff; border:1.5px solid #e8edff; border-radius:14px; padding:13px; margin-bottom:10px; box-shadow:0 2px 10px rgba(99,102,241,.06); }
+.ci-head { font-size:13px; font-weight:800; color:#1e293b; margin-bottom:2px; }
+.ci-sub { font-size:10px; color:#9ca3af; margin-bottom:11px; }
+.emo-row { display:flex; gap:6px; margin-bottom:10px; }
+.emo { flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; padding:8px 4px; border-radius:12px; cursor:pointer; border:2px solid #e5e7eb; background:#f9fafb; transition:all .2s; }
+.emo.on { border-color:#6366f1; background:linear-gradient(135deg,#eff6ff,#ede9fe); transform:scale(1.05); }
+.emo-icon { font-size:18px; }
+.emo-name { font-size:8px; font-weight:600; color:#6b7280; }
+.emo.on .emo-name { color:#6366f1; }
+
+/* REASON STEP */
+.rs { display:none; }
+.rs.show { display:block; }
+.rs-title { font-size:11px; font-weight:700; color:#374151; margin-bottom:8px; }
+.rtags { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:10px; }
+.rtag { padding:4px 10px; border-radius:12px; font-size:10px; font-weight:600; background:#f3f4f6; border:1.5px solid #e5e7eb; color:#6b7280; cursor:pointer; transition:all .15s; }
+.rtag.on { background:#eff6ff; border-color:#6366f1; color:#4f46e5; }
+.rs-btn { background:#6366f1; color:#fff; border:none; border-radius:10px; padding:6px 16px; font-size:10px; font-weight:700; cursor:pointer; font-family:inherit; transition:all .15s; }
+.rs-btn:hover { background:#4f46e5; }
+
+/* NEIGHBOR CONFIRM */
+.nb { display:none; }
+.nb.show { display:block; }
+.nb-card { display:flex; align-items:center; gap:10px; background:linear-gradient(135deg,#f0f7ff,#ede9fe); border:1.5px solid #c7d2fe; border-radius:12px; padding:10px 12px; margin-bottom:10px; }
+.nb-icon { font-size:28px; }
+.nb-name { font-size:12px; font-weight:800; color:#4f46e5; }
+.nb-desc { font-size:10px; color:#6b7280; margin-top:1px; }
+.nb-btn { margin-left:auto; background:#6366f1; color:#fff; border:none; border-radius:10px; padding:6px 14px; font-size:10px; font-weight:700; cursor:pointer; font-family:inherit; transition:all .15s; white-space:nowrap; }
+.nb-btn:hover { background:#4f46e5; transform:scale(1.03); }
+
+/* DONE STATE */
+.ci-done { display:none; align-items:center; gap:10px; padding:8px 10px; background:linear-gradient(135deg,#f0fdf4,#dcfce7); border:1.5px solid #86efac; border-radius:12px; }
+.ci-done.show { display:flex; }
+.ci-done-icon { font-size:20px; }
+.ci-done-info { flex:1; }
+.ci-done-text { font-size:11px; font-weight:700; color:#166534; }
+.ci-done-sub { font-size:9px; color:#4ade80; margin-top:1px; }
+.ci-change { font-size:9px; color:#94a3b8; cursor:pointer; background:#f3f4f6; border-radius:10px; padding:2px 8px; }
+
+/* THEATER */
+.theater { border-radius:14px; overflow:hidden; margin-bottom:10px; cursor:pointer; transition:transform .2s; }
+.theater:hover { transform:scale(1.01); }
+.theater-inner { background:linear-gradient(135deg,#1e1b4b,#312e81); padding:12px 14px; display:flex; align-items:center; gap:10px; }
+.theater-badge { display:inline-block; background:rgba(255,255,255,.2); border-radius:6px; padding:2px 8px; font-size:9px; font-weight:700; color:#e0e7ff; margin-bottom:4px; }
+.theater-title { font-size:13px; font-weight:800; color:#fff; }
+.theater-sub { font-size:9px; color:rgba(255,255,255,.65); margin-top:2px; }
+.theater-cta { background:rgba(255,255,255,.2); color:#fff; border:1px solid rgba(255,255,255,.3); border-radius:8px; padding:5px 12px; font-size:10px; font-weight:700; white-space:nowrap; }
+
+/* TASK/REC CARD */
+.task-card { background:#fff; border:1.5px solid #e5e7eb; border-radius:14px; padding:12px 13px; margin-bottom:10px; box-shadow:0 1px 6px rgba(0,0,0,.04); }
+.task-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+.task-label { font-size:11px; font-weight:700; }
+.task-badge { font-size:9px; font-weight:700; background:#6366f1; color:#fff; border-radius:10px; padding:2px 8px; }
+.task-row { display:flex; align-items:center; gap:7px; padding:5px 0; border-top:1px solid #f3f4f6; }
+.task-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+.task-name { font-size:10px; color:#374151; flex:1; }
+.task-tag { font-size:9px; color:#9ca3af; }
+
+/* COMMUNITY */
+.community { background:#fff; border:1.5px solid #e5e7eb; border-radius:14px; padding:11px 13px; margin-bottom:10px; box-shadow:0 1px 6px rgba(0,0,0,.04); }
+.community-title { font-size:11px; font-weight:700; color:#374151; margin-bottom:8px; display:flex; align-items:center; gap:6px; }
+.community-badge { font-size:9px; background:#fee2e2; color:#991b1b; border-radius:6px; padding:1px 7px; font-weight:700; }
+.comm-item { display:flex; align-items:center; gap:8px; padding:5px 0; border-top:1px solid #f9fafb; }
+.comm-avatar { font-size:16px; }
+.comm-text { font-size:10px; color:#6b7280; flex:1; line-height:1.4; }
+.comm-time { font-size:9px; color:#d1d5db; }
+.comm-pending { background:#fffbeb; border:1px dashed #fbbf24; border-radius:8px; padding:6px 10px; margin-top:8px; font-size:10px; color:#92400e; line-height:1.5; }
+
+/* IP PANEL */
+.ip-panel {
+  width:272px; flex-shrink:0; background:#fff; border-left:1px solid #eee;
+  display:flex; flex-direction:column; align-items:center;
+  padding:16px 14px 14px; box-shadow:-2px 0 8px rgba(0,0,0,.04); overflow:hidden;
+}
+.ip-switcher { display:flex; gap:6px; margin-bottom:14px; }
+.ip-dot { width:28px; height:28px; border-radius:50%; cursor:pointer; border:3px solid transparent; transition:all .2s; font-size:14px; display:flex; align-items:center; justify-content:center; }
+.ip-dot.on { border-color:#6366f1; transform:scale(1.1); }
+.ip-figure { position:relative; width:100%; display:flex; justify-content:center; margin-bottom:12px; }
+.ip-bg { width:120px; height:120px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:64px; animation:ipFloat 3s ease-in-out infinite; }
+@keyframes ipFloat { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-8px);} }
+.ip-name { font-size:14px; font-weight:800; color:#1e293b; text-align:center; margin-bottom:4px; }
+.ip-status { font-size:10px; color:#9ca3af; text-align:center; margin-bottom:10px; }
+.ip-bubble { background:linear-gradient(135deg,#f5f3ff,#ede9fe); border:1.5px solid #c4b5fd; border-radius:0 12px 12px 12px; padding:10px 12px; font-size:11px; color:#4c1d95; line-height:1.6; margin-bottom:12px; position:relative; width:100%; }
+.ip-bubble::before { content:''; position:absolute; left:-1px; top:-10px; width:0; height:0; border-left:10px solid transparent; border-right:10px solid transparent; border-bottom:10px solid #c4b5fd; }
+.ip-bubble-inner::before { content:''; position:absolute; left:0; top:-9px; width:0; height:0; border-left:9px solid transparent; border-right:9px solid transparent; border-bottom:9px solid #f5f3ff; }
+.ip-actions { display:flex; flex-direction:column; gap:6px; width:100%; }
+.ip-btn-primary { background:linear-gradient(135deg,#6366f1,#8b5cf6); color:#fff; border:none; border-radius:10px; padding:8px 0; font-size:11px; font-weight:700; cursor:pointer; font-family:inherit; width:100%; transition:all .2s; }
+.ip-btn-primary:hover { transform:scale(1.02); box-shadow:0 4px 14px rgba(99,102,241,.4); }
+.ip-btn-sec { background:#f5f3ff; color:#6d28d9; border:1.5px solid #ddd6fe; border-radius:10px; padding:6px 0; font-size:10px; font-weight:700; cursor:pointer; font-family:inherit; width:100%; transition:all .15s; }
+.ip-btn-sec:hover { background:#ede9fe; }
+.ip-streak-bar { width:100%; margin-top:10px; }
+.ip-streak-label { font-size:9px; color:#9ca3af; font-weight:600; margin-bottom:5px; }
+.ip-streak-dots { display:flex; gap:4px; justify-content:center; }
+.streak-d { width:20px; height:20px; border-radius:50%; background:#f3f4f6; border:1.5px solid #e5e7eb; display:flex; align-items:center; justify-content:center; font-size:9px; transition:all .2s; }
+.streak-d.done { background:#fef9c3; border-color:#fbbf24; }
+.streak-d.today { background:#6366f1; border-color:#4f46e5; color:#fff; font-weight:700; }
+
+/* GLOBAL IP FLOAT BALL (P2) */
+.ip-float {
+  position:absolute; bottom:18px; right:16px; z-index:100;
+  display:flex; flex-direction:column; align-items:center; gap:4px; cursor:pointer;
+}
+.ip-orb {
+  width:44px; height:44px; border-radius:50%;
+  background:linear-gradient(135deg,#a855f7,#7c3aed);
+  display:flex; align-items:center; justify-content:center; font-size:22px;
+  box-shadow:0 6px 20px rgba(168,85,247,.5),0 0 0 0 rgba(168,85,247,.3);
+  animation:orbPulse 2.5s ease-in-out infinite;
+  transition:transform .2s;
+}
+.ip-orb:hover { transform:scale(1.1); }
+@keyframes orbPulse {
+  0%,100%{box-shadow:0 6px 20px rgba(168,85,247,.5),0 0 0 0 rgba(168,85,247,.25);}
+  50%{box-shadow:0 6px 20px rgba(168,85,247,.5),0 0 0 10px rgba(168,85,247,0);}
+}
+.ip-float-label { font-size:8px; font-weight:700; color:#6d28d9; background:#f5f3ff; border-radius:6px; padding:1px 6px; }
+.ip-switch-dots { display:flex; gap:4px; }
+.isd { width:8px; height:8px; border-radius:50%; cursor:pointer; opacity:.5; transition:all .2s; }
+.isd.on { opacity:1; transform:scale(1.3); }
+
+/* CHAT DRAWER */
+.drawer {
+  position:absolute; right:0; top:0; bottom:0; width:260px;
+  background:#fff; border-left:1px solid #eee;
+  box-shadow:-4px 0 20px rgba(0,0,0,.12);
+  display:flex; flex-direction:column;
+  transform:translateX(100%); transition:transform .3s cubic-bezier(.4,0,.2,1);
+  z-index:200;
+}
+.drawer.open { transform:translateX(0); }
+.drawer-head { display:flex; align-items:center; gap:8px; padding:12px 14px; border-bottom:1px solid #f3f4f6; flex-shrink:0; }
+.drawer-av { font-size:24px; }
+.drawer-name { font-size:13px; font-weight:800; color:#1f2937; }
+.drawer-sub { font-size:9px; color:#9ca3af; }
+.drawer-close { margin-left:auto; width:24px; height:24px; border-radius:50%; background:#f3f4f6; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:12px; color:#9ca3af; }
+.drawer-msgs { flex:1; overflow-y:auto; padding:10px 12px; display:flex; flex-direction:column; gap:8px; }
+.msg-ip { display:flex; gap:7px; align-items:flex-start; }
+.msg-av { font-size:18px; flex-shrink:0; }
+.msg-bub { background:#f0f7ff; border-radius:0 10px 10px 10px; border-left:2px solid #6366f1; padding:8px 10px; font-size:11px; color:#374151; line-height:1.6; }
+.msg-user { display:flex; justify-content:flex-end; }
+.msg-bub-u { background:#6366f1; border-radius:10px 0 10px 10px; padding:7px 10px; font-size:11px; color:#fff; max-width:75%; line-height:1.5; }
+.drawer-intents { padding:8px 10px; border-top:1px solid #f3f4f6; flex-shrink:0; }
+.intents-lbl { font-size:9px; color:#9ca3af; font-weight:700; text-transform:uppercase; margin-bottom:5px; }
+.intents-row { display:flex; gap:5px; flex-wrap:wrap; }
+.intent-btn { background:#f5f3ff; border:1px solid #c4b5fd; border-radius:14px; padding:4px 9px; font-size:10px; font-weight:700; color:#6d28d9; cursor:pointer; transition:all .15s; }
+.intent-btn:hover { background:#ede9fe; }
+.drawer-input { padding:7px 10px 10px; border-top:1px solid #f3f4f6; display:flex; gap:6px; align-items:center; flex-shrink:0; }
+.drawer-ibox { flex:1; background:#f9fafb; border:1.5px solid #e5e7eb; border-radius:18px; padding:6px 11px; font-size:11px; font-family:inherit; outline:none; color:#374151; }
+.drawer-ibox:focus { border-color:#6366f1; }
+.drawer-send { width:28px; height:28px; border-radius:50%; background:#6366f1; border:none; color:#fff; font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .15s; }
+.drawer-send:hover { background:#4f46e5; transform:scale(1.05); }
+
+/* GAOKAO COUNTDOWN */
+.gaokao-bar { display:flex; align-items:center; gap:8px; background:linear-gradient(135deg,#f5f3ff,#ede9fe); border:1px solid #c4b5fd; border-radius:12px; padding:8px 12px; margin-bottom:10px; }
+.gaokao-n { font-size:22px; font-weight:900; color:#6d28d9; line-height:1; }
+.gaokao-lbl { font-size:10px; color:#7c3aed; font-weight:700; }
+.gaokao-sub { font-size:9px; color:#a78bfa; }
+.gaokao-dis { margin-left:auto; font-size:9px; color:#c4b5fd; cursor:pointer; }
+
+/* NOTE BOX */
+.note-box { background:#fffbeb; border:1px solid #fde68a; border-radius:10px; padding:10px 14px; margin:20px 40px; font-size:13px; color:#92400e; line-height:1.7; }
+.note-box strong { color:#b45309; }
+
+@keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+.ci,.theater,.task-card,.community { animation:fadeIn .4s ease-out backwards; }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">✦ P1/P2 首页改版原型 · v1 · 2026.07.23</div>
+  <h1>减压星球 · 首页改版</h1>
+  <p>P1 首屏视觉引导 · P2 AI伙伴全局可达<br>
+  布局：左侧边栏 + 中间Feed流 + 右侧IP形象区 + 全局悬浮球</p>
+  <div class="hero-tags">
+    <span class="htag g">P1 已解决 首屏引导</span>
+    <span class="htag g">P2 已解决 全局可达</span>
+    <span class="htag o">邻居情境化出现</span>
+    <span class="htag o">打卡→任务联动</span>
+    <span class="htag">IP状态联动</span>
+    <span class="htag">同学动态（静态占位）</span>
+  </div>
+</div>
+
+<!-- PAD PROTOTYPE -->
+<div class="pad-stage">
+  <div class="pad-outer">
+    <div class="pad-label">华为 AGS5Z-W09 · PAD横屏 · 1920×1080 · 初中视图默认</div>
+    <div class="pad-frame">
+      <div class="pad-status">
+        <span>AI星球 · 减压星球</span>
+        <span id="nowTime">09:41 &nbsp;周三 2026.07.23</span>
+        <span>🔋 ▓▓▓▓ &nbsp;WiFi · 小明同学</span>
+      </div>
+
+      <div class="gbar">
+        <div class="gbar-lbl">年级</div>
+        <div class="gtabs">
+          <div class="gtab gp" onclick="switchGrade('p',this)">🌱 小学</div>
+          <div class="gtab gm on" onclick="switchGrade('m',this)">🌀 初中</div>
+          <div class="gtab gh" onclick="switchGrade('h',this)">🎯 高中</div>
+        </div>
+        <div class="gbar-note" id="gbar-note">初中视图 · 吉塔陪伴</div>
+      </div>
+
+      <div class="pad-content">
+        <div class="con">
+
+          <!-- SIDEBAR -->
+          <div class="sb">
+            <div class="sb-logo">🪐</div>
+            <div class="snav on"><span class="si">🏠</span><span class="sl" style="color:#6366f1">首页</span></div>
+            <div class="snav"><span class="si">🧠</span><span class="sl">脑之岛</span></div>
+            <div class="snav"><span class="si">💌</span><span class="sl">解忧</span></div>
+            <div class="snav"><span class="si">🎬</span><span class="sl">剧场</span></div>
+            <div class="sb-gap"></div>
+            <div class="snav"><span class="si">⚙️</span><span class="sl">设置</span></div>
+            <div class="sb-av">🐼</div>
+          </div>
+
+          <!-- FEED -->
+          <div class="feed">
+
+            <!-- FEED HEADER -->
+            <div class="f-head">
+              <div class="f-greet" id="f-greet">早上好，小明同学 👋</div>
+              <div style="display:flex;gap:8px;align-items:center;">
+                <div class="streak">🔥 连续4天</div>
+                <div style="font-size:10px;color:#9ca3af;">周三 · 7月23日</div>
+              </div>
+            </div>
+
+            <!-- GAOKAO (高中only) -->
+            <div class="vh" id="gaokao-block">
+              <div class="gaokao-bar">
+                <div>
+                  <div class="gaokao-lbl">距高考</div>
+                  <div style="display:flex;align-items:baseline;gap:3px;"><div class="gaokao-n">89</div><div class="gaokao-sub"> 天</div></div>
+                </div>
+                <div style="flex:1;font-size:10px;color:#7c3aed;line-height:1.6;padding-left:8px;">2027年6月7日 · 高三下学期<br><span style="color:#a78bfa;">倒计时已开启 · 稳住，你可以的</span></div>
+                <div class="gaokao-dis" onclick="document.getElementById('gaokao-block').style.display='none'">关闭 ×</div>
+              </div>
+            </div>
+
+            <!-- CHECKIN CARD -->
+            <div class="ci" id="ci-card">
+              <div id="ci-main">
+                <div class="ci-head" id="ci-head">今天心情怎么样？</div>
+                <div class="ci-sub" id="ci-sub">打个卡，吉塔就知道今天怎么接你</div>
+
+                <!-- Step 1: 情绪 -->
+                <div id="step-emo">
+                  <div class="emo-row">
+                    <div class="emo" onclick="selectEmo(this,'开心','😊')">
+                      <span class="emo-icon">😊</span><span class="emo-name">开心</span>
+                    </div>
+                    <div class="emo" onclick="selectEmo(this,'还好','😐')">
+                      <span class="emo-icon">😐</span><span class="emo-name">还好</span>
+                    </div>
+                    <div class="emo" onclick="selectEmo(this,'不开心','😔')">
+                      <span class="emo-icon">😔</span><span class="emo-name">不开心</span>
+                    </div>
+                    <div class="emo" onclick="selectEmo(this,'很不开心','😤')">
+                      <span class="emo-icon">😤</span><span class="emo-name">很不开心</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Step 2: 原因 -->
+                <div class="rs" id="step-reason">
+                  <div class="rs-title">因为……（可多选）</div>
+                  <div class="rtags">
+                    <div class="rtag" onclick="this.classList.toggle('on')">考试</div>
+                    <div class="rtag" onclick="this.classList.toggle('on')">同学</div>
+                    <div class="rtag" onclick="this.classList.toggle('on')">老师</div>
+                    <div class="rtag" onclick="this.classList.toggle('on')">父母</div>
+                    <div class="rtag" onclick="this.classList.toggle('on')">兄弟姐妹</div>
+                    <div class="rtag" onclick="this.classList.toggle('on')">作业</div>
+                    <div class="rtag" onclick="this.classList.toggle('on')">睡眠</div>
+                    <div class="rtag" onclick="this.classList.toggle('on')">身体</div>
+                    <div class="rtag" onclick="this.classList.toggle('on')">其他</div>
+                  </div>
+                  <button class="rs-btn" onclick="confirmReason()">确认 →</button>
+                </div>
+
+                <!-- Step 3: 邻居确认 -->
+                <div class="nb" id="step-nb">
+                  <div class="nb-card">
+                    <div class="nb-icon" id="nb-icon">🍐</div>
+                    <div>
+                      <div class="nb-name" id="nb-name">鸭梨来了</div>
+                      <div class="nb-desc" id="nb-desc">压力大的时候，先说出来就好一点</div>
+                    </div>
+                    <button class="nb-btn" onclick="confirmCheckin()">记下来 ✓</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Done state -->
+              <div class="ci-done" id="ci-done">
+                <div class="ci-done-icon">✅</div>
+                <div class="ci-done-info">
+                  <div class="ci-done-text" id="ci-done-text">今天：不开心 · 鸭梨来陪你了</div>
+                  <div class="ci-done-sub">日记已记录 · 连续第5天打卡！🎉</div>
+                </div>
+                <div class="ci-change" onclick="reopenCheckin()">更改</div>
+              </div>
+            </div>
+
+            <!-- THEATER BANNER -->
+            <div class="theater" onclick="alert('进入心理剧场')">
+              <div class="theater-inner">
+                <div style="flex:1;">
+                  <div class="theater-badge">🎬 7月新剧 · 更新中</div>
+                  <div class="theater-title">心理剧场：面对压力</div>
+                  <div class="theater-sub">互动剧情 · 约15分钟 · 鸭梨主演</div>
+                </div>
+                <div class="theater-cta">立即体验 →</div>
+              </div>
+            </div>
+
+            <!-- IP TASK CARD (linked to checkin) -->
+            <div class="task-card" id="task-card">
+              <div class="task-top">
+                <span class="task-label" id="task-label" style="color:#4f46e5;">吉塔今日安排</span>
+                <span class="task-badge" id="task-badge">2 待完成</span>
+              </div>
+              <div id="task-rows">
+                <div class="task-row">
+                  <div class="task-dot" style="background:#f59e0b;"></div>
+                  <span class="task-name">📊 情绪压力测评 · 约5分钟</span>
+                  <span class="task-tag">吉塔推荐</span>
+                </div>
+                <div class="task-row">
+                  <div class="task-dot" style="background:#10b981;"></div>
+                  <span class="task-name">🎵 4-7-8呼吸法 · 3分钟</span>
+                  <span class="task-tag">今日放松</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- COMMUNITY -->
+            <div class="community">
+              <div class="community-title">
+                同学动态
+                <span class="community-badge">待确认接口</span>
+              </div>
+              <div class="comm-item">
+                <div class="comm-avatar">🦔</div>
+                <div class="comm-text">同班同学 解锁了脑之岛「正念冥想」挑战</div>
+                <div class="comm-time">1小时前</div>
+              </div>
+              <div class="comm-item">
+                <div class="comm-avatar">🦥</div>
+                <div class="comm-text">同年级同学 完成了本周情绪打卡 5 连击</div>
+                <div class="comm-time">3小时前</div>
+              </div>
+              <div class="comm-item">
+                <div class="comm-avatar">🐰</div>
+                <div class="comm-text">同班同学 在解忧信箱分享了一个故事</div>
+                <div class="comm-time">昨天</div>
+              </div>
+              <div class="comm-pending">
+                ⚠️ <strong>设计注释</strong>：同学动态为静态占位内容。实际实现需产品确认：①同校同年级数据接口 ②是否实名 ③数据同步方案
+              </div>
+            </div>
+
+            <div style="height:16px;"></div>
+          </div><!-- /feed -->
+
+          <!-- IP PANEL (右侧) -->
+          <div class="ip-panel">
+            <div class="ip-switcher">
+              <div class="ip-dot on" style="background:linear-gradient(135deg,#a855f7,#7c3aed);" onclick="switchIP(0,this)" title="吉塔">🐼</div>
+              <div class="ip-dot" style="background:linear-gradient(135deg,#60a5fa,#3b82f6);" onclick="switchIP(1,this)" title="小星">🐳</div>
+              <div class="ip-dot" style="background:linear-gradient(135deg,#34d399,#059669);" onclick="switchIP(2,this)" title="罗素">🦊</div>
+            </div>
+
+            <div class="ip-figure">
+              <div class="ip-bg" id="ip-bg" style="background:linear-gradient(135deg,rgba(168,85,247,.15),rgba(124,58,237,.1));">
+                <span id="ip-emoji" style="font-size:64px;">🐼</span>
+              </div>
+            </div>
+
+            <div class="ip-name" id="ip-name">吉塔</div>
+            <div class="ip-status" id="ip-status">等你来打卡～</div>
+
+            <div class="ip-bubble" id="ip-bubble">
+              <span id="ip-bubble-text">今天还没打卡哦，选一个心情，我就知道怎么陪你了。</span>
+            </div>
+
+            <div class="ip-actions">
+              <button class="ip-btn-primary" onclick="openDrawer()">和吉塔聊聊 💬</button>
+              <button class="ip-btn-sec" onclick="alert('切换IP陪伴对象')">换一个伙伴</button>
+            </div>
+
+            <div class="ip-streak-bar">
+              <div class="ip-streak-label">本周打卡（5天制）</div>
+              <div class="ip-streak-dots">
+                <div class="streak-d done" title="周一">一</div>
+                <div class="streak-d done" title="周二">二</div>
+                <div class="streak-d today" title="周三·今天">三</div>
+                <div class="streak-d" title="周四">四</div>
+                <div class="streak-d" title="周五">五</div>
+              </div>
+            </div>
+          </div><!-- /ip-panel -->
+
+        </div><!-- /con -->
+
+        <!-- GLOBAL FLOAT BALL (P2核心) -->
+        <div class="ip-float" id="ip-float" onclick="openDrawer()">
+          <div class="ip-orb" id="ip-orb">🐼</div>
+          <div class="ip-float-label" id="ip-float-label">吉塔</div>
+          <div class="ip-switch-dots">
+            <div class="isd on" style="background:#a855f7;" onclick="event.stopPropagation();switchIP(0)"></div>
+            <div class="isd" style="background:#3b82f6;" onclick="event.stopPropagation();switchIP(1)"></div>
+            <div class="isd" style="background:#10b981;" onclick="event.stopPropagation();switchIP(2)"></div>
+          </div>
+        </div>
+
+        <!-- CHAT DRAWER -->
+        <div class="drawer" id="drawer">
+          <div class="drawer-head">
+            <div class="drawer-av" id="d-av">🐼</div>
+            <div>
+              <div class="drawer-name" id="d-name">吉塔</div>
+              <div class="drawer-sub" id="d-sub">情绪守护者 · 随时在线</div>
+            </div>
+            <div class="drawer-close" onclick="closeDrawer()">✕</div>
+          </div>
+          <div class="drawer-msgs" id="d-msgs">
+            <div class="msg-ip">
+              <div class="msg-av">🐼</div>
+              <div class="msg-bub" id="d-first-msg">早上好小明，今天还没打卡呢。先选个心情，我就知道今天怎么陪你了。</div>
+            </div>
+          </div>
+          <div class="drawer-intents">
+            <div class="intents-lbl">快速开口</div>
+            <div class="intents-row">
+              <div class="intent-btn" onclick="sendMsg('我今天很焦虑')">😰 我焦虑</div>
+              <div class="intent-btn" onclick="sendMsg('帮我放松一下')">🎵 放松</div>
+              <div class="intent-btn" onclick="sendMsg('聊聊今天发生的事')">💬 聊聊</div>
+              <div class="intent-btn" onclick="sendMsg('给我推荐一个训练')">🧠 推荐</div>
+            </div>
+          </div>
+          <div class="drawer-input">
+            <input class="drawer-ibox" id="d-input" placeholder="说点什么…" onkeydown="if(event.key==='Enter')sendMsg()">
+            <button class="drawer-send" onclick="sendMsg()">↑</button>
+          </div>
+        </div>
+
+      </div><!-- /pad-content -->
+    </div><!-- /pad-frame -->
+  </div>
+</div>
+
+<!-- NOTES -->
+<div class="note-box">
+  <strong>设计决策注释</strong><br>
+  · <strong>P1解法</strong>：首屏单主CTA（心情打卡），心理剧场排在打卡下方，无双入口，无底部课件tab<br>
+  · <strong>P2解法</strong>：右下角IP悬浮球全局可达，切任何tab都能看到并点击；右侧IP面板是首页专属大形象区<br>
+  · <strong>邻居体系</strong>：邻居仅在打卡确认（Step 3）短暂出现，根据情绪+原因自动匹配，不占据持久化UI位置<br>
+  · <strong>IP状态联动</strong>：打卡前IP说"等你来打卡"；打卡后IP换表情+说情绪回应文案<br>
+  · <strong>任务推送联动</strong>：打卡后任务卡根据心情动态更新推荐内容<br>
+  · <strong>同学动态</strong>：静态占位，需产品+开发确认接口方案后实现<br>
+  · <strong>高考倒计时</strong>：仅高三下学期（距高考≤100天）显示，切高中年级可看到
+</div>
+
+<script>
+const IPS = [
+  { emoji:'🐼', name:'吉塔', sub:'情绪守护者 · 随时在线', color:'#a855f7', bg:'rgba(168,85,247,.15)', bubblePre:'吉塔说：', dSub:'情绪守护者 · 随时在线' },
+  { emoji:'🐳', name:'小星', sub:'快乐小助手 · 总是活泼', color:'#3b82f6', bg:'rgba(59,130,246,.15)', bubblePre:'小星说：', dSub:'快乐小助手 · 总是活泼' },
+  { emoji:'🦊', name:'罗素', sub:'理性向导 · 一起分析', color:'#10b981', bg:'rgba(16,185,129,.15)', bubblePre:'罗素说：', dSub:'理性向导 · 一起分析' }
+];
+const NEIGHBOR_MAP = {
+  '不开心_考试':'🍐:鸭梨来了:压力大的时候先别憋着，说出来就轻一点',
+  '不开心_作业':'🍐:鸭梨来了:作业压力有点大？咱们慢慢来，一件一件做',
+  '不开心_睡眠':'🦉:阿眠来了:睡不好真的很难受，你最近怎么了？',
+  '不开心_同学':'🦔:小刺来了:和同学有点过不去？说说，我听着',
+  '不开心_父母':'🦁:小炎来了:和家里有冲突？那种憋屈感我懂，先深呼吸',
+  '很不开心_考试':'🍐:鸭梨：压力山大:真的压垮了？没事，先跟我说说今天发生了什么',
+  '很不开心_同学':'🦔:小刺：有点受伤:被排挤的感觉很难受，你不是一个人',
+  '很不开心_父母':'🦁:小炎：火气很大:跟爸妈吵架了吗？先深呼吸，再跟我说',
+  '还好_作业':'🦥:拖拖来了:任务堆着没动？今天先做一件小事，就一件',
+  '开心_其他':'🐰:皮皮来了:今天心情不错嘛！有什么好事分享吗？'
+};
+const TASK_MAP = {
+  '开心':'🎵 今日歌单：开心节奏;🎮 脑力小挑战 · 5分钟',
+  '还好':'📊 情绪小测评 · 3分钟;🌿 正念呼吸 · 3分钟',
+  '不开心':'🎵 4-7-8呼吸法 · 3分钟;💬 和吉塔说说今天',
+  '很不开心':'🤗 情绪急救 · 5分钟;🎵 放松音乐 · 立即播放'
+};
+const IP_BUBBLE_POST = {
+  '开心':'太好了！你今天很开心，状态不错。有什么好事分享给我吗？',
+  '还好':'嗯，还好就好。今天有什么想聊聊的吗？',
+  '不开心':'我看到你了。先深呼吸，有什么想说的吗？',
+  '很不开心':'今天好像很难过。你愿意跟我说说发生什么了吗？'
+};
+
+let curIP = 0;
+let selectedEmo = '';
+let checkinDone = false;
+let curGrade = 'm';
+
+function switchGrade(g, el) {
+  curGrade = g;
+  document.querySelectorAll('.gtab').forEach(t => t.classList.remove('on'));
+  el.classList.add('on');
+  document.querySelectorAll('.vp,.vm,.vh').forEach(el => el.classList.remove('on'));
+  const cls = g === 'p' ? '.vp' : g === 'm' ? '.vm' : '.vh';
+  document.querySelectorAll(cls).forEach(el => el.classList.add('on'));
+  const notes = { p:'小学视图 · 小星陪伴', m:'初中视图 · 吉塔陪伴', h:'高中视图 · 罗素主导' };
+  document.getElementById('gbar-note').textContent = notes[g];
+  const greets = { p:'下午好，小明同学 👋', m:'早上好，小明同学 👋', h:'早上好，小明同学 👋' };
+  document.getElementById('f-greet').textContent = greets[g];
+  if (g === 'h') {
+    switchIP(2, document.querySelectorAll('.ip-dot')[2]);
+  } else if (g === 'p') {
+    switchIP(1, document.querySelectorAll('.ip-dot')[1]);
+  } else {
+    switchIP(0, document.querySelectorAll('.ip-dot')[0]);
+  }
+}
+
+function switchIP(idx, elOrNull) {
+  curIP = idx;
+  const ip = IPS[idx];
+  document.getElementById('ip-emoji').textContent = ip.emoji;
+  document.getElementById('ip-bg').style.background = `linear-gradient(135deg,${ip.bg},transparent)`;
+  document.getElementById('ip-name').textContent = ip.name;
+  document.getElementById('ip-orb').textContent = ip.emoji;
+  document.getElementById('ip-float-label').textContent = ip.name;
+  document.getElementById('d-av').textContent = ip.emoji;
+  document.getElementById('d-name').textContent = ip.name;
+  document.getElementById('d-sub').textContent = ip.dSub;
+  if (!checkinDone) {
+    document.getElementById('ip-bubble-text').textContent = '今天还没打卡哦，选一个心情，我就知道怎么陪你了。';
+    document.getElementById('ip-status').textContent = '等你来打卡～';
+  }
+  document.querySelectorAll('.ip-dot').forEach((d, i) => d.classList.toggle('on', i === idx));
+  document.querySelectorAll('.isd').forEach((d, i) => d.classList.toggle('on', i === idx));
+  document.getElementById('task-label').textContent = ip.name + '今日安排';
+}
+
+function selectEmo(el, name, emoji) {
+  selectedEmo = name;
+  document.querySelectorAll('.emo').forEach(e => e.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('ci-sub').textContent = `你选了：${emoji} ${name} · 再选一个原因吧`;
+  document.getElementById('step-reason').classList.add('show');
+}
+
+function confirmReason() {
+  const selected = [...document.querySelectorAll('.rtag.on')].map(t => t.textContent);
+  const reason = selected.length ? selected[0] : '其他';
+  const key = `${selectedEmo}_${reason}`;
+  let nbData = NEIGHBOR_MAP[key] || '🍐:鸭梨来了:今天有点难受？没事，先说出来就好';
+  const parts = nbData.split(':');
+  document.getElementById('nb-icon').textContent = parts[0];
+  document.getElementById('nb-name').textContent = parts[1];
+  document.getElementById('nb-desc').textContent = parts[2];
+  document.getElementById('step-reason').classList.remove('show');
+  document.getElementById('step-nb').classList.add('show');
+}
+
+function confirmCheckin() {
+  checkinDone = true;
+  document.getElementById('ci-main').style.display = 'none';
+  const done = document.getElementById('ci-done');
+  done.classList.add('show');
+  const nbName = document.getElementById('nb-name').textContent;
+  document.getElementById('ci-done-text').textContent = `今天：${selectedEmo} · ${nbName}`;
+  const ip = IPS[curIP];
+  document.getElementById('ip-status').textContent = '已打卡 · 我陪着你';
+  document.getElementById('ip-bubble-text').textContent = IP_BUBBLE_POST[selectedEmo] || '打卡啦，今天我会一直在。';
+  updateTasks();
+  const firstMsg = document.getElementById('d-first-msg');
+  firstMsg.textContent = ip.emoji + ' ' + (IP_BUBBLE_POST[selectedEmo] || '打卡啦，今天我会一直在。');
+}
+
+function updateTasks() {
+  const rows = TASK_MAP[selectedEmo] ? TASK_MAP[selectedEmo].split(';') : ['📊 情绪小测评;🎵 放松练习'.split(';')[0]];
+  const ip = IPS[curIP];
+  document.getElementById('task-badge').textContent = rows.length + ' 待完成';
+  const container = document.getElementById('task-rows');
+  const colors = ['#f59e0b','#10b981','#6366f1'];
+  container.innerHTML = rows.map((r, i) => `
+    <div class="task-row">
+      <div class="task-dot" style="background:${colors[i%colors.length]};"></div>
+      <span class="task-name">${r}</span>
+      <span class="task-tag">${ip.name}推荐</span>
+    </div>`).join('');
+}
+
+function reopenCheckin() {
+  checkinDone = false;
+  selectedEmo = '';
+  document.getElementById('ci-main').style.display = '';
+  document.getElementById('ci-done').classList.remove('show');
+  document.getElementById('step-reason').classList.remove('show');
+  document.getElementById('step-nb').classList.remove('show');
+  document.querySelectorAll('.emo').forEach(e => e.classList.remove('on'));
+  document.querySelectorAll('.rtag').forEach(t => t.classList.remove('on'));
+  document.getElementById('ci-sub').textContent = '打个卡，' + IPS[curIP].name + '就知道今天怎么接你';
+  document.getElementById('ip-bubble-text').textContent = '今天还没打卡哦，选一个心情，我就知道怎么陪你了。';
+  document.getElementById('ip-status').textContent = '等你来打卡～';
+}
+
+function openDrawer() {
+  document.getElementById('drawer').classList.add('open');
+}
+function closeDrawer() {
+  document.getElementById('drawer').classList.remove('open');
+}
+
+function sendMsg(preset) {
+  const input = document.getElementById('d-input');
+  const text = preset || input.value.trim();
+  if (!text) return;
+  const msgs = document.getElementById('d-msgs');
+  msgs.innerHTML += `<div class="msg-user"><div class="msg-bub-u">${text}</div></div>`;
+  input.value = '';
+  const ip = IPS[curIP];
+  const replies = [
+    '我听到你了，能跟我多说一点吗？',
+    '嗯，你说的我记住了。',
+    '这对你来说一定很难，我们一起想想怎么办。',
+    '感谢你愿意告诉我这些。',
+  ];
+  setTimeout(() => {
+    msgs.innerHTML += `<div class="msg-ip"><div class="msg-av">${ip.emoji}</div><div class="msg-bub">${replies[Math.floor(Math.random()*replies.length)]}</div></div>`;
+    msgs.scrollTop = msgs.scrollHeight;
+  }, 600);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+// init
+switchGrade('m', document.querySelector('.gtab.gm'));
+</script>
+</body>
+</html>

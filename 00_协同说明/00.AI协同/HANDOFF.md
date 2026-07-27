@@ -44,6 +44,77 @@
 
 ## 最近完成
 
+**Codex · 2026-07-27（竞品池 V1.0 文件同步收口）**
+- 已补齐 `04_改版设计/01_当前主文件/Day01-05_封版检查表与竞品人工体验记录表.html`、`04_改版设计/01_当前主文件/Day03-05_竞品分析整合定稿版.html`、`04_改版设计/03_可填写工具/Day01-07_竞品走查与三维基线整合表_可填写版.html`、`04_改版设计/00_先看这里.html` 的竞品池 V1.0 口径。
+- 当前主文件不再把 Woebot/Wysa/Duolingo/Lumosity/Ebb 作为本轮必跑主线；Woebot/Wysa 降为历史安全资料，Replika/Gemini 为边界参考，Daylio/天天豆/MindPal 为快速参考。
+- 本周实机走查与评分统一使用“易用性分”表述；深跑 6 个为 Finch、Voidpet Garden、Headspace、How We Feel、Lightly、Pooca。
+
+
+
+**Codex · 2026-07-27（03竞品研究与06度量口径同步）**
+- 已将 `03_竞品研究/1.范围与计划/00_竞品分析与设计策略.html`、`03_竞品研究/1.范围与计划/03_竞品走查任务单.html`、`03_竞品研究/1.范围与计划/05_竞品Flow参考清单.html` 同步到竞品池 V1.0。
+- 已将 `03_竞品研究/2.竞品深度分析/核心竞品洞察汇总.html` 增加 V1.0 当前使用口径；旧 Replika / Woebot / Daylio 深度分析保留但降级为边界/历史/快速参考。
+- 已更新 `06_数据与度量/三维度体验基线估分表.html` 中 P0-P11 的竞品参考口径，将 Replika/Woebot/Wysa 主线引用改为 Lightly/Pooca/How We Feel/Headspace/Finch/Voidpet 等 V1.0 池；旧问卷术语已统一为“易用性分”。
+- 已更新两个目录索引与 `03_竞品研究/备注.md`，避免后续误以旧 5 个竞品作为当前主线。
+
+
+**Codex · 2026-07-27（竞品池最终拍板 V1.0）**
+- 本轮减压星球 Q3 Demo 竞品池已收束，不再继续扩大。后续 Codex / Claude Code 均以此版本为准。
+- **深跑 6 个**：Finch、Voidpet Garden、Headspace、How We Feel、Lightly、Pooca。
+  - Finch：最贴减压星球，参考 IP 陪伴、每日任务、低压力自我照顾、完成奖励、成长闭环。
+  - Voidpet Garden：用户已认可，参考情绪拟物、游戏化界面、情绪世界、完成后可见变化。
+  - Headspace：参考首页/内容首页组织、主行动突出、短练习和减压场景包装。
+  - How We Feel：参考情绪打卡颗粒度、情绪词、颜色系统、低压力表达。
+  - Lightly：参考 AI 接住表达、生成反思、连续反馈。
+  - Pooca：参考新一代 AI best friend、陪伴语气、视觉亲和力、情绪反馈。
+- **选看 3 个**：Buda / Selfcare Buddy、Elevate、Ahead。
+  - Buda：和 Finch / Pooca 对比每日路径、伙伴陪伴、任务反馈。
+  - Elevate：参考短任务完成后的能力成长反馈。
+  - Ahead：参考情绪教育、触发点识别、短练习、年轻化视觉；不作为主标杆。
+- **快速参考**：Daylio、天天豆、MindPal。
+  - Daylio：极低成本打卡、标签、日历统计。
+  - 天天豆：中文情绪表达、本土化打卡/陪伴方式。
+  - MindPal：脑训练即时反馈，优先级低于 Elevate。
+- **边界参考**：Gemini、Replika。
+  - Gemini：看通用 AI 面对情绪问题时缺少什么心理产品结构。
+  - Replika：看 AI 记忆和关系推进，同时作为未成年人关系陪伴红线参考。
+- **降级/不进入实机主线**：Rootd / MindShift CBT（视觉老、流程参考弱，仅作安全流程资料参考）；Soluna（澳洲/中国账号不可安装，仅作青少年心理支持资料参考）；Woebot / Wysa / Earkick / Ebb 独立入口不再作为本轮必跑对象。
+- 一句话定位：Finch 定“陪伴任务闭环”，Voidpet 定“情绪游戏化视觉”，Headspace 定“首页组织”，How We Feel 定“情绪打卡”，Lightly 定“AI反思”，Pooca 定“AI陪伴语气”。
+
+
+**Codex · 2026-07-27（Soluna 可访问性校准）**
+- 已核对 Soluna：App Store Lookup 美国区可见，澳洲区/中国区不可见；用户只有澳洲和中国 App Store 账号，因此无法作为本轮实机必跑竞品。
+- Soluna 的产品方向仍有参考价值：青少年心理支持、情绪工具箱、专业支持入口、低压力表达；但后续降级为资料参考，不阻塞本周竞品走查。
+- 若需替代 Soluna 的实机样本，优先用用户已安装的 Headspace、How We Feel、Lightly、Pooca、Buba，以及已认可的 Voidpet Garden。
+
+
+**Codex · 2026-07-27（Voidpet Garden 重点参照确认）**
+- 用户实机/视觉判断认可 Voidpet Garden：游戏化界面有意思，适合作为减压星球情绪可视化与轻游戏化反馈的重点参照。
+- 后续使用边界：重点学习“情绪拟物、互动反馈、情绪世界氛围、完成后的可见变化”，不照搬完整游戏化系统，也不把 Flow C 扩成重养成。
+- 对应主线：Flow A 可参考其视觉吸引力与情绪入口；Flow B 可参考情绪被接住后的具象化表达；Flow C 可参考完成反馈如何变成可看见的世界变化。
+
+
+**Codex · 2026-07-27（竞品池审美与可用性校准）**
+- 用户明确反馈 Rootd / MindShift CBT 界面老、视觉弱、用户量不理想，不适合作为本轮 demo 的视觉与流程设计标杆。
+- 后续将 Rootd / MindShift 降级为安全流程/CBT资料参考，不进入实机必跑池。
+- 更适合补充研究的方向：Finch（IP陪伴与任务闭环）、Soluna（青少年心理支持与低压力工具箱，若可访问）、Voidpet Garden（情绪拟物与游戏化心理练习）、Calm/Balance（高质量首页与减压内容组织）、Ahead（情绪教育与短练习视觉表达）。
+
+
+**Codex · 2026-07-27（竞品实机安装池更新）**
+- 用户手机当前已安装可用于实机走查的竞品：天天豆、Buba/Buda Self-care Buddy、Daylio、Elevate、Gemini、Headspace、How We Feel、Lightly、MindPal、Pooca、Replika。
+- 后续竞品研究不再围绕难以访问的 Ebb 独立入口、Woebot、Wysa、Earkick 强行推进；Ebb 只作为 Headspace 内部可见则补充的功能参考。
+- 当前建议主跑：Finch 如可补装、Headspace、How We Feel、Lightly、Pooca/Buba；短任务成长反馈参考 Elevate/MindPal；心情打卡参考 Daylio/天天豆；Replika/Gemini 只作 AI 记忆、安全边界和通用 AI 对照。
+
+**Codex · 2026-07-27（周会闭环图语义校准）**
+- 用户指出上一版封面图没有体现参考图中“AI / Coding Agent ↔ 易用性标准 / AI测评”的第一闭环关系。
+- 已将 `07_对外沟通/周会_第一个闭环准备情况_20260725.html` 首页图重新改为三个横向闭环：AI易用性快速验证闭环、内部自测闭环、用户反馈闭环。
+- 第一闭环明确呈现左侧 `AI / Coding Agent` 与右侧 `易用性标准 / AI测评` 的双向循环，并保持 7月分钟级迭代、8月内部验证、9月用户反馈的节奏。
+
+**Codex · 2026-07-27（周会封面闭环图重设计）**
+- 已修改 `07_对外沟通/周会_第一个闭环准备情况_20260725.html` 首页右侧闭环图。
+- 将原来的三个并列小圆环 SVG 替换为“闭环 1 四步循环 + 闭环 2/3 后续阶段卡片”的封面级验证面板。
+- 同步修复封面 HTML 多余闭合标签，避免第一页布局依赖浏览器自动纠错。
+
 **Claude Code · 2026-07-23 晚（明天会议目标梳理 + 节奏纠偏）**
 - 用户在另一窗口已开始做首页原型 → 判断为顺序反了：应先竞品实机体验再做原型，当前原型视为"草稿探索"，不作为往前推进的版本
 - 梳理了明天两个会议的目标：
@@ -94,7 +165,7 @@
 - 已将 Claude 的 `三维度体验基线估分表.html`、Codex 旧版 `Day01-07_三维度基线估分表_可填写版.html`、`Day03-05_竞品20分钟走查任务单_可填写版.html` 的用途关系理清。
 - 新增本周唯一主工具：`codex/AI星球20天优化Demo计划_20260720/03_可填写工具/Day01-07_竞品走查与三维基线整合表_可填写版.html`。
 - 旧版两个 Codex 可填写工具已移动到 `90_过程稿归档/`，不删除；Claude 文件继续保留在 `claude code/` 作为评分参考。
-- 后续本周 7.21-7.27 的竞品实机走查、SUS 记录、P0-P11 三维基线估分，统一填这份整合表。
+- 后续本周 7.21-7.27 的竞品实机走查、易用性分记录、P0-P11 三维基线估分，统一填这份整合表。
 
 **Codex · 2026-07-21（本周计划与基线估分表）**
 - 已采纳 Claude Code 对本周 7.21-7.27 的提醒：GPS 步骤2在 7.31 截止，本周主力应是竞品实机走查，而不是直接跳到高保真
@@ -130,8 +201,8 @@
   - `codex/AI星球20天优化Demo计划_20260720/01_当前主文件/Day03-05_竞品分析整合定稿版.html`
 - 该定稿整合 Claude Code 的强洞察与 Codex 的 Flow 执行框架：
   - Flow A：Pad 首页启动中枢，主参考 Headspace / How We Feel / Finch，补充 Daylio
-  - Flow B：AI伙伴，主参考 Wysa / Headspace Ebb / 988 等安全支持标杆，补充 Replika / Woebot / Character.AI
-  - Flow C：完成反馈，主参考 Finch / Elevate / Lumosity，补充 Duolingo
+  - Flow B：AI伙伴。此处为 7/21 历史口径；现已被 7/27 竞品池 V1.0 替代，主参考 Lightly / Pooca，Gemini / Replika 做边界对照，Woebot / Wysa 只作历史安全资料
+  - Flow C：完成反馈。此处为 7/21 历史口径；现已被 7/27 竞品池 V1.0 替代，主参考 Finch / Voidpet Garden / Elevate，Buda / MindPal 选看
 - 明确后续原则：Day03-05 以整合定稿版为准，所有竞品机制必须回到 Flow A/B/C，不再新增平行主线
 
 **Claude Code · 2026-07-21（更新）**
@@ -154,22 +225,20 @@
 
 ## 下一步待做
 
-**待办事项：**
-- Day01-05 主文件已直接迭代，不再新建副本：
-  - `04_改版设计/01_当前主文件/Day01-05_封版检查表与竞品人工体验记录表.html`
-- 已同步 5 条核心竞品洞察：
-  - Replika：AI记忆机制 + 成人化关系模型红线（未成年人适用性必须过安全审查）
-  - Finch：零惩罚设计 + 行为→奖励语义链接（1行为=1奖励）
-  - Woebot：情感确认先于建议 + 危机转介强制机制（法律要求）
-  - Headspace：意图驱动导航 + 练习后即时情绪记录
-  - Daylio：渐进披露 + 数据积累门槛触发延迟满足
-- 后续 Day06-08 低保真不要直接沿用旧稿，应基于以下文件更新：
+**本周剩余动作（以竞品池 V1.0 为准）：**
+- 用 `04_改版设计/03_可填写工具/Day01-07_竞品走查与三维基线整合表_可填写版.html` 完成深跑 6 个竞品：Finch、Voidpet Garden、Headspace、How We Feel、Lightly、Pooca。
+- 选看 Buda / Selfcare Buddy、Elevate、Ahead；快速参考 Daylio、天天豆、MindPal；Gemini / Replika 只用于 AI 边界与通用 AI 对照。
+- 回填 Flow A/B/C 的封版判断：Flow A 看 Pad 首页启动中枢，Flow B 看 AI 接住与安全边界，Flow C 看完成反馈轻闭环。
+- Day06-08 低保真正式迭代前，优先引用以下文件：
   - `04_改版设计/01_当前主文件/Day01-05_封版检查表与竞品人工体验记录表.html`
   - `04_改版设计/01_当前主文件/Day03-05_竞品分析整合定稿版.html`
+  - `04_改版设计/03_可填写工具/Day01-07_竞品走查与三维基线整合表_可填写版.html`
   - `03_竞品研究/1.范围与计划/00_竞品分析与设计策略.html`
   - `03_竞品研究/2.竞品深度分析/核心竞品洞察汇总.html`
 
----
+**旧资料使用边界：**
+- Claude 旧深度分析仍是材料库，不删除；但 Woebot / Wysa / Replika / Daylio 不再被理解为“本轮必跑主线竞品”。
+- 过程稿归档保留早期判断，仅用于追溯，不作为当前拍板依据。
 
 ## 目录约定
 

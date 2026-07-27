@@ -337,7 +337,7 @@
         <article class="card">
           <span class="tag teal">Step 2</span>
           <h3>再做竞品实机走查</h3>
-          <p>优先 Headspace、Finch、Woebot/Wysa。每个 App 20-30 分钟，记录“降低压力、引导下一步、反馈机制、截图证据”。</p>
+          <p>深跑 Finch、Voidpet Garden、Headspace、How We Feel、Lightly、Pooca。每个 App 20-30 分钟，记录“降低压力、引导下一步、反馈机制、截图证据”。</p>
         </article>
         <article class="card">
           <span class="tag amber">Step 3</span>
@@ -352,9 +352,11 @@
       <h2>四、本周完成状态</h2>
       <div class="checklist" data-save-group="weekly-checks">
         <label class="checkitem"><input type="checkbox" data-field="check-current-apk"><span>已确认当前 APK 的 P0-P11 初始估分，尤其是 P1/P2/P3。</span></label>
-        <label class="checkitem"><input type="checkbox" data-field="check-headspace"><span>已完成 Headspace 走查，并记录首屏导航、今日推荐、练习后反馈。</span></label>
         <label class="checkitem"><input type="checkbox" data-field="check-finch"><span>已完成 Finch 走查，并记录低压力任务、奖励闭环、连续感。</span></label>
-        <label class="checkitem"><input type="checkbox" data-field="check-woebot"><span>已完成 Woebot/Wysa 或同类心理对话产品走查，并记录情感确认、安全边界、危机转介。</span></label>
+        <label class="checkitem"><input type="checkbox" data-field="check-voidpet"><span>已完成 Voidpet Garden 走查，并记录情绪拟物、游戏化视觉、完成后可见变化。</span></label>
+        <label class="checkitem"><input type="checkbox" data-field="check-headspace"><span>已完成 Headspace 走查，并记录首屏导航、今日推荐、练习后反馈。</span></label>
+        <label class="checkitem"><input type="checkbox" data-field="check-howwefeel"><span>已完成 How We Feel 走查，并记录情绪词、颜色系统、低压力打卡。</span></label>
+        <label class="checkitem"><input type="checkbox" data-field="check-lightly-pooca"><span>已完成 Lightly / Pooca 走查，并记录 AI 接住、陪伴语气、边界风险。</span></label>
         <label class="checkitem"><input type="checkbox" data-field="check-baseline"><span>已把竞品证据回填到三维基线表，能解释 Flow A/B/C 为什么这样做。</span></label>
         <label class="checkitem"><input type="checkbox" data-field="check-freeze"><span>已确认 Day01-05 封版结论，可以进入 Day06-08 低保真页面结构。</span></label>
       </div>
@@ -362,7 +364,7 @@
 
     <section class="section">
       <h2>五、竞品实机走查记录</h2>
-      <p class="mini">易用性分填 0-100；我已基于 Claude 深度分析预填“资料初判”，你实机走查后可以直接覆盖。截图可以填文件名、相册编号或一句“第几屏”。</p>
+      <p class="mini">易用性分填 0-100；我已基于 Claude 深度分析与当前竞品池 V1.0 预填“资料初判”，你实机走查后可以直接覆盖。截图可以填文件名、相册编号或一句“第几屏”。</p>
       <div class="scale-grid">
         <div class="scale-item"><b>0-49</b><span>严重不可用：难以完成主路径，或明显制造焦虑/不信任。</span></div>
         <div class="scale-item"><b>50-59</b><span>勉强可完成：能走通，但需要猜、找、忍耐，学生很可能退出。</span></div>
@@ -373,24 +375,8 @@
       <div class="comp-list">
         <article class="comp-card">
           <div class="comp-head">
-            <div class="title"><h3>Headspace</h3><div class="pill-row"><span class="flow-pill">Flow A</span><span class="flow-pill">P1</span><span class="flow-pill">P2</span></div></div>
-            <span class="tag">首页导航标杆</span>
-          </div>
-          <div class="comp-grid">
-            <div class="field-group"><span class="field-label">必跑路径</span><textarea data-field="path-headspace">首次进入首页 → 今日推荐/意图入口 → 开始一个短练习 → 完成后反馈 → 返回首页</textarea></div>
-            <div class="field-group"><span class="field-label">重点观察</span><textarea data-field="observe-headspace">它怎么让用户第一眼知道先做什么；切换区域后主入口是否还在；练习后如何承接下一步。</textarea></div>
-            <div class="field-group"><span class="field-label">易用性分</span><span class="mini">资料初判，可覆盖</span><input class="ease" data-field="ease-headspace" type="text" inputmode="numeric" value="88" placeholder="0-100"></div>
-          </div>
-          <div class="decision-grid">
-            <div class="field-group"><span class="field-label">实机记录 / 截图证据</span><textarea data-field="evidence-headspace" placeholder="记录截图编号、页面顺序、最值得参考/最不适合照搬的点"></textarea></div>
-            <div class="field-group"><span class="field-label">对 Demo 的启发</span><textarea data-field="insight-headspace" placeholder="例如：首页不是功能列表，而是今日状态+主行动+推荐区"></textarea></div>
-          </div>
-        </article>
-
-        <article class="comp-card">
-          <div class="comp-head">
-            <div class="title"><h3>Finch</h3><div class="pill-row"><span class="flow-pill">Flow A</span><span class="flow-pill">Flow C</span><span class="flow-pill">P3</span></div></div>
-            <span class="tag teal">低压力闭环</span>
+            <div class="title"><h3>Finch</h3><div class="pill-row"><span class="flow-pill">Flow A</span><span class="flow-pill">Flow C</span><span class="flow-pill">P3/P8</span></div></div>
+            <span class="tag teal">陪伴任务闭环</span>
           </div>
           <div class="comp-grid">
             <div class="field-group"><span class="field-label">必跑路径</span><textarea data-field="path-finch">首次打开 → 选择一个小目标/自我照顾任务 → 完成任务 → 奖励/成长反馈 → 再次打开</textarea></div>
@@ -405,49 +391,81 @@
 
         <article class="comp-card">
           <div class="comp-head">
-            <div class="title"><h3>Woebot / Wysa / 同类心理对话</h3><div class="pill-row"><span class="flow-pill">Flow B</span><span class="flow-pill">P0</span><span class="flow-pill">P6</span></div></div>
-            <span class="tag red">安全边界</span>
+            <div class="title"><h3>Voidpet Garden</h3><div class="pill-row"><span class="flow-pill">Flow A</span><span class="flow-pill">Flow C</span><span class="flow-pill">P8/P9</span></div></div>
+            <span class="tag violet">情绪游戏化视觉</span>
           </div>
           <div class="comp-grid">
-            <div class="field-group"><span class="field-label">必跑路径</span><textarea data-field="path-woebot">首次进入对话 → 表达负面情绪 → AI 情感确认 → 给出下一步 → 触发安全/求助边界</textarea></div>
-            <div class="field-group"><span class="field-label">重点观察</span><textarea data-field="observe-woebot">AI 是否先接情绪再给建议；边界说明是否自然；高风险表达时如何转介，不把压力丢回用户。</textarea></div>
-            <div class="field-group"><span class="field-label">易用性分</span><span class="mini">资料初判，可覆盖</span><input class="ease" data-field="ease-woebot" type="text" inputmode="numeric" value="81" placeholder="0-100"></div>
+            <div class="field-group"><span class="field-label">必跑路径</span><textarea data-field="path-voidpet">首次进入 → 情绪/角色互动 → 完成一个轻行动 → 看见世界变化 → 返回首页</textarea></div>
+            <div class="field-group"><span class="field-label">重点观察</span><textarea data-field="observe-voidpet">情绪如何被拟物化；互动反馈是否让人愿意靠近；完成后有没有可见变化，而不是只有文字成功提示。</textarea></div>
+            <div class="field-group"><span class="field-label">易用性分</span><span class="mini">实机后填写</span><input class="ease" data-field="ease-voidpet" type="text" inputmode="numeric" placeholder="0-100"></div>
           </div>
           <div class="decision-grid">
-            <div class="field-group"><span class="field-label">实机记录 / 截图证据</span><textarea data-field="evidence-woebot" placeholder="记录AI回应、选择项、安全提示、转介方式"></textarea></div>
-            <div class="field-group"><span class="field-label">对 Demo 的启发</span><textarea data-field="insight-woebot" placeholder="例如：安全边界要像保护说明，不像免责条款"></textarea></div>
+            <div class="field-group"><span class="field-label">实机记录 / 截图证据</span><textarea data-field="evidence-voidpet" placeholder="记录情绪拟物、场景反馈、完成后变化"></textarea></div>
+            <div class="field-group"><span class="field-label">对 Demo 的启发</span><textarea data-field="insight-voidpet" placeholder="例如：把完成反馈变成首页/星球状态的一点变化"></textarea></div>
           </div>
         </article>
 
         <article class="comp-card">
           <div class="comp-head">
-            <div class="title"><h3>Daylio / How We Feel</h3><div class="pill-row"><span class="flow-pill">Flow A</span><span class="flow-pill">P4</span><span class="flow-pill">P8</span></div></div>
+            <div class="title"><h3>Headspace</h3><div class="pill-row"><span class="flow-pill">Flow A</span><span class="flow-pill">P1</span><span class="flow-pill">P2</span></div></div>
+            <span class="tag">首页组织标杆</span>
+          </div>
+          <div class="comp-grid">
+            <div class="field-group"><span class="field-label">必跑路径</span><textarea data-field="path-headspace">首次进入首页 → 今日推荐/意图入口 → 开始一个短练习 → 完成后反馈 → 返回首页</textarea></div>
+            <div class="field-group"><span class="field-label">重点观察</span><textarea data-field="observe-headspace">它怎么让用户第一眼知道先做什么；切换区域后主入口是否还在；练习后如何承接下一步。</textarea></div>
+            <div class="field-group"><span class="field-label">易用性分</span><span class="mini">资料初判，可覆盖</span><input class="ease" data-field="ease-headspace" type="text" inputmode="numeric" value="88" placeholder="0-100"></div>
+          </div>
+          <div class="decision-grid">
+            <div class="field-group"><span class="field-label">实机记录 / 截图证据</span><textarea data-field="evidence-headspace" placeholder="记录截图编号、页面顺序、最值得参考/最不适合照搬的点"></textarea></div>
+            <div class="field-group"><span class="field-label">对 Demo 的启发</span><textarea data-field="insight-headspace" placeholder="例如：首页不是功能列表，而是今日状态+主行动+推荐区"></textarea></div>
+          </div>
+        </article>
+
+        <article class="comp-card">
+          <div class="comp-head">
+            <div class="title"><h3>How We Feel</h3><div class="pill-row"><span class="flow-pill">Flow A</span><span class="flow-pill">P4</span><span class="flow-pill">P11</span></div></div>
             <span class="tag amber">情绪打卡</span>
           </div>
           <div class="comp-grid">
-            <div class="field-group"><span class="field-label">必跑路径</span><textarea data-field="path-daylio">情绪打卡 → 选择心情/原因 → 查看记录或趋势 → 返回首页</textarea></div>
-            <div class="field-group"><span class="field-label">重点观察</span><textarea data-field="observe-daylio">选择项如何不压迫；原因选择是否渐进披露；数据反馈什么时候出现，是否不会过早打扰。</textarea></div>
-            <div class="field-group"><span class="field-label">易用性分</span><span class="mini">资料初判，可覆盖</span><input class="ease" data-field="ease-daylio" type="text" inputmode="numeric" value="78" placeholder="0-100"></div>
+            <div class="field-group"><span class="field-label">必跑路径</span><textarea data-field="path-howwefeel">情绪词选择 → 记录心情/原因 → 查看轻洞察或策略 → 返回首页</textarea></div>
+            <div class="field-group"><span class="field-label">重点观察</span><textarea data-field="observe-howwefeel">情绪词和颜色如何降低表达压力；“说不清”或模糊状态是否被允许；打卡后是否有自然下一步。</textarea></div>
+            <div class="field-group"><span class="field-label">易用性分</span><span class="mini">资料初判，可覆盖</span><input class="ease" data-field="ease-howwefeel" type="text" inputmode="numeric" value="86" placeholder="0-100"></div>
           </div>
           <div class="decision-grid">
-            <div class="field-group"><span class="field-label">实机记录 / 截图证据</span><textarea data-field="evidence-daylio" placeholder="记录情绪词、原因分类、统计反馈出现时机"></textarea></div>
-            <div class="field-group"><span class="field-label">对 Demo 的启发</span><textarea data-field="insight-daylio" placeholder="例如：打卡不追求完整填写，先让学生安全表达一点点"></textarea></div>
+            <div class="field-group"><span class="field-label">实机记录 / 截图证据</span><textarea data-field="evidence-howwefeel" placeholder="记录情绪词、颜色、原因分类、策略反馈"></textarea></div>
+            <div class="field-group"><span class="field-label">对 Demo 的启发</span><textarea data-field="insight-howwefeel" placeholder="例如：打卡不追求完整填写，先让学生安全表达一点点"></textarea></div>
           </div>
         </article>
 
         <article class="comp-card">
           <div class="comp-head">
-            <div class="title"><h3>Replika / Character.AI</h3><div class="pill-row"><span class="flow-pill">Flow B</span><span class="flow-pill">P3</span><span class="flow-pill">安全红线</span></div></div>
-            <span class="tag violet">记忆机制参考</span>
+            <div class="title"><h3>Lightly</h3><div class="pill-row"><span class="flow-pill">Flow B</span><span class="flow-pill">P3</span><span class="flow-pill">P6</span></div></div>
+            <span class="tag teal">AI 反思</span>
           </div>
           <div class="comp-grid">
-            <div class="field-group"><span class="field-label">必跑路径</span><textarea data-field="path-replika">角色选择 → 连续对话 → 记忆/关系提示 → 再次打开</textarea></div>
-            <div class="field-group"><span class="field-label">重点观察</span><textarea data-field="observe-replika">记忆感怎么建立；角色关系是否过度成人化；哪些互动不能照搬到未成年人产品。</textarea></div>
-            <div class="field-group"><span class="field-label">易用性分</span><span class="mini">资料初判，可覆盖</span><input class="ease" data-field="ease-replika" type="text" inputmode="numeric" value="76" placeholder="0-100"></div>
+            <div class="field-group"><span class="field-label">必跑路径</span><textarea data-field="path-lightly">输入一次情绪/事件 → AI 回应 → 生成反思/小结 → 选择下一步 → 再次打开</textarea></div>
+            <div class="field-group"><span class="field-label">重点观察</span><textarea data-field="observe-lightly">AI 是否先接住情绪；小结是否让用户更清楚自己；下一步是否轻、可执行、可退出。</textarea></div>
+            <div class="field-group"><span class="field-label">易用性分</span><span class="mini">实机后填写</span><input class="ease" data-field="ease-lightly" type="text" inputmode="numeric" placeholder="0-100"></div>
           </div>
           <div class="decision-grid">
-            <div class="field-group"><span class="field-label">实机记录 / 截图证据</span><textarea data-field="evidence-replika" placeholder="记录记忆提示、角色称呼、关系边界、风险点"></textarea></div>
-            <div class="field-group"><span class="field-label">对 Demo 的启发</span><textarea data-field="insight-replika" placeholder="例如：学记忆机制，不学成人化关系模型"></textarea></div>
+            <div class="field-group"><span class="field-label">实机记录 / 截图证据</span><textarea data-field="evidence-lightly" placeholder="记录AI回应、总结卡片、下一步、记忆/连续感"></textarea></div>
+            <div class="field-group"><span class="field-label">对 Demo 的启发</span><textarea data-field="insight-lightly" placeholder="例如：AI回应先复述，再给一个很小的选择"></textarea></div>
+          </div>
+        </article>
+
+        <article class="comp-card">
+          <div class="comp-head">
+            <div class="title"><h3>Pooca</h3><div class="pill-row"><span class="flow-pill">Flow B</span><span class="flow-pill">P5</span><span class="flow-pill">P6</span></div></div>
+            <span class="tag violet">AI 陪伴语气</span>
+          </div>
+          <div class="comp-grid">
+            <div class="field-group"><span class="field-label">必跑路径</span><textarea data-field="path-pooca">伙伴介绍 → 发起对话/打卡 → 情绪反馈 → 继续陪伴或小行动</textarea></div>
+            <div class="field-group"><span class="field-label">重点观察</span><textarea data-field="observe-pooca">角色是否让人愿意靠近；陪伴语气有没有越界；反馈是否有温度但不过度亲密。</textarea></div>
+            <div class="field-group"><span class="field-label">易用性分</span><span class="mini">实机后填写</span><input class="ease" data-field="ease-pooca" type="text" inputmode="numeric" placeholder="0-100"></div>
+          </div>
+          <div class="decision-grid">
+            <div class="field-group"><span class="field-label">实机记录 / 截图证据</span><textarea data-field="evidence-pooca" placeholder="记录角色文案、AI语气、反馈形式、边界风险"></textarea></div>
+            <div class="field-group"><span class="field-label">对 Demo 的启发</span><textarea data-field="insight-pooca" placeholder="例如：三IP选择页用场景和语气，而不是只给角色名"></textarea></div>
           </div>
         </article>
       </div>
@@ -460,7 +478,7 @@
         <article class="pain-card">
           <div class="pain-head"><div class="title"><span class="pain-id">P0</span><h3>安全边界不够清楚</h3><p class="problem">未成年人安全、危机支持、AI 能力边界不够清楚。</p><div class="pill-row"><span class="flow-pill">Flow B</span><span class="flow-pill">安全红线</span></div></div><span class="tag red">优先审查</span></div>
           <div class="score-strip"><div class="score-box"><small>当前可理解性<br>Codex 初判，可改</small><input class="score" data-field="p0-u" type="text" value="2"></div><div class="score-box"><small>当前连续性<br>Codex 初判，可改</small><input class="score" data-field="p0-c" type="text" value="2"></div><div class="score-box"><small>当前情绪/信任<br>Codex 初判，可改</small><input class="score" data-field="p0-e" type="text" value="2"></div><div class="score-box"><small>竞品参考分<br>资料初判，可改</small><input class="score" data-field="p0-comp" type="text" value="4.5" placeholder="1-5"></div><div class="score-box"><small>Demo 目标分<br>Day06-08 填</small><input class="score" data-field="p0-target" type="text" placeholder="待定"></div></div>
-          <textarea data-field="p0-note">重点看 Woebot/Wysa/青少年心理产品的危机转介：AI 先安抚，再说明边界，再给可执行求助路径。</textarea>
+          <textarea data-field="p0-note">重点看 Lightly/Pooca 的温和接住方式；安全边界参考 Woebot/Wysa 历史资料：AI 先安抚，再说明边界，再给可执行求助路径。</textarea>
         </article>
         <article class="pain-card">
           <div class="pain-head"><div class="title"><span class="pain-id">P1</span><h3>首页首屏不知道该做什么</h3><p class="problem">首页首屏不知道现在该做什么，入口像功能集合。</p><div class="pill-row"><span class="flow-pill">Flow A</span><span class="flow-pill">Pad 首页</span></div></div><span class="tag">核心主线</span></div>
@@ -470,17 +488,17 @@
         <article class="pain-card">
           <div class="pain-head"><div class="title"><span class="pain-id">P2</span><h3>核心入口缺少持续可见性</h3><p class="problem">切换 Tab 或模块后，核心 AI/情绪入口容易消失。</p><div class="pill-row"><span class="flow-pill">Flow A</span><span class="flow-pill">Flow B</span></div></div><span class="tag">导航连续</span></div>
           <div class="score-strip"><div class="score-box"><small>当前可理解性<br>Codex 初判，可改</small><input class="score" data-field="p2-u" type="text" value="2"></div><div class="score-box"><small>当前连续性<br>Codex 初判，可改</small><input class="score" data-field="p2-c" type="text" value="1"></div><div class="score-box"><small>当前情绪/信任<br>Codex 初判，可改</small><input class="score" data-field="p2-e" type="text" value="2"></div><div class="score-box"><small>竞品参考分<br>资料初判，可改</small><input class="score" data-field="p2-comp" type="text" value="4" placeholder="1-5"></div><div class="score-box"><small>Demo 目标分<br>Day06-08 填</small><input class="score" data-field="p2-target" type="text" placeholder="待定"></div></div>
-          <textarea data-field="p2-note">观察 Headspace/Finch：核心行动是否在不同页面保持可见，用户是否能自然回到今日任务。</textarea>
+          <textarea data-field="p2-note">观察 Headspace/Finch/Pooca：核心行动或 AI 入口是否在不同页面保持可见，用户是否能自然回到今日任务。</textarea>
         </article>
         <article class="pain-card">
           <div class="pain-head"><div class="title"><span class="pain-id">P3</span><h3>AI对话缺少记忆感</h3><p class="problem">有历史对话记录，但存在两个子问题：①对话开头无记忆钩子（通用打招呼，不引用上次内容）；②切换IP后对话混排，三个IP头像出现在同一对话框中。</p><div class="pill-row"><span class="flow-pill">Flow A</span><span class="flow-pill">Flow B</span><span class="flow-pill">Flow C</span></div></div><span class="tag teal">留存关键</span></div>
           <div class="score-strip"><div class="score-box"><small>当前可理解性<br>Codex 初判，可改</small><input class="score" data-field="p3-u" type="text" value="2"></div><div class="score-box"><small>当前连续性<br>Codex 初判，可改</small><input class="score" data-field="p3-c" type="text" value="1"></div><div class="score-box"><small>当前情绪/信任<br>Codex 初判，可改</small><input class="score" data-field="p3-e" type="text" value="2"></div><div class="score-box"><small>竞品参考分<br>资料初判，可改</small><input class="score" data-field="p3-comp" type="text" value="4.5" placeholder="1-5"></div><div class="score-box"><small>Demo 目标分<br>Day06-08 填</small><input class="score" data-field="p3-target" type="text" placeholder="待定"></div></div>
-          <textarea data-field="p3-note">学习 Finch/Replika 的连续感，但未成年人场景只保留“轻记忆提示”，避免成人化关系绑定。</textarea>
+          <textarea data-field="p3-note">学习 Lightly/Pooca/Finch 的连续感；Replika 只作可控记忆边界参考，未成年人场景避免成人化关系绑定。</textarea>
         </article>
         <article class="pain-card">
           <div class="pain-head"><div class="title"><span class="pain-id">P4</span><h3>情绪打卡有表达负担</h3><p class="problem">情绪打卡如果过细或过早，会增加表达负担。</p><div class="pill-row"><span class="flow-pill">Flow A</span><span class="flow-pill">情绪打卡</span></div></div><span class="tag amber">减压入口</span></div>
           <div class="score-strip"><div class="score-box"><small>当前可理解性<br>Codex 初判，可改</small><input class="score" data-field="p4-u" type="text" value="3"></div><div class="score-box"><small>当前连续性<br>Codex 初判，可改</small><input class="score" data-field="p4-c" type="text" value="2"></div><div class="score-box"><small>当前情绪/信任<br>Codex 初判，可改</small><input class="score" data-field="p4-e" type="text" value="3"></div><div class="score-box"><small>竞品参考分<br>资料初判，可改</small><input class="score" data-field="p4-comp" type="text" value="4.5" placeholder="1-5"></div><div class="score-box"><small>Demo 目标分<br>Day06-08 填</small><input class="score" data-field="p4-target" type="text" placeholder="待定"></div></div>
-          <textarea data-field="p4-note">参考 Daylio/How We Feel：先低成本表达心情，再渐进补充原因，不把打卡做成问卷。</textarea>
+          <textarea data-field="p4-note">参考 How We Feel/Daylio/天天豆：先低成本表达心情，再渐进补充原因，不把打卡做成问卷。</textarea>
         </article>
         <article class="pain-card">
           <div class="pain-head"><div class="title"><span class="pain-id">P5</span><h3>IP/角色价值不够清楚</h3><p class="problem">IP/角色价值不够清楚，用户不知道为什么要选择它们。</p><div class="pill-row"><span class="flow-pill">Flow B</span><span class="flow-pill">三 IP</span></div></div><span class="tag violet">角色策略</span></div>
@@ -490,7 +508,7 @@
         <article class="pain-card">
           <div class="pain-head"><div class="title"><span class="pain-id">P6</span><h3>AI 对话没有先接住情绪</h3><p class="problem">AI 对话容易直接给建议，缺少“先接住”的情绪顺序。</p><div class="pill-row"><span class="flow-pill">Flow B</span><span class="flow-pill">AI回应</span></div></div><span class="tag red">体验核心</span></div>
           <div class="score-strip"><div class="score-box"><small>当前可理解性<br>Codex 初判，可改</small><input class="score" data-field="p6-u" type="text" value="2"></div><div class="score-box"><small>当前连续性<br>Codex 初判，可改</small><input class="score" data-field="p6-c" type="text" value="2"></div><div class="score-box"><small>当前情绪/信任<br>Codex 初判，可改</small><input class="score" data-field="p6-e" type="text" value="2"></div><div class="score-box"><small>竞品参考分<br>资料初判，可改</small><input class="score" data-field="p6-comp" type="text" value="4" placeholder="1-5"></div><div class="score-box"><small>Demo 目标分<br>Day06-08 填</small><input class="score" data-field="p6-target" type="text" placeholder="待定"></div></div>
-          <textarea data-field="p6-note">参考 Woebot/Wysa：先确认情绪，再给一小步选择，最后给安全边界与可退出路径。</textarea>
+          <textarea data-field="p6-note">参考 Lightly/Pooca：先确认情绪，再给一小步选择；安全边界用 Woebot/Wysa 历史资料复核。</textarea>
         </article>
         <article class="pain-card">
           <div class="pain-head"><div class="title"><span class="pain-id">P7</span><h3>功能层级让稳定路径变弱</h3><p class="problem">功能入口与内容层级多，学生不容易形成稳定路径。</p><div class="pill-row"><span class="flow-pill">Flow A</span><span class="flow-pill">信息架构</span></div></div><span class="tag">首页组织</span></div>
@@ -500,7 +518,7 @@
         <article class="pain-card">
           <div class="pain-head"><div class="title"><span class="pain-id">P8</span><h3>完成反馈太弱或太晚</h3><p class="problem">数据反馈来得太晚或太抽象，用户感受不到自己完成了什么。</p><div class="pill-row"><span class="flow-pill">Flow C</span><span class="flow-pill">轻闭环</span></div></div><span class="tag teal">反馈设计</span></div>
           <div class="score-strip"><div class="score-box"><small>当前可理解性<br>Codex 初判，可改</small><input class="score" data-field="p8-u" type="text" value="3"></div><div class="score-box"><small>当前连续性<br>Codex 初判，可改</small><input class="score" data-field="p8-c" type="text" value="2"></div><div class="score-box"><small>当前情绪/信任<br>Codex 初判，可改</small><input class="score" data-field="p8-e" type="text" value="2"></div><div class="score-box"><small>竞品参考分<br>资料初判，可改</small><input class="score" data-field="p8-comp" type="text" value="4.5" placeholder="1-5"></div><div class="score-box"><small>Demo 目标分<br>Day06-08 填</small><input class="score" data-field="p8-target" type="text" placeholder="待定"></div></div>
-          <textarea data-field="p8-note">参考 Finch：完成后立即给轻反馈，强调“刚刚这一步有用”，不要先推复杂成长体系。</textarea>
+          <textarea data-field="p8-note">参考 Finch/Voidpet Garden/Elevate：完成后立即给轻反馈，强调“刚刚这一步有用”，不要先推复杂成长体系。</textarea>
         </article>
         <article class="pain-card">
           <div class="pain-head"><div class="title"><span class="pain-id">P9</span><h3>视觉和交互反馈不够稳定</h3><p class="problem">视觉和交互反馈不够稳定，影响 Pad 端质感与可信度。</p><div class="pill-row"><span class="flow-pill">全局</span><span class="flow-pill">高保真</span></div></div><span class="tag gray">质感问题</span></div>
@@ -557,17 +575,17 @@
           <tr><th>输入项</th><th>结论</th><th>证据来源</th></tr>
         </thead>
         <tbody>
-          <tr><td>首页怎么改</td><td><textarea data-field="input-home" placeholder="例如：首屏改为今日状态主卡 + AI伙伴侧栏 + 今日推荐，不再平铺入口"></textarea></td><td><textarea data-field="source-home" placeholder="来自 Headspace/Finch/当前APK/P1-P2"></textarea></td></tr>
+          <tr><td>首页怎么改</td><td><textarea data-field="input-home" placeholder="例如：首屏改为今日状态主卡 + AI伙伴侧栏 + 今日推荐，不再平铺入口"></textarea></td><td><textarea data-field="source-home" placeholder="来自 Headspace/Voidpet/Finch/当前APK/P1-P2"></textarea></td></tr>
           <tr><td>情绪打卡怎么走</td><td><textarea data-field="input-checkin" placeholder="例如：3步内完成，先情绪再原因，可跳过细节"></textarea></td><td><textarea data-field="source-checkin" placeholder="来自 Daylio/How We Feel/P4"></textarea></td></tr>
-          <tr><td>AI 对话怎么接</td><td><textarea data-field="input-ai" placeholder="例如：先复述情绪，再给2-3个下一步选择，不直接说教"></textarea></td><td><textarea data-field="source-ai" placeholder="来自 Woebot/Wysa/P0/P6"></textarea></td></tr>
-          <tr><td>完成反馈怎么呈现</td><td><textarea data-field="input-finish" placeholder="例如：完成后给一句确认 + 一个轻奖励 + 返回首页的连续提示"></textarea></td><td><textarea data-field="source-finish" placeholder="来自 Finch/P3/P8"></textarea></td></tr>
+          <tr><td>AI 对话怎么接</td><td><textarea data-field="input-ai" placeholder="例如：先复述情绪，再给2-3个下一步选择，不直接说教"></textarea></td><td><textarea data-field="source-ai" placeholder="来自 Lightly/Pooca/P0/P6；Woebot/Wysa 仅作安全资料"></textarea></td></tr>
+          <tr><td>完成反馈怎么呈现</td><td><textarea data-field="input-finish" placeholder="例如：完成后给一句确认 + 一个轻奖励 + 返回首页的连续提示"></textarea></td><td><textarea data-field="source-finish" placeholder="来自 Finch/Voidpet/Elevate/P3/P8"></textarea></td></tr>
         </tbody>
       </table>
     </section>
   </main>
 
   <script>
-    const STORAGE_KEY = 'ai_planet_day01_07_integrated_competitor_baseline_v1';
+    const STORAGE_KEY = 'ai_planet_day01_07_integrated_competitor_baseline_v2_comp_pool';
     const statusText = document.getElementById('statusText');
     const fields = () => Array.from(document.querySelectorAll('[data-field]'));
 

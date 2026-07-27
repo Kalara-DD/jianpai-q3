@@ -278,7 +278,7 @@
 
       <section class="callout">
         <strong>最终结论</strong>
-        本轮竞品分析采用“Flow 主结构 + 竞品机制分层”的方式：用 Headspace/How We Feel/Finch/Daylio 解决 Pad 首页启动中枢、低压力情绪开始和状态相关推荐，用 Wysa/Headspace Ebb/988 补足 AI 支持与安全边界，用 Replika/Woebot 补强 AI 记忆和能力边界，用 Finch/Elevate/Lumosity/Duolingo 解决完成反馈和轻激励。所有竞品机制最终都必须回到 Flow A/B/C，不再新增平行主线。
+        本轮竞品分析采用“Flow 主结构 + 竞品机制分层”的方式：用 Headspace、How We Feel、Voidpet Garden、Finch 解决 Pad 首页启动中枢、低压力情绪开始和可见反馈；用 Lightly、Pooca 补足 AI 接住、反思小结和陪伴语气；用 Gemini、Replika、Woebot/Wysa 历史资料校准 AI 记忆、安全边界和未成年人适用性；用 Elevate、Buda、MindPal、Daylio/天天豆补充短任务与打卡执行细节。所有竞品机制最终都必须回到 Flow A/B/C，不再新增平行主线。
       </section>
 
       <section class="section" id="roles">
@@ -317,12 +317,12 @@
       </section>
 
       <section class="section" id="pool">
-        <h2>2. 竞品池定稿</h2>
+        <h2>2. 竞品池 V1.0 定稿</h2>
         <table>
           <thead>
             <tr>
+              <th>层级</th>
               <th>竞品/标杆</th>
-              <th>定稿角色</th>
               <th>用于哪个 Flow</th>
               <th>学什么</th>
               <th>不学什么</th>
@@ -330,74 +330,67 @@
           </thead>
           <tbody>
             <tr>
-              <td>Headspace / Ebb</td>
-              <td>首页主行动 + AI内容推荐</td>
-              <td>Flow A、Flow B</td>
-              <td>首页是答案不是菜单；AI承接表达后推荐练习。</td>
-              <td>不照搬成人冥想产品的冷静距离感。</td>
-            </tr>
-            <tr>
-              <td>How We Feel</td>
-              <td>低压力情绪表达</td>
-              <td>Flow A</td>
-              <td>用情绪词、分类和“说不清”帮助用户开始表达。</td>
-              <td>不做过重情绪矩阵，不让低年级用户认知负担过高。</td>
-            </tr>
-            <tr>
+              <td>深跑</td>
               <td>Finch</td>
-              <td>陪伴式自我照顾 + 奖励来源</td>
               <td>Flow A、Flow C</td>
-              <td>完成小行动后被伙伴看见；奖励必须绑定具体行为。</td>
-              <td>不做重宠物养成，不把产品做低幼。</td>
+              <td>陪伴任务闭环：小行动、低压力完成、伙伴反馈、奖励来源清楚。</td>
+              <td>不照搬重宠物养成、强 streak、复杂商店和过度低幼视觉。</td>
             </tr>
             <tr>
-              <td>Wysa</td>
-              <td>AI心理支持与结构化追问</td>
-              <td>Flow B</td>
-              <td>从表达进入自助练习、下一步建议和安全支持。</td>
-              <td>不做成人心理工具式问卷，不让对话变冷。</td>
+              <td>深跑</td>
+              <td>Voidpet Garden</td>
+              <td>Flow A、Flow C</td>
+              <td>情绪拟物、游戏化界面、完成后世界发生可见变化。</td>
+              <td>不扩成完整游戏、地图、收集和长期养成系统。</td>
             </tr>
             <tr>
-              <td>988 / Crisis Text Line / Trevor</td>
-              <td>危机支持与保密边界</td>
-              <td>Flow B</td>
-              <td>说明“什么情况下会找支持”和“接下来会发生什么”。</td>
-              <td>不让学生扮演危机场景，不做恐吓式提示。</td>
-            </tr>
-            <tr>
-              <td>Replika</td>
-              <td>AI持续记忆机制</td>
-              <td>Flow B</td>
-              <td>对话开头的轻量记忆钩子，让用户感到“它记得我”。</td>
-              <td>不学成人情感伴侣模型，不做拟人依赖。</td>
-            </tr>
-            <tr>
-              <td>Woebot</td>
-              <td>AI能力边界与结构化支持</td>
-              <td>Flow B</td>
-              <td>明确 AI 不是人类/不替代专业帮助，反而提升可信度。</td>
-              <td>不夸大临床背书，不把研究结论直接套到 10-18 岁学生。</td>
-            </tr>
-            <tr>
-              <td>Daylio</td>
-              <td>快速情绪打卡执行细节</td>
+              <td>深跑</td>
+              <td>Headspace</td>
               <td>Flow A</td>
-              <td>用极短路径完成记录，降低开始成本。</td>
-              <td>不做强 streak 压力，不把打卡变成任务负担。</td>
+              <td>首页是答案不是菜单；首屏一个主行动；内容推荐服务当前状态。</td>
+              <td>不照搬成人冥想产品的冷静距离感和课程库结构。</td>
             </tr>
             <tr>
-              <td>Elevate / Lumosity</td>
-              <td>训练结果解释</td>
-              <td>Flow C</td>
-              <td>告诉用户“你练到了什么能力”，让训练有意义。</td>
-              <td>不做排名、分数压迫和能力评判。</td>
+              <td>深跑</td>
+              <td>How We Feel</td>
+              <td>Flow A</td>
+              <td>情绪词、颜色系统、允许说不清，降低情绪表达门槛。</td>
+              <td>不做过重情绪矩阵，不让低年级用户被词汇卡住。</td>
             </tr>
             <tr>
-              <td>Duolingo</td>
-              <td>短任务与即时反馈</td>
-              <td>Flow C</td>
-              <td>任务短、反馈快、完成后有下一步。</td>
-              <td>不学排行榜、强连续打卡和损失厌恶。</td>
+              <td>深跑</td>
+              <td>Lightly</td>
+              <td>Flow B</td>
+              <td>AI 反思式回应：接住表达、生成小结、给温和下一步。</td>
+              <td>不输出长咨询报告，不把学生推向复杂自我分析。</td>
+            </tr>
+            <tr>
+              <td>深跑</td>
+              <td>Pooca</td>
+              <td>Flow B</td>
+              <td>新一代 AI best friend 的亲和语气、视觉靠近感和轻陪伴反馈。</td>
+              <td>不学过度亲密、关系依赖和边界不清的陪伴承诺。</td>
+            </tr>
+            <tr>
+              <td>选看</td>
+              <td>Buda / Selfcare Buddy、Elevate、Ahead</td>
+              <td>Flow B、Flow C</td>
+              <td>Buda 看伙伴陪伴；Elevate 看短训练结果解释；Ahead 看情绪教育和短练习。</td>
+              <td>只补充执行细节，不推翻深跑 6 个的主口径。</td>
+            </tr>
+            <tr>
+              <td>快速参考</td>
+              <td>Daylio、天天豆、MindPal</td>
+              <td>Flow A、Flow C</td>
+              <td>Daylio/天天豆看低成本打卡与本土语气；MindPal 看脑训练即时反馈。</td>
+              <td>不作为视觉主标杆，不用它们扩大 demo 范围。</td>
+            </tr>
+            <tr>
+              <td>边界参考</td>
+              <td>Gemini、Replika、Woebot/Wysa 历史资料</td>
+              <td>Flow B、安全边界</td>
+              <td>Gemini 看通用 AI 缺少什么结构；Replika 看可控记忆；Woebot/Wysa 看安全转介历史资料。</td>
+              <td>Woebot/Wysa 不作为现役实机主线；Replika 不学成人情感关系。</td>
             </tr>
           </tbody>
         </table>
@@ -460,8 +453,8 @@
           </thead>
           <tbody>
             <tr>
-              <td>Headspace、How We Feel、Finch</td>
-              <td>Daylio</td>
+              <td>Headspace、How We Feel、Voidpet Garden</td>
+              <td>Finch、Daylio/天天豆</td>
               <td>用“今天感觉怎么样”作为主入口，同时让 Pad 首页保留 AI、推荐、成长和功能探索空间；允许说不清。</td>
               <td>先用主卡承接状态，再把其他功能包装成“今日相关”的 1 个主推荐 + 1-2 个次级推荐。</td>
               <td>AI先复述状态，再解释为什么推荐这个小行动；首页回流后展示今日已记录、AI已接住、推荐待完成或已完成。</td>
@@ -497,8 +490,8 @@
           </thead>
           <tbody>
             <tr>
-              <td>Wysa、Headspace/Ebb、988/CTL/Trevor</td>
-              <td>Replika、Woebot、Character.AI</td>
+              <td>Lightly、Pooca</td>
+              <td>Gemini、Replika；Woebot/Wysa/988 只作安全边界资料</td>
               <td>用“找谁更适合现在的我”替代“请选择AI角色”；允许只点预设话题，不强迫输入长文本。</td>
               <td>小星陪伴，吉塔稳定，罗素拆解；每轮对话后给继续聊/练习/记录/找支持。</td>
               <td>轻量记忆钩子 + 可控记忆 + 温和能力边界说明。</td>
@@ -566,8 +559,8 @@
           </thead>
           <tbody>
             <tr>
-              <td>Finch、Elevate、Lumosity</td>
-              <td>Duolingo</td>
+              <td>Finch、Voidpet Garden、Elevate</td>
+              <td>Buda / Selfcare Buddy、MindPal 选看</td>
               <td>结果不排名、不诊断、不说能力差，只说“今天练到了什么”。</td>
               <td>完成后引导查看成长记录、让 AI 回应、明天做 1 分钟也可以。</td>
               <td>奖励必须说明来源；IP 要说一句“我看见你完成了”。</td>
@@ -595,34 +588,34 @@
           </thead>
           <tbody>
             <tr>
-              <td>Replika</td>
-              <td>成人情感伴侣关系、过度拟人依赖。</td>
+              <td>Replika / Pooca</td>
+              <td>成人情感伴侣关系、过度亲密称呼、拟人依赖。</td>
               <td>未成年人产品要控制依恋和边界风险。</td>
-              <td>只学轻量记忆钩子和可控记忆。</td>
+              <td>只保留可控记忆、亲和语气和清楚退出。</td>
             </tr>
             <tr>
-              <td>Woebot</td>
-              <td>过度临床背书或医学化表达。</td>
-              <td>研究证据不能直接套用到本产品和 10-18 岁学生测试。</td>
-              <td>只学结构化支持和能力边界说明。</td>
+              <td>Woebot / Wysa / Rootd / MindShift</td>
+              <td>老旧视觉、成人心理工具式问卷、临床化或免责条款式表达。</td>
+              <td>它们不适合作为本轮视觉与流程主标杆，只保留安全流程资料价值。</td>
+              <td>安全边界用温和保护说明，实机主线看 Lightly / Pooca。</td>
             </tr>
             <tr>
-              <td>Finch</td>
-              <td>重宠物养成和过度低幼视觉。</td>
-              <td>高中生可能不买账，且会削弱可信感。</td>
-              <td>保留“伙伴看见我”和奖励来源。</td>
+              <td>Finch / Voidpet Garden</td>
+              <td>重养成、复杂商店、收集压力、需要长期运营的完整世界系统。</td>
+              <td>20 天 demo 只验证 2-3 条核心 Flow，不能变成完整游戏系统。</td>
+              <td>保留“完成被看见”和“世界轻微变化”。</td>
             </tr>
             <tr>
-              <td>Duolingo / Daylio</td>
-              <td>强 streak、排行榜、断签压力。</td>
-              <td>减压产品不能制造新的焦虑。</td>
-              <td>做低压力连续感：回来看看也很好。</td>
+              <td>Daylio / 天天豆</td>
+              <td>强打卡、空洞统计、为了数据而要求用户解释清楚。</td>
+              <td>减压产品不能制造新的任务压力。</td>
+              <td>做低压力表达：说不清也可以，趋势等数据积累后再出现。</td>
             </tr>
             <tr>
-              <td>Elevate / Lumosity</td>
-              <td>排名、分数压迫、能力贴标签。</td>
-              <td>学生会把训练误解为考试和评价。</td>
-              <td>把结果转译成成长语言：今天练习了专注。</td>
+              <td>Elevate / MindPal / Ahead</td>
+              <td>排名、分数压迫、能力贴标签、课程化说教。</td>
+              <td>学生会把训练误解成考试和评价。</td>
+              <td>把结果转译成成长语言：今天练习了专注、放松或表达。</td>
             </tr>
           </tbody>
         </table>
@@ -647,22 +640,22 @@
             <tr>
               <td>Day 6-8 画低保真</td>
               <td>Flow A/B/C 的 Demo 落地列。</td>
-              <td>Claude 深度分析 + Codex 20分钟走查任务单。</td>
+              <td>竞品池 V1.0 走查任务单 + Claude 历史深度分析。</td>
             </tr>
             <tr>
               <td>讨论 AI 记忆</td>
               <td>Flow B、三IP工作流、不照搬 Replika。</td>
-              <td>Replika / Woebot 深度分析。</td>
+              <td>Lightly / Pooca 实机记录 + Replika 边界参考。</td>
             </tr>
             <tr>
               <td>讨论首页</td>
               <td>Flow A、Pad 首页中枢、首页是答案不是菜单。</td>
-              <td>Headspace、How We Feel、Daylio 相关拆解。</td>
+              <td>Headspace、How We Feel、Voidpet Garden、Daylio/天天豆 相关拆解。</td>
             </tr>
             <tr>
               <td>讨论完成反馈</td>
               <td>Flow C、完成必须被看见。</td>
-              <td>Finch、Elevate/Lumosity、Duolingo 相关拆解。</td>
+              <td>Finch、Voidpet Garden、Elevate、Buda / MindPal 相关拆解。</td>
             </tr>
           </tbody>
         </table>

@@ -145,7 +145,7 @@ body {
 .gap-mid  { background: #fef3c7; color: #92400e; }
 .gap-low  { background: #d1fae5; color: #065f46; }
 
-/* SUS score row */
+/* usability score row */
 .sus-row {
   background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
   border: 1px solid #a7f3d0; border-radius: 14px;
@@ -209,7 +209,7 @@ body {
     <div class="legend-item"><div class="legend-dot" style="background:#f59e0b;"></div>现状产品估分（设计师自评，1–5分）</div>
     <div class="legend-item"><div class="legend-dot" style="background:#8b5cf6;"></div>竞品参考分（同类产品最佳实践水平）</div>
     <div class="legend-item"><div class="legend-dot" style="background:#10b981;"></div>Demo目标分（改版预期达到的水平）</div>
-    <div class="legend-item" style="margin-left:8px;padding-left:8px;border-left:1px solid #e5e7eb;">9月实测SUS在底部单独填写</div>
+    <div class="legend-item" style="margin-left:8px;padding-left:8px;border-left:1px solid #e5e7eb;">9月易用性实测在底部单独填写</div>
   </div>
 </div>
 
@@ -266,15 +266,15 @@ body {
   <div class="score-cell cell-comp" onclick="cycleScore(this,2)">
     <div class="stars" id="stars-p2-comp"></div>
     <span class="score-val" id="val-p2-comp">4</span>
-    <span class="score-label">Replika持续悬浮</span>
+    <span class="score-label">Pooca/Lightly可见入口</span>
   </div>
   <div class="score-cell cell-demo" onclick="cycleScore(this,3)">
     <div class="stars" id="stars-p2-demo"></div>
     <span class="score-val" id="val-p2-demo">4</span>
     <span class="score-label">改版目标</span>
   </div>
-  <div class="note-cell"><textarea placeholder="备注">竞品：Replika全局持续入口
-参考：Replika_AI对话流程分析.html §⑤</textarea></div>
+  <div class="note-cell"><textarea placeholder="备注">竞品：Pooca/Lightly 的 AI 入口与表达承接
+参考：竞品池 V1.0，实机走查后覆盖；Replika 仅作边界参考</textarea></div>
 </div>
 
 <!-- P3 -->
@@ -292,15 +292,15 @@ body {
   <div class="score-cell cell-comp" onclick="cycleScore(this,2)">
     <div class="stars" id="stars-p3-comp"></div>
     <span class="score-val" id="val-p3-comp">4</span>
-    <span class="score-label">Replika记忆钩子</span>
+    <span class="score-label">Lightly连续反思</span>
   </div>
   <div class="score-cell cell-demo" onclick="cycleScore(this,3)">
     <div class="stars" id="stars-p3-demo"></div>
     <span class="score-val" id="val-p3-demo">4</span>
     <span class="score-label">改版目标</span>
   </div>
-  <div class="note-cell"><textarea placeholder="备注">竞品：Replika「上次你说…今天怎样？」
-参考：Replika_AI对话流程分析.html §①STEP4</textarea></div>
+  <div class="note-cell"><textarea placeholder="备注">竞品：Lightly AI reflections / recurring themes
+参考：竞品池 V1.0；Replika 仅看可控记忆机制，不学成人关系模型</textarea></div>
 </div>
 
 <!-- P4 -->
@@ -318,7 +318,7 @@ body {
   <div class="score-cell cell-comp" onclick="cycleScore(this,2)">
     <div class="stars" id="stars-p4-comp"></div>
     <span class="score-val" id="val-p4-comp">4</span>
-    <span class="score-label">Woebot年龄适配</span>
+    <span class="score-label">分龄资料参考</span>
   </div>
   <div class="score-cell cell-demo" onclick="cycleScore(this,3)">
     <div class="stars" id="stars-p4-demo"></div>
@@ -326,7 +326,8 @@ body {
     <span class="score-label">改版目标</span>
   </div>
   <div class="note-cell"><textarea placeholder="备注">代码有gradeCode/phaseCode字段
-接通即可修复，非设计问题</textarea></div>
+接通即可修复，非设计问题
+资料参考：Soluna 分龄服务思路；澳洲/中国账号不可安装，不作为实机主线</textarea></div>
 </div>
 
 <!-- ── 中优先级 P5–P8 ── -->
@@ -373,15 +374,15 @@ body {
   <div class="score-cell cell-comp" onclick="cycleScore(this,2)">
     <div class="stars" id="stars-p6-comp"></div>
     <span class="score-val" id="val-p6-comp">4</span>
-    <span class="score-label">Woebot情感确认</span>
+    <span class="score-label">Lightly/Pooca接住</span>
   </div>
   <div class="score-cell cell-demo" onclick="cycleScore(this,3)">
     <div class="stars" id="stars-p6-demo"></div>
     <span class="score-val" id="val-p6-demo">4</span>
     <span class="score-label">改版目标</span>
   </div>
-  <div class="note-cell"><textarea placeholder="备注">竞品：Woebot先情感确认再建议
-参考：Woebot_青少年对话流程分析.html §①STEP1</textarea></div>
+  <div class="note-cell"><textarea placeholder="备注">竞品：Lightly 先复述再反思；Pooca 先陪伴再建议
+参考：竞品池 V1.0，实机走查后覆盖</textarea></div>
 </div>
 
 <!-- P7 -->
@@ -399,7 +400,7 @@ body {
   <div class="score-cell cell-comp" onclick="cycleScore(this,2)">
     <div class="stars" id="stars-p7-comp"></div>
     <span class="score-val" id="val-p7-comp">3</span>
-    <span class="score-label">Finch有同样弱点</span>
+    <span class="score-label">Finch可学不照搬</span>
   </div>
   <div class="score-cell cell-demo" onclick="cycleScore(this,3)">
     <div class="stars" id="stars-p7-demo"></div>
@@ -410,7 +411,8 @@ body {
 服饰：围巾/墨镜/帽子等，直接选择无需解锁
 声音：暖心姐姐/开朗女生，直接切换
 与星星碎片系统完全独立，不涉及激励闭环
-P7真正问题：免费换装≠成长奖励，错失了把换装作为行为激励的机会</textarea></div>
+P7真正问题：免费换装≠成长奖励，错失了把换装作为行为激励的机会
+V1.0参考：Finch 行为→奖励；Voidpet 完成后世界变化</textarea></div>
 </div>
 
 <!-- P8 -->
@@ -428,7 +430,7 @@ P7真正问题：免费换装≠成长奖励，错失了把换装作为行为激
   <div class="score-cell cell-comp" onclick="cycleScore(this,2)">
     <div class="stars" id="stars-p8-comp"></div>
     <span class="score-val" id="val-p8-comp">4</span>
-    <span class="score-label">Finch能量闭环</span>
+    <span class="score-label">Finch/Voidpet闭环</span>
   </div>
   <div class="score-cell cell-demo" onclick="cycleScore(this,3)">
     <div class="stars" id="stars-p8-demo"></div>
@@ -437,7 +439,8 @@ P7真正问题：免费换装≠成长奖励，错失了把换装作为行为激
   </div>
   <div class="note-cell"><textarea placeholder="备注">实际机制：给心理剧场资源评星→获得星星碎片→兑换头像
 首页有"使用星星碎片兑换头像吧"提示，但不告诉用户如何获得碎片
-问题：评星→碎片的因果关系对用户不可见，激励路径断裂</textarea></div>
+问题：评星→碎片的因果关系对用户不可见，激励路径断裂
+V1.0参考：Finch 行为奖励链；Voidpet 可见变化</textarea></div>
 </div>
 
 <!-- ── 低优先级 P9–P11 ── -->
@@ -458,15 +461,15 @@ P7真正问题：免费换装≠成长奖励，错失了把换装作为行为激
   <div class="score-cell cell-comp" onclick="cycleScore(this,2)">
     <div class="stars" id="stars-p9-comp"></div>
     <span class="score-val" id="val-p9-comp">4</span>
-    <span class="score-label">Woebot合规设计</span>
+    <span class="score-label">温和边界表达</span>
   </div>
   <div class="score-cell cell-demo" onclick="cycleScore(this,3)">
     <div class="stars" id="stars-p9-demo"></div>
     <span class="score-val" id="val-p9-demo">4</span>
     <span class="score-label">改版目标</span>
   </div>
-  <div class="note-cell"><textarea placeholder="备注">Woebot的合规提示嵌入对话语境而非冷冰冰免责
-参考：Woebot_青少年对话流程分析.html §⑤</textarea></div>
+  <div class="note-cell"><textarea placeholder="备注">竞品：Lightly/Pooca 的温和边界与隐私表达
+资料：Woebot/Wysa 历史安全资料，仅作边界参考</textarea></div>
 </div>
 
 <!-- P10 -->
@@ -510,22 +513,22 @@ P7真正问题：免费换装≠成长奖励，错失了把换装作为行为激
   <div class="score-cell cell-comp" onclick="cycleScore(this,2)">
     <div class="stars" id="stars-p11-comp"></div>
     <span class="score-val" id="val-p11-comp">4</span>
-    <span class="score-label">Daylio情绪驱动内容</span>
+    <span class="score-label">HowWeFeel/Headspace推荐</span>
   </div>
   <div class="score-cell cell-demo" onclick="cycleScore(this,3)">
     <div class="stars" id="stars-p11-demo"></div>
     <span class="score-val" id="val-p11-demo">3</span>
     <span class="score-label">改版目标</span>
   </div>
-  <div class="note-cell"><textarea placeholder="备注">Daylio打卡结果驱动内容推荐顺序
-参考：核心竞品洞察汇总.html §② Daylio</textarea></div>
+  <div class="note-cell"><textarea placeholder="备注">竞品：How We Feel 情绪词 + Headspace 场景化内容推荐
+参考：竞品池 V1.0，Daylio 仅作快速打卡参考</textarea></div>
 </div>
 
-<!-- SUS 实测区 -->
+<!-- 易用性实测区 -->
 <div class="sus-row">
   <div class="sus-label">
-    SUS 实测评分
-    <span>9月学生测评后填写 · 100分制</span>
+    易用性实测评分
+    <span>9月学生易用性测评后填写 · 100分制</span>
   </div>
   <div class="sus-score-box current">
     <span class="sus-val" id="sus-current">—</span>
@@ -556,8 +559,8 @@ P7真正问题：免费换装≠成长奖励，错失了把换装作为行为激
 <!-- Footer -->
 <div style="margin-top:40px;padding:16px 20px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;font-size:12px;color:#9ca3af;line-height:1.8;">
   <b style="color:#6b7280;">评分说明：</b>1分=严重问题，当前设计几乎无法完成该体验目标 · 2分=有明显缺陷，用户需要额外努力 · 3分=基本可用，有改进空间 · 4分=体验良好，符合行业水准 · 5分=行业领先，超出用户预期<br>
-  <b style="color:#6b7280;">竞品参考来源：</b>Headspace_首屏导航 · Replika_AI对话 · Finch_成长激励 · Woebot_青少年对话 · Daylio_情绪打卡（详见 Q3竞品/2.竞品深度分析/）<br>
-  <b style="color:#6b7280;">注意：</b>现状分和竞品分为设计师启发式估分，非真实用户数据。9月SUS实测后以实测数据为准。
+  <b style="color:#6b7280;">竞品参考来源：</b>竞品池 V1.0：Finch · Voidpet Garden · Headspace · How We Feel · Lightly · Pooca；选看 Buda/Elevate/Ahead；旧深度分析作为材料库保留<br>
+  <b style="color:#6b7280;">注意：</b>现状分和竞品分为设计师启发式估分，非真实用户数据。9月易用性实测后以实测数据为准。
 </div>
 
 </div>

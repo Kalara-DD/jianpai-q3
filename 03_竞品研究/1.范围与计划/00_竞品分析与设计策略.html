@@ -140,7 +140,7 @@ body {
 
 <div class="page-header">
   <h1>减压星球 · 竞品分析与设计策略</h1>
-  <p class="sub">竞品池定义 · 6条设计策略 · 3条Flow设计输入 · P0-P11映射</p>
+  <p class="sub">竞品池 V1.0 · 6条设计策略 · 3条Flow设计输入 · P0-P11映射</p>
   <p class="meta">AI星球 20天优化Demo · 2026.07 · 设计研究内部参考 · 综合自Day01-05工作文档</p>
 </div>
 
@@ -148,7 +148,7 @@ body {
 <div class="section">
   <div class="section-title">核心结论</div>
   <div class="conclusion-box">
-    <p>减压星球不应该照搬任何一个竞品。最优路径是：<strong>学 Finch 的陪伴式自我照顾、How We Feel 的低压力情绪表达、Replika 的持续记忆关系感、Wysa 的 AI安全边界表达、Elevate 的训练结果解释</strong>，但要去掉强竞争、强打卡焦虑和成人心理产品的冷感。护城河是时间积累的情绪档案——这是其他产品做不到的。</p>
+    <p>减压星球本轮不再按“心理健康老牌工具”找参照，而是按 Flow A/B/C 的真实问题选竞品。最优路径是：<strong>学 Finch 的陪伴任务闭环、Voidpet Garden 的情绪游戏化视觉、Headspace 的首页组织、How We Feel 的情绪打卡、Lightly 的 AI 反思、Pooca 的 AI 陪伴语气</strong>。Buda、Elevate、Ahead 只做补充，Daylio、天天豆、MindPal 做快速参考，Gemini、Replika 只看边界与风险。护城河仍然是时间积累的情绪档案和 Pad 端可被看见的成长反馈。</p>
   </div>
 </div>
 
@@ -157,81 +157,88 @@ body {
   <div class="section-title">竞品池与角色分工</div>
   <table class="comp-table">
     <tr>
+      <th>层级</th>
       <th>竞品</th>
       <th>承担的分析角色</th>
       <th>最有价值的机制</th>
       <th>对标痛点</th>
-      <th>优先级</th>
     </tr>
     <tr>
+      <td><span class="badge-must">深跑</span></td>
       <td><b>Finch</b></td>
-      <td>陪伴型自我照顾标杆</td>
-      <td>行为→奖励因果链清晰；完成后IP有情感反馈</td>
-      <td>P7 P8 P11</td>
-      <td><span class="badge-must">⭐ 必看</span></td>
+      <td>陪伴任务闭环标杆</td>
+      <td>IP陪伴、每日微任务、行为→奖励、零惩罚回归</td>
+      <td>P1 P7 P8 P11</td>
     </tr>
     <tr>
-      <td><b>How We Feel</b></td>
-      <td>情绪打卡与情绪颗粒度标杆</td>
-      <td>情绪词+颜色矩阵，"说不清"也是合法选项</td>
-      <td>P1 P3 P11</td>
-      <td><span class="badge-must">⭐ 必看</span></td>
+      <td><span class="badge-must">深跑</span></td>
+      <td><b>Voidpet Garden</b></td>
+      <td>情绪游戏化视觉标杆</td>
+      <td>情绪拟物、可互动情绪世界、完成后可见变化</td>
+      <td>P1 P3 P7 P11</td>
     </tr>
     <tr>
-      <td><b>Replika</b></td>
-      <td>AI持续记忆关系建立标杆</td>
-      <td>对话开头引用历史记忆；关系深度随频次递进</td>
-      <td>P3 P2</td>
-      <td><span class="badge-must">⭐ 必看</span></td>
-    </tr>
-    <tr>
-      <td><b>Headspace / Ebb</b></td>
-      <td>AI陪伴+首屏内容推荐标杆</td>
-      <td>首页只有一个主CTA；情绪驱动内容推荐</td>
+      <td><span class="badge-must">深跑</span></td>
+      <td><b>Headspace</b></td>
+      <td>首页组织与减压内容标杆</td>
+      <td>一个主行动、短练习入口、场景化推荐</td>
       <td>P1 P2 P9</td>
-      <td><span class="badge-must">⭐ 必看</span></td>
     </tr>
     <tr>
-      <td><b>Wysa</b></td>
-      <td>AI心理支持与安全边界标杆</td>
-      <td>结构化追问；安全提示温和透明不打断体验</td>
-      <td>P0 P9 P10</td>
-      <td><span class="badge-must">⭐ 必看</span></td>
+      <td><span class="badge-must">深跑</span></td>
+      <td><b>How We Feel</b></td>
+      <td>低压力情绪表达标杆</td>
+      <td>情绪词+颜色系统，允许“说不清”</td>
+      <td>P1 P3 P11</td>
     </tr>
     <tr>
-      <td><b>Woebot</b></td>
-      <td>青少年CBT对话标杆</td>
-      <td>明确"我是AI"反而提升信任；结构化对话有总结</td>
-      <td>P9 P3</td>
-      <td><span class="badge-must">⭐ 必看</span></td>
+      <td><span class="badge-must">深跑</span></td>
+      <td><b>Lightly</b></td>
+      <td>AI反思与连续反馈标杆</td>
+      <td>写/说都可输入，AI总结主题、周反思、情绪趋势</td>
+      <td>P3 P6 P9 P11</td>
     </tr>
     <tr>
-      <td><b>Daylio</b></td>
-      <td>情绪打卡流程行业标准</td>
-      <td>5秒完成打卡；即时统计反馈；streak可见</td>
-      <td>P1 留存</td>
-      <td><span class="badge-must">⭐ 必看</span></td>
+      <td><span class="badge-must">深跑</span></td>
+      <td><b>Pooca</b></td>
+      <td>新一代AI best friend标杆</td>
+      <td>陪伴语气、亲和视觉、情绪反馈、轻关系感</td>
+      <td>P2 P3 P6 P9</td>
     </tr>
     <tr>
-      <td><b>Elevate / Lumosity</b></td>
-      <td>训练结果反馈与能力成长标杆</td>
-      <td>说"你练了什么能力"，不只给分数</td>
+      <td><span class="badge-rec">选看</span></td>
+      <td><b>Buda / Selfcare Buddy</b></td>
+      <td>每日路径与伙伴任务补充</td>
+      <td>check-in、每日任务、伙伴反馈，与 Finch / Pooca 对比</td>
+      <td>P1 P7 P8</td>
+    </tr>
+    <tr>
+      <td><span class="badge-rec">选看</span></td>
+      <td><b>Elevate</b></td>
+      <td>训练结果反馈标杆</td>
+      <td>短任务后解释“练了什么能力”，不是只给分数</td>
       <td>P5 P11</td>
-      <td><span class="badge-rec">▸ 选看</span></td>
     </tr>
     <tr>
-      <td><b>Duolingo</b></td>
-      <td>短任务即时反馈标杆</td>
-      <td>任务极短、即时正反馈、低成本继续</td>
-      <td>P7 P8</td>
-      <td><span class="badge-rec">▸ 选看</span></td>
+      <td><span class="badge-rec">选看</span></td>
+      <td><b>Ahead</b></td>
+      <td>情绪教育与短练习补充</td>
+      <td>触发点识别、5分钟练习、年轻化视觉表达</td>
+      <td>P4 P6 P11</td>
     </tr>
     <tr>
-      <td><b>988 / Crisis Text Line</b></td>
-      <td>危机支持流程与安全边界参考</td>
-      <td>可预期的危机流程；等待期安抚；保密边界说清楚</td>
-      <td>P0</td>
-      <td><span class="badge-rec">▸ 资料参考</span></td>
+      <td><span class="badge-rec">快参</span></td>
+      <td><b>Daylio / 天天豆 / MindPal</b></td>
+      <td>快速对照样本</td>
+      <td>低成本打卡、中文表达、脑训练即时反馈</td>
+      <td>P1 P5 P11</td>
+    </tr>
+    <tr>
+      <td><span class="badge-rec">边界</span></td>
+      <td><b>Gemini / Replika</b></td>
+      <td>AI能力与风险边界参考</td>
+      <td>通用AI缺什么；AI记忆/关系推进哪些不能照搬</td>
+      <td>P0 P2 P3 P9</td>
     </tr>
   </table>
 </div>
@@ -323,8 +330,8 @@ body {
         <li>首屏只突出一个主行动"今天感觉怎么样"，AI伙伴是"接住你"的存在，功能入口后置</li>
         <li>情绪词提供低门槛选项："有点烦/累/紧张/还好/开心/说不清"，允许跳过细节（参考 How We Feel）</li>
         <li>AI接住：先复述状态，再给一个小行动；语气是"我听到了"，不是"你应该"</li>
-        <li>今日小行动：只推荐1个1-3分钟动作，明确推荐理由（参考 Headspace/Ebb）</li>
-        <li>完成反馈：IP说一句"看见你"的话，不只弹奖励（参考 Finch）</li>
+        <li>今日小行动：只推荐1个1-3分钟动作，明确推荐理由（参考 Headspace）</li>
+        <li>完成反馈：IP说一句“看见你”的话，并让星球/角色有可见变化（参考 Finch / Voidpet Garden）</li>
       </ul>
     </div>
     <div class="conclusion-row">设计结论：首屏要先解决"我现在怎么开始"，再解决"产品有什么功能"。</div>
@@ -348,9 +355,9 @@ body {
       <div class="design-input-title">设计输入要点</div>
       <ul>
         <li>全局入口：首页、训练完成页、成长记录页都能进入AI；文案随场景变化</li>
-        <li>角色选择：加入语气示例，让学生选之前就知道交互感觉（参考 Character.AI/Replika）</li>
-        <li>记忆：只展示轻量记忆，给控制感：可记/不记/删除（参考 Replika）</li>
-        <li>安全边界：改为"大多数分享会被尊重，明确危险时优先保护安全"（参考 Wysa/Woebot）</li>
+        <li>角色选择：加入语气示例，让学生选之前就知道交互感觉（参考 Pooca；Replika 仅作边界参考）</li>
+        <li>记忆：只展示轻量记忆，给控制感：可记/不记/删除（参考 Lightly 的连续反思；Replika 仅看机制不学关系模型）</li>
+        <li>安全边界：改为“大多数分享会被尊重，明确危险时优先保护安全”（参考 Lightly/Pooca 的温和表达，Woebot/Wysa 仅作历史资料）</li>
         <li>每段对话结束给选项：继续聊 / 做个小练习 / 记录到成长本</li>
       </ul>
     </div>
@@ -374,10 +381,10 @@ body {
     <div class="design-input">
       <div class="design-input-title">设计输入要点</div>
       <ul>
-        <li>结果解释："今天练习了专注"，不是"你专注力较差"（参考 Elevate）</li>
+        <li>结果解释：“今天练习了专注”，不是“你专注力较差”（参考 Elevate）</li>
         <li>奖励来源：换装/勋章与具体行为挂钩，因果链可见（参考 Finch）</li>
         <li>IP回应：完成后伙伴说一句"看见你"的话，而不只是弹奖励动画</li>
-        <li>成就外溢：训练完成后首页和IP有感知反馈，不封存在单一Tab（参考 Elevate）</li>
+        <li>成就外溢：训练完成后首页、IP和星球状态都有感知反馈，不封存在单一Tab（参考 Voidpet Garden / Finch / Elevate）</li>
       </ul>
     </div>
     <div class="conclusion-row">设计结论：完成反馈要回答三件事：我刚才做了什么 / 这对我有什么帮助 / 它有没有被记录。</div>
@@ -404,7 +411,7 @@ body {
   </table>
 </div>
 
-<p style="text-align:center;font-size:12px;color:#334155;margin-top:48px;padding-top:24px;border-top:1px solid #1e1e2e;">综合自 Day01-02 范围定稿 · Day03-05 竞品拆解 · Day03-05 Codex分析视角 · 减压星球 v1.0.2801 · 2026.07</p>
+<p style="text-align:center;font-size:12px;color:#334155;margin-top:48px;padding-top:24px;border-top:1px solid #1e1e2e;">综合自 Day01-02 范围定稿 · 竞品池 V1.0 · Day03-05 竞品拆解 · 减压星球 v1.0.2801 · 2026.07</p>
 
 </div>
 </body>
