@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>减压星球 · 核心竞品 Flow 深度分析</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, 'PingFang SC', '微软雅黑', sans-serif;
+  background: #f4f2ee;
+  color: #2d3142;
+  padding: 48px 24px;
+  min-height: 100vh;
+}
+.container { max-width: 1200px; margin: 0 auto; }
+
+.page-header { text-align: center; margin-bottom: 56px; }
+.page-header h1 { font-size: 32px; font-weight: 700; color: #1a1c2e; margin-bottom: 12px; }
+.page-header .sub { font-size: 15px; color: #7c849e; margin-bottom: 8px; line-height: 1.6; }
+.page-header .meta { font-size: 13px; color: #9ca3b8; margin-top: 16px; }
+
+.intro-card {
+  background: #ffffff;
+  border: 1px solid #e2dfd8;
+  border-radius: 16px;
+  padding: 32px 36px;
+  margin-bottom: 48px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.intro-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a1c2e;
+  margin-bottom: 16px;
+}
+.intro-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+.intro-item {
+  background: #f9f8f5;
+  border-radius: 12px;
+  padding: 18px 20px;
+}
+.intro-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #9ca3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 8px;
+}
+.intro-text {
+  font-size: 14px;
+  color: #4a5068;
+  line-height: 1.75;
+}
+
+.sec-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #9ca3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 56px 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.sec-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #dddbd5;
+}
+
+.comp-card {
+  background: #ffffff;
+  border: 1px solid #e2dfd8;
+  border-radius: 16px;
+  margin-bottom: 32px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.comp-header {
+  background: linear-gradient(135deg, #f9f8f5 0%, #ffffff 100%);
+  border-bottom: 1px solid #e2dfd8;
+  padding: 28px 32px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.comp-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  flex-shrink: 0;
+}
+.comp-info { flex: 1; }
+.comp-name {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1a1c2e;
+  margin-bottom: 6px;
+}
+.comp-meta {
+  font-size: 13px;
+  color: #7c849e;
+  line-height: 1.6;
+}
+.comp-badge {
+  margin-left: auto;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.comp-body { padding: 32px; }
+
+.pain-tags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+.pain-tag {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
+  background: #fff3e8;
+  color: #b85c1a;
+  border: 1px solid #f5c898;
+}
+
+.section-block {
+  background: #f9f8f5;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+.section-block:last-child { margin-bottom: 0; }
+
+.block-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #2c7abf;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 14px;
+}
+.block-content {
+  font-size: 14px;
+  color: #4a5068;
+  line-height: 1.85;
+}
+.block-content b { color: #1a1c2e; font-weight: 600; }
+.block-content ul {
+  margin: 12px 0;
+  padding-left: 20px;
+}
+.block-content li {
+  margin: 8px 0;
+}
+
+.apply-box {
+  background: linear-gradient(135deg, #f0eefa 0%, #e8f0fd 100%);
+  border: 1px solid #a9c4f5;
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-top: 20px;
+}
+.apply-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: #3730a3;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 10px;
+}
+.apply-text {
+  font-size: 14px;
+  color: #4a5068;
+  line-height: 1.85;
+}
+.apply-text b { color: #2c5fcc; font-weight: 600; }
+
+.icon-replika { background: #e8f4ee; }
+.icon-finch { background: #fff3e8; }
+.icon-woebot { background: #e8f0fd; }
+.icon-headspace { background: #f5eefa; }
+.icon-voidpet { background: #e8f4fd; }
+.icon-howwefeel { background: #fef3e8; }
+.icon-lightly { background: #e8f8ee; }
+.icon-pooca { background: #fce8f4; }
+
+.badge-must { background: #451a03; color: #fb923c; border: 1px solid #7c2d12; }
+.badge-rec { background: #0c1a2e; color: #60a5fa; border: 1px solid #1e3a5f; }
+
+.safety-box {
+  background: #fff5f5;
+  border: 1px solid #fca5a5;
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-top: 20px;
+}
+.safety-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: #dc2626;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 10px;
+}
+.safety-text {
+  font-size: 14px;
+  color: #4a5068;
+  line-height: 1.85;
+}
+.flow-box {
+  background: linear-gradient(135deg, #f0f4ff 0%, #f8f0ff 100%);
+  border: 1px solid #c4b5fd;
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-top: 20px;
+}
+.flow-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: #4338ca;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 10px;
+}
+.flow-text {
+  font-size: 14px;
+  color: #4a5068;
+  line-height: 1.85;
+}
+
+.title-why { color: #2c7abf; }
+.title-learn { color: #1e6e42; }
+.title-apply { color: #7c4dbb; }
+
+@media (max-width: 768px) {
+  .intro-grid { grid-template-columns: 1fr; }
+}
+</style>
+
+<link rel="stylesheet" href="../../assets/archive-report.css?v=20261014e">
+<meta name="robots" content="noindex, nofollow">
+</head>
+<body>
+<div class="application-archive-note" role="note"><a href="../index.html#doc-competitor-synthesis">← 返回研究资料库</a><p>竞品研究汇总：原稿同时保留历史深析与竞品池 V1.0，新竞品仍有待走查占位。效果数字与长期能力不能视为学生实测或已上线成果。</p><small>原稿：核心竞品洞察汇总.html</small></div>
+
+<div class="container">
+
+<div class="page-header">
+  <h1>减压星球 · 核心竞品 Flow 深度分析</h1>
+  <p class="sub">基于 P1-P11 真实痛点，对标行业标杆产品的核心用户流程设计</p>
+  <p class="sub">聚焦：竞品池 V1.0 · 首页组织 · 情绪打卡 · AI接住 · 情绪游戏化 · 完成反馈</p>
+  <p class="meta">数据来源：公开产品评测 · 学术研究文献 · App Store / Google Play 用户评价 · 2026.07</p>
+</div>
+
+<div class="intro-card">
+  <div class="intro-title">📋 分析框架说明</div>
+  <div class="intro-grid">
+    <div class="intro-item">
+      <div class="intro-label">选品标准</div>
+      <div class="intro-text">所有竞品均为<b>真实存在</b>且可验证的行业标杆产品，非虚构案例。每个竞品<b>直接对标</b>减压星球的1-2个核心痛点。</div>
+    </div>
+    <div class="intro-item">
+      <div class="intro-label">分析维度</div>
+      <div class="intro-text">为什么选这个竞品 → 学什么具体设计策略 → 如何应用到减压星球改版。提供<b>可操作的设计建议</b>，不做泛泛而谈。</div>
+    </div>
+    <div class="intro-item">
+      <div class="intro-label">对标痛点</div>
+      <div class="intro-text">P3（AI对话无记忆）、P5（成就不外溢）、P7（换装与成长割裂）、P1（首屏无主角）、情绪打卡完成率。</div>
+    </div>
+    <div class="intro-item">
+      <div class="intro-label">使用方式</div>
+      <div class="intro-text">本文档为设计师内部参考，用于7-8月改版设计的输入素材。<b>不作为平行易用性评分比较</b>，仅提取设计灵感。</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- V1.0 当前使用口径 -->
+<div class="intro-card" style="border:2px solid #4338ca; background:linear-gradient(135deg,#f4f2ff 0%,#ffffff 100%);">
+  <div class="intro-title" style="color:#4338ca;">竞品池 V1.0 · 当前以这版为准</div>
+  <div class="intro-grid">
+    <div class="intro-item"><div class="intro-label">深跑 6 个</div><div class="intro-text"><b>Finch / Voidpet Garden / Headspace / How We Feel / Lightly / Pooca</b><br>直接输入 Flow A/B/C Demo：陪伴任务闭环、情绪游戏化视觉、首页组织、情绪打卡、AI反思、AI陪伴语气。</div></div>
+    <div class="intro-item"><div class="intro-label">选看 3 个</div><div class="intro-text"><b>Buda / Elevate / Ahead</b><br>补充每日路径、短任务完成反馈、情绪教育与年轻化视觉；不作为主标杆。</div></div>
+    <div class="intro-item"><div class="intro-label">快速参考</div><div class="intro-text"><b>Daylio / 天天豆 / MindPal</b><br>只看低成本打卡、中文表达、脑训练即时反馈。</div></div>
+    <div class="intro-item"><div class="intro-label">边界/历史参考</div><div class="intro-text"><b>Gemini / Replika / Woebot / Wysa</b><br>Gemini 看通用 AI 缺口；Replika 只看记忆机制和关系红线；Woebot/Wysa 降级为历史安全资料。</div></div>
+  </div>
+</div>
+
+<div class="intro-card" style="margin-top:24px;">
+  <div class="intro-title">新增洞察占位 · 待实机走查后补细节</div>
+  <div class="intro-grid">
+    <div class="intro-item"><div class="intro-label">Voidpet Garden</div><div class="intro-text">学习情绪拟物、互动反馈、情绪世界氛围、完成后的可见变化；不照搬重养成。</div></div>
+    <div class="intro-item"><div class="intro-label">Lightly</div><div class="intro-text">学习 AI 如何承接写/说输入、生成反思、沉淀 recurring themes 和周反馈。</div></div>
+    <div class="intro-item"><div class="intro-label">Pooca</div><div class="intro-text">学习 AI best friend 的亲和语气、视觉软化和情绪反馈，同时标记未成年人边界。</div></div>
+    <div class="intro-item"><div class="intro-label">How We Feel</div><div class="intro-text">学习情绪词颗粒度、颜色矩阵、允许“说不清”的低压力表达。</div></div>
+  </div>
+</div>
+
+<!-- ① Replika -->
+<div class="sec-title">边界参考 · Replika · AI 对话持续记忆</div>
+
+<div class="comp-card">
+  <div class="comp-header">
+    <div class="comp-icon icon-replika">🤖</div>
+    <div class="comp-info">
+      <div class="comp-name">Replika</div>
+      <div class="comp-meta">AI 情感伴侣 · 边界参考 · 只看可控记忆，不学成人化关系模型</div>
+    </div>
+    <span class="comp-badge badge-rec">边界参考</span>
+  </div>
+  
+  <div class="comp-body">
+    <div class="pain-tags">
+      <span class="pain-tag">P3 对话无跨会话记忆</span>
+      <span class="pain-tag">P2 AI无全局持续入口</span>
+    </div>
+    
+    <div class="section-block">
+      <div class="block-title title-why">为什么保留 Replika 资料</div>
+      <div class="block-content">
+        Replika 现在不再作为本轮实机主线，但它仍是观察<b>对话记忆机制</b>的边界材料。它把"第1次对话"和"第20次对话"设计成不同深度，能帮助我们拆解 P3 的“记忆感”问题。
+        <br><br>
+        使用边界必须非常清楚：减压星球只学“可控记忆、用户控制权、轻量连续感”，不能学习 Replika 的成人化关系承诺和亲密关系推进。
+      </div>
+    </div>
+    
+    <div class="section-block">
+      <div class="block-title title-learn">学什么：对话开头的记忆钩子</div>
+      <div class="block-content">
+        <b>1. 历史钩子引导语</b>
+        <ul>
+          <li>「上次你提到最近压力大，这两天好一点了吗？」</li>
+          <li>「还记得你说想学吉他吗，有开始练习了吗？」</li>
+          <li>不是机械复述历史对话，而是<b>带着关心的语气引用过去</b>，让用户感受到被记得</li>
+        </ul>
+        
+        <b>2. 关系深度分层</b>
+        <ul>
+          <li>新用户（1-5次对话）：偏引导性问题，帮助用户打开话题</li>
+          <li>熟悉用户（6-20次）：开始引用历史情绪标签，建立连续性</li>
+          <li>深度用户（20次+）：解锁更深层情绪探索话题，AI 主动分享"观察到的你"</li>
+        </ul>
+        
+        <b>3. 记忆可视化</b>
+        <ul>
+          <li>对话页顶部有「记忆」标签页，用户可以看到 AI 记住了哪些关于自己的事</li>
+          <li>重要时刻会被标记为「里程碑」，形成情感档案</li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="apply-box">
+      <div class="apply-title">→ 对减压星球的改版建议</div>
+      <div class="apply-text">
+        <b>1. 对话页顶部增加记忆摘要区</b><br>
+        吉塔/小星对话页顶部显示「上次对话：3天前 · 情绪标签：焦虑」，点击展开可看到历史对话关键词云。<br><br>
+        
+        <b>2. 对话开头引用历史情绪</b><br>
+        「小星记得你上周说考试压力很大，现在考完了，感觉怎么样？」成本极低（一句prompt模板），但关系感极强。<br><br>
+        
+        <b>3. 使用频次解锁深度话题</b><br>
+        对话10次以上的用户，吉塔开始主动分享观察：「小星发现你在考试前情绪会特别低落，但考完后很快就能调整回来，你的韧性比自己想象的强。」<br><br>
+        
+        <b>快赢实现路径</b>：后端增加 conversationCount 字段，前端对话开头增加记忆钩子模板，1-2周可上线验证效果。
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ② Finch -->
+<div class="sec-title">② Finch · 成就与行为绑定闭环</div>
+
+<div class="comp-card">
+  <div class="comp-header">
+    <div class="comp-icon icon-finch">🐣</div>
+    <div class="comp-info">
+      <div class="comp-name">Finch</div>
+      <div class="comp-meta">自我关怀 · iOS/Android · App Store 精选 · 虚拟宠物+自我关怀结合标杆</div>
+    </div>
+    <span class="comp-badge badge-must">⭐ 必参考</span>
+  </div>
+  
+  <div class="comp-body">
+    <div class="pain-tags">
+      <span class="pain-tag">P7 换装与成长割裂</span>
+      <span class="pain-tag">P5 成就不外溢</span>
+      <span class="pain-tag">P8 激励闭环不清晰</span>
+    </div>
+    
+    <div class="section-block">
+      <div class="block-title title-why">为什么选 Finch</div>
+      <div class="block-content">
+        Finch 是心理健康类产品中<b>激励闭环最完整</b>的：完成自我关怀目标 → 小鸟去旅行 → 发回明信片。奖励与行为直接绑定且有惊喜感。<b>直接对标 P7</b>（换装系统与行为成长割裂）。
+        <br><br>
+        Finch 的设计哲学是：<b>奖励要有具体来源，不能是凭空掉下来的礼物</b>。用户知道"我做了什么，才得到了什么"，这种因果链的清晰可见是长期留存的关键。
+      </div>
+    </div>
+    
+    <div class="section-block">
+      <div class="block-title title-learn">学什么：奖励与行为的因果绑定</div>
+      <div class="block-content">
+        <b>1. 行为 → 奖励的清晰路径</b>
+        <ul>
+          <li>完成3次情绪日记 → 解锁小鸟新羽毛颜色</li>
+          <li>连续打卡7天 → 小鸟带回旅行明信片</li>
+          <li>完成呼吸练习 → 获得「平静石」货币</li>
+          <li>每个奖励都有明确的行为触发条件，用户知道"怎样做才能得到"</li>
+        </ul>
+        
+        <b>2. 成就外溢到主界面</b>
+        <ul>
+          <li>小鸟的外观变化全局可见（不只是换装页面）</li>
+          <li>旅行带回的明信片会装饰在树屋墙上，形成视觉化的成长历史</li>
+          <li>完成目标后，小鸟会有动画反馈（拍翅膀、跳跃）</li>
+        </ul>
+        
+        <b>3. 渐进解锁机制</b>
+        <ul>
+          <li>初期只能给小鸟换基础服装</li>
+          <li>使用2周后解锁旅行功能</li>
+          <li>使用1个月后解锁树屋装饰</li>
+          <li>让用户有"还有新东西可以探索"的期待感</li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="apply-box">
+      <div class="apply-title">→ 对减压星球的改版建议</div>
+      <div class="apply-text">
+        <b>1. 换装/勋章系统与具体行为挂钩</b><br>
+        • 打卡7天解锁小星新发型<br>
+        • 完成3次AI对话解锁吉塔新围巾<br>
+        • 脑之岛完成注意力训练5次解锁罗素新领结<br>
+        让每个道具都有「完成XX任务解锁」的标签，用户知道努力方向。<br><br>
+        
+        <b>2. 成就完成后IP动画反馈</b><br>
+        脑之岛训练完成 → 罗素在首页冒泡说「刚才在岛上看到你很专注呢」→ 首页当日成就条+1。让成就跨模块流通，不封闭在单一Tab。<br><br>
+        
+        <b>3. 星星商店改为「我的成长时光机」</b><br>
+        不只是换装商店，而是展示「你通过什么行为解锁了什么」的成长档案。用户可以看到：<br>
+        • 第1周：解锁了基础换装<br>
+        • 第2周：完成首次对话，吉塔送了新围巾<br>
+        • 第3周：脑之岛连续训练3天，罗素解锁新书<br>
+        把消费行为变成成长叙事。<br><br>
+        
+        <b>快赢实现路径</b>：先做3个高频行为的奖励绑定（打卡7天、对话3次、训练5次），验证用户是否会为了解锁道具而提高参与度。
+      </div>
+    </div>
+
+    <div class="section-block">
+      <div class="block-title title-why">怎么降低用户压力 · 补充</div>
+      <div class="block-content">
+        Finch最核心的降压设计是<b>零惩罚机制</b>：没有连续打卡断掉的红色警告，没有"你失败了"的提示。小鸟只是安静等着，不管隔多久回来都一样欢迎。根据多篇用户评价（XDA/Lifehacker/用户App Store评论），这个设计对有焦虑倾向和ADHD用户特别有效——传统习惯养成App的"连续N天打卡"反而给这类用户带来额外压力。
+        <br><br>
+        <b>第二个降压机制</b>：用户自定义每天的目标数量和难度——可以只设"今天喝一杯水"，完成也算。这给了用户控制感，而不是被产品的标准强制。
+      </div>
+    </div>
+
+    <div class="safety-box">
+      <div class="safety-title">⚠ 不适合照搬（安全边界）</div>
+      <div class="safety-text">
+        • Finch养成深度较重，完整复制（旅行/树屋/明信片系统）超出20天Demo范围，建议只做"完成行为→IP轻动画"的最小闭环<br>
+        • 渐进解锁时间线（2周/1个月）对Demo阶段太长，需要压缩为3天/7天可见变化<br>
+        • Finch设计面向成人自我关怀，部分目标类型（"今天对自己好一点""今天接受自己的不完美"）语境偏成人，中文初中生版本需要替换成更具体的行为（"今天完成一件小事""今天和朋友说了话"）<br>
+        • 未成年人安全：Finch无社交/AI对话，安全性较好；但其情绪日记功能如引入未成年人需评估数据保护合规
+      </div>
+    </div>
+
+    <div class="flow-box">
+      <div class="flow-title">→ Flow A/B/C 低保真输入</div>
+      <div class="flow-text">
+        <b>Flow A（Pad首页）</b>：首页今日任务模块参考Finch的"用户自设1-3个今日小目标"框架——吉塔/系统给出3个建议，用户选1个做今天的主线任务，完成打勾后IP有轻动画。这是Day06低保真的一个核心框架选项。<br><br>
+        <b>Flow B（AI伙伴）</b>：Finch的非惩罚语气可用于吉塔的回访语——用户隔3天没来，吉塔说"好久没见，我想你了，今天怎么样？"而不是"你已经3天没打卡了"。日期不提，感情提。<br><br>
+        <b>Flow C（完成反馈）</b>：参考Finch完成目标→小鸟动画→全局可见的路径：减压星球完成今日任务后，首页IP做一个3秒动画（飞一圈/跳一下），然后首页任务条显示"今天完成了"状态，成就跨模块可见。这是Day08低保真中完成反馈设计的核心交互帧。
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ③ Woebot -->
+<div class="sec-title">历史资料 · Woebot · 安全边界与结构化对话</div>
+
+<div class="comp-card">
+  <div class="comp-header">
+    <div class="comp-icon icon-woebot">💙</div>
+    <div class="comp-info">
+      <div class="comp-name">Woebot</div>
+      <div class="comp-meta">认知行为疗法（CBT）聊天机器人 · 历史资料参考 · 不再作为本轮实机必跑对象</div>
+    </div>
+    <span class="comp-badge badge-rec">历史资料</span>
+  </div>
+  
+  <div class="comp-body">
+    <div class="pain-tags">
+      <span class="pain-tag">AI对话专业性</span>
+      <span class="pain-tag">青少年焦虑/抑郁干预</span>
+      <span class="pain-tag">P9 免责声明削弱信任</span>
+    </div>
+    
+    <div class="section-block">
+      <div class="block-title title-why">为什么保留 Woebot 历史资料</div>
+      <div class="block-content">
+        Woebot 不再作为本轮现役实机竞品，但它的公开研究和旧流程仍可作为<b>结构化对话与安全边界</b>的历史资料。它不能承担视觉、交互和当前可用性的主标杆角色。
+        <br><br>
+        本轮只保留一个原则：AI 不需要假装成人类或专业咨询师，边界说明要提升信任，而不是用冷冰冰免责声明削弱陪伴感。具体语气需结合 Lightly / Pooca 实机走查重写。
+      </div>
+    </div>
+    
+    <div class="section-block">
+      <div class="block-title title-learn">学什么：专业心理干预的对话设计</div>
+      <div class="block-content">
+        <b>1. 结构化对话而非自由聊天</b>
+        <ul>
+          <li>每次对话有明确主题：「今天我们聊聊你的压力来源」</li>
+          <li>对话结束时给出总结：「今天你提到了3个压力点，我们一起找到了2个应对方法」</li>
+          <li>下次对话会延续上次主题：「上次你说想试试深呼吸，这几天有练习吗？」</li>
+        </ul>
+        
+        <b>2. 情绪识别后的即时干预</b>
+        <ul>
+          <li>识别到极端词汇（「想死」「没意义」）→ 立即切换到危机响应模式</li>
+          <li>识别到焦虑情绪 → 引导呼吸练习或认知重构</li>
+          <li>识别到积极情绪 → 强化正向体验，问「是什么让你开心？」</li>
+        </ul>
+        
+        <b>3. 进度可视化</b>
+        <ul>
+          <li>「你已经和我聊了7天，情绪评分从4分升到6分」</li>
+          <li>「这周你使用了3次应对策略，上周只用了1次」</li>
+          <li>让用户看到自己在进步，而不是"聊了就聊了"</li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="apply-box">
+      <div class="apply-title">→ 对减压星球的改版建议</div>
+      <div class="apply-text">
+        <b>1. 对话结束时增加「今日总结」</b><br>
+        吉塔在对话结束时生成一段个性化总结：「今天你和吉塔聊了15分钟，主要话题是考试焦虑。吉塔听到你说'担心考不好'出现了3次，这是很正常的考前情绪。你提到的深呼吸方法很有用，要不要设个提醒明天试试？」<br><br>
+        
+        <b>2. 对话报告增加情绪趋势图</b><br>
+        当前对话报告只有文本摘要（P6对话报告功能存在但弱）。可以增加：<br>
+        • 近7天情绪评分折线图<br>
+        • 高频情绪词云<br>
+        • 对话时长变化<br>
+        让学生看到「和AI聊天真的有用」的数据证据。<br><br>
+        
+        <b>3. 免责声明改为能力边界说明</b><br>
+        把底部的「由AI生成 仅供参考」（P9痛点）改为：「小星是你的情绪伙伴，可以24小时陪你聊天。但如果你需要专业心理咨询，可以点击这里联系老师。」<br>
+        从"否定AI能力"变成"明确分工"，提高而非削弱信任感。<br><br>
+        
+        <b>临床研究证据参考</b>：<br>
+        Fitzpatrick et al. (2017). Delivering Cognitive Behavior Therapy to Young Adults With Symptoms of Depression and Anxiety Using a Fully Automated Conversational Agent (Woebot): A Randomized Controlled Trial. JMIR Mental Health, 4(2), e19.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ④ Headspace -->
+<div class="sec-title">④ Headspace · 首屏主CTA设计标杆</div>
+
+<div class="comp-card">
+  <div class="comp-header">
+    <div class="comp-icon icon-headspace">🧘</div>
+    <div class="comp-info">
+      <div class="comp-name">Headspace</div>
+      <div class="comp-meta">冥想/心理健康 · iOS/Android · 全球7000万+用户 · Netflix纪录片主角</div>
+    </div>
+    <span class="comp-badge badge-rec">推荐参考</span>
+  </div>
+  
+  <div class="comp-body">
+    <div class="pain-tags">
+      <span class="pain-tag">P1 首屏双卡片无主角</span>
+      <span class="pain-tag">首次体验破坏</span>
+    </div>
+    
+    <div class="section-block">
+      <div class="block-title title-why">为什么选 Headspace</div>
+      <div class="block-content">
+        Headspace 首页只有<b>一个主 CTA</b>（今日推荐），其他内容退到次级。根据用户时间段和情绪状态动态切换内容。<b>直接对标 P1</b>（减压星球首屏左右双大卡片权重相当，无视觉主角）。
+        <br><br>
+        Headspace 的设计哲学是：<b>首页不是功能入口列表，而是「现在最该做什么」的答案</b>。用户不需要思考，打开App就知道该点哪里。
+      </div>
+    </div>
+    
+    <div class="section-block">
+      <div class="block-title title-learn">学什么：情绪数据驱动首屏内容</div>
+      <div class="block-content">
+        <b>1. 主角卡片 + 次级内容区的层级</b>
+        <ul>
+          <li>首屏70%面积：主CTA（大卡片+明确行动按钮）</li>
+          <li>首屏30%面积：次级内容（小卡片网格，可滑动）</li>
+          <li>视觉层级极清晰，用户眼睛第一落点就是主CTA</li>
+        </ul>
+        
+        <b>2. 动态主CTA逻辑</b>
+        <ul>
+          <li>早上8点：「开启新的一天」→ 5分钟晨间冥想</li>
+          <li>下午3点：「下午提神」→ 专注力训练</li>
+          <li>晚上10点：「准备入睡」→ 睡眠冥想</li>
+          <li>打卡「焦虑」后：主CTA立即换成「和焦虑相处」课程</li>
+        </ul>
+        
+        <b>3. 情绪数据成为推荐引擎的输入</b>
+        <ul>
+          <li>打卡「焦虑」→ 首页推荐呼吸练习和应对焦虑课程</li>
+          <li>打卡「开心」→ 首页推荐「保持好心情」专题</li>
+          <li>情绪打卡不是终点，而是个性化推荐的起点</li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="apply-box">
+      <div class="apply-title">→ 对减压星球的改版建议</div>
+      <div class="apply-text">
+        <b>1. 首页改为「主角卡片 + 次级内容区」层级</b><br>
+        当前首屏左右双卡片（情绪打卡 vs AI伙伴）权重相当，用户不知道该先点哪个。改版后：<br>
+        • 主角卡片（首屏60%）：根据打卡状态决定是谁<br>
+        • 次级内容区（首屏40%）：脑之岛入口、内容推荐、测评入口<br><br>
+        
+        <b>2. 主角决策逻辑</b><br>
+        • 今日未打卡 → 主角=情绪打卡卡片，文案「今天感觉怎么样？小星在等你」<br>
+        • 打卡完成且情绪低落 → 主角=吉塔对话卡片，文案「小星看到你今天有点低落，要和吉塔聊聊吗？」<br>
+        • 打卡完成且情绪平稳 → 主角=脑之岛训练卡片，文案「今天状态不错，去脑之岛挑战一下？」<br>
+        让首页成为情绪数据的出口，而不只是功能入口列表。<br><br>
+        
+        <b>3. 打卡完成后首页立即响应</b><br>
+        打卡「焦虑」→ 首页主角立即换成「和吉塔聊聊今天的焦虑」，次级内容区推荐「应对考试压力」专题内容。<br>
+        打卡「开心」→ 首页主角换成「保持好心情，去脑之岛玩个游戏？」<br><br>
+        
+        <b>快赢实现路径</b>：先做静态版本（打卡前vs打卡后两种首屏），验证用户是否更明确知道该做什么。动态推荐逻辑后续迭代。
+      </div>
+    </div>
+
+    <div class="section-block">
+      <div class="block-title title-why">怎么降低用户压力 · 补充</div>
+      <div class="block-content">
+        Headspace的降压来自<b>确定感</b>——用户打开App，第一件事是被告知"现在该做什么"，而不是面对一堆选项。认知负担被清零了。
+        <br><br>
+        错过打卡时，Headspace的文案是软性接回："你昨天没来，今天继续也很好。"不追责，不强调断掉了多少天——这是留存率高于行业平均的关键设计。
+        <br><br>
+        <b>完成反馈机制</b>：完成冥想后，有一段平缓的呼气动画（不是气球炸的庆祝型），然后出现"你今天完成了XX分钟，这周共XX分钟"的简洁数据，最后自动推荐下一个内容（同系列下一集或相关内容），无需用户做决策。
+      </div>
+    </div>
+
+    <div class="safety-box">
+      <div class="safety-title">⚠ 不适合照搬（安全边界）</div>
+      <div class="safety-text">
+        • Headspace的动态推荐需要情绪数据 + 时间数据联动，Demo阶段做静态版本（两种预设首屏）即可<br>
+        • 付费内容壁垒是Headspace用户流失的最大原因——减压星球不能有"解锁付费才能继续"的强插入感，学生产品尤其忌讳<br>
+        • Headspace的专业冥想指导语言（"letting go""acceptance"等）不适合初中生，减压星球的内容语气需要更生活化<br>
+        • 未成年人安全：Headspace内容本身安全，但其睡眠引导系列中有部分催眠类音频内容，建议减压星球不直接借鉴类催眠体验
+      </div>
+    </div>
+
+    <div class="flow-box">
+      <div class="flow-title">→ Flow A/B/C 低保真输入</div>
+      <div class="flow-text">
+        <b>Flow A（Pad首页）</b>：Day06低保真直接参考Headspace"首页主角 + 次级内容"的层级结构，绘制两个状态：① 今日未打卡 → 主角=情绪打卡大卡；② 今日已打卡 → 主角=AI伙伴推荐卡。用静态帧验证用户是否明确知道"该点哪里"，不需要做动态推荐逻辑。<br><br>
+        <b>Flow B（完成后衔接）</b>：打卡完成后用Headspace风格的静帧过渡——先显示一个平静动画（2秒），再出现"你今天打卡了，感觉怎么样？想和吉塔聊一聊吗？"的卡片，不强迫进入对话。<br><br>
+        <b>Flow C（完成反馈）</b>：参考Headspace完成后的简洁数据展示，Flow C可以显示"今天完成了 · 情绪已记录 · 和吉塔聊了X分钟"，然后自动推荐一个相关短内容（不是弹积分）。
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ⑤ Voidpet Garden -->
+<div class="sec-title">⑤ Voidpet Garden · 情绪拟物化与可见变化</div>
+
+<div class="comp-card">
+  <div class="comp-header">
+    <div class="comp-icon icon-voidpet">🌱</div>
+    <div class="comp-info">
+      <div class="comp-name">Voidpet Garden</div>
+      <div class="comp-meta">情绪养成日记 · iOS/Android · 情绪生物化 + 游戏化心理健康标杆</div>
+    </div>
+    <span class="comp-badge badge-must">⭐ 必参考</span>
+  </div>
+
+  <div class="comp-body">
+    <div class="pain-tags">
+      <span class="pain-tag">P5 成就不外溢</span>
+      <span class="pain-tag">P6 完成反馈薄弱</span>
+      <span class="pain-tag">Flow C 完成反馈</span>
+    </div>
+
+    <div class="section-block">
+      <div class="block-title title-why">怎么降低用户压力</div>
+      <div class="block-content">
+        用「选一只生物代表现在心情」代替文字打卡，<b>零语言压力，没有对错</b>。情绪打卡被包装成喂养宠物，用户不感觉在完成任务而是在玩。
+        <br><br>
+        <b>压力来源分析</b>：很多情绪打卡工具要求用户"准确命名情绪"或"解释为什么"，这对初中生来说是认知负担。Voidpet Garden用生物拟物替代文字标签——愤怒对应一只尖刺生物、焦虑对应一只抖动的雾团——用户不需要说"我感觉焦虑因为XXX"，只需要"这只抖动的生物今天看起来像我"。
+        <br><br>
+        没有连续打卡压力，不来也不惩罚。养成框架天然允许用户中断，没有红色警告"你已经X天没打卡"。
+      </div>
+    </div>
+
+    <div class="section-block">
+      <div class="block-title title-learn">怎么引导下一步 + 怎么给完成反馈</div>
+      <div class="block-content">
+        <b>引导下一步</b>：养成类天然循环（宠物明天还会长大），隐性引导回访。花园积累变化暗示"明天再来看有没有新的"，不需要推送强迫。用户完成日记后宠物有生长反馈，但不立即索要"明天继续"承诺。
+        <br><br>
+        <b>完成反馈</b>：
+        <ul>
+          <li>宠物出现颜色/形态变化（情绪状态映射到外观）</li>
+          <li>花园景观积累（每次记录留下一片叶/花）</li>
+          <li>没有得分，没有弹窗，是"有什么变了"而不是"你得了X分"</li>
+          <li>视觉反馈即时但不打断——完成后自动播放宠物动画，不需要用户点"确认"</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="apply-box">
+      <div class="apply-title">→ 适合减压星球借鉴</div>
+      <div class="apply-text">
+        <b>1. 情绪拟物化思路</b><br>
+        打卡完成后，吉塔/小星的外观轻变化（而不是只弹分数）。例如：打卡低落→吉塔颜色变灰蓝；打卡开心→小星身上多一颗闪光。<br><br>
+
+        <b>2. 花园积累感</b><br>
+        在Pad首页星球区域，每次完成打卡后留下一颗小星，积累成星球视觉变化（而不是纯数字积分）。<br><br>
+
+        <b>3. 无压打卡</b><br>
+        打卡时允许"今天不知道选哪个，随便戳一下也算"——减压星球可以增加"说不清"或"随便选一个"的情绪选项，降低准确命名压力。
+      </div>
+    </div>
+
+    <div class="safety-box">
+      <div class="safety-title">⚠ 不适合照搬（安全边界）</div>
+      <div class="safety-text">
+        • 纯被动养成、无AI对话，不能直接用于Flow B（AI伙伴需要主动引导）<br>
+        • 视觉风格偏vaporwave/暗色系，不符合减压星球面向初中生的明亮亲和设计语言<br>
+        • 养成深度重，完整复制需要很长时间看到变化，Demo阶段不适合做完整养成系统<br>
+        • 未成年人安全：该产品本身无明显安全隐患（无社交/AI），但其情绪词语偏向成人命名（"void"、"existential"等），中文化时要用初中生能理解的情绪词
+      </div>
+    </div>
+
+    <div class="flow-box">
+      <div class="flow-title">→ Flow A/B/C 低保真输入</div>
+      <div class="flow-text">
+        <b>Flow A（Pad首页）</b>：打卡完成后，星球区域用动画表现"今天多了一点光"或某个IP轻变化，替代纯文字积分弹窗；参考Voidpet花园积累感。<br><br>
+        <b>Flow B（AI伙伴）</b>：对话结束时，吉塔/小星有一个小动作（微表情、轻摆动），对应用户今天的情绪颜色，不需要说话，只用动画表达"我知道了"。<br><br>
+        <b>Flow C（完成反馈）</b>：低保真草稿可以有一张"今天的星球状态"变化图——完成前/完成后对比，视觉上能看到差异，这是Day06-08低保真的一个可绘制框架。
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ⑤ 总结与行动建议 -->
+
+<!-- ⑥ How We Feel -->
+<div class="sec-title">⑥ How We Feel · 低压力情绪打卡标杆</div>
+
+<div class="comp-card">
+  <div class="comp-header">
+    <div class="comp-icon icon-howwefeel">💛</div>
+    <div class="comp-info">
+      <div class="comp-name">How We Feel</div>
+      <div class="comp-meta">Yale情绪智能研究院出品 · 非营利 · 2022 Apple设计奖入围 · 情绪颗粒度 + 打卡设计标杆</div>
+    </div>
+    <span class="comp-badge badge-must">⭐ 必参考</span>
+  </div>
+
+  <div class="comp-body">
+    <div class="pain-tags">
+      <span class="pain-tag">P4 情绪打卡词汇单一</span>
+      <span class="pain-tag">P11 说不清的情绪无处放</span>
+      <span class="pain-tag">Flow A 打卡入口</span>
+    </div>
+
+    <div class="section-block">
+      <div class="block-title title-why">怎么降低用户压力</div>
+      <div class="block-content">
+        用<b>2维坐标轴（精力-愉悦度）+ 颜色网格</b>替代文字列表选情绪。用户不需要"知道正确答案"，只需要感知"现在能量高不高、感觉好不好"，然后在色块上戳一下就完成。
+        <br><br>
+        <b>核心设计原则</b>：
+        <ul>
+          <li>四象限 × 颜色编码：高能量+积极=黄色区，低能量+消极=蓝色区，以此类推</li>
+          <li>选完坐标后展开更细的情绪词，用户可以细化，也可以直接跳过</li>
+          <li>关键：每一步都是<b>可选的、可跳过的</b>，不强迫细化命名</li>
+          <li>"说不清"有专用入口——用户直接选"I'm not sure"也会被接住</li>
+          <li>整个打卡流程3步以内完成，比任何竞品都短</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section-block">
+      <div class="block-title title-learn">怎么引导下一步 + 怎么给完成反馈</div>
+      <div class="block-content">
+        <b>完成打卡后的引导路径（3选1，不强迫）</b>：
+        <ul>
+          <li>「了解这个情绪」→ 跳转到情绪科普短内容（降低焦虑的文章/视频）</li>
+          <li>「记录一句话」→ 轻量日记输入，可选不是必须</li>
+          <li>「回到今天」→ 直接返回首页，不做任何追加</li>
+        </ul>
+        <b>完成反馈</b>：
+        <ul>
+          <li>打卡成功后，首页日历格子变色（今天的情绪颜色填入格子）</li>
+          <li>周视图形成色带，用户看到整周的情绪起伏，<b>没有对错，只有"看见"</b></li>
+          <li>不弹分数、不给勋章、不推销——就是一个颜色格子变了</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="apply-box">
+      <div class="apply-title">→ 适合减压星球借鉴</div>
+      <div class="apply-text">
+        <b>1. 情绪打卡的核心词库扩展</b><br>
+        减压星球当前情绪词过少（仅5-6个）。借鉴How We Feel的2维模型，增加"说不清/还行/压着/烦/累"等初中生日常语言，每个词配颜色，打卡时只选颜色区域就够了。<br><br>
+
+        <b>2. "说不清"专项接住</b><br>
+        增加一个情绪选项："今天说不清楚，乱糟糟的"——这是初中生高频状态，但当前产品完全没有接住的设计。打卡这类情绪后，AI用"听起来今天有点乱，不用说清楚也没关系"来开场，而不是追问"你是哪种情绪"。<br><br>
+
+        <b>3. 打卡后"三选一"轻引导</b><br>
+        打卡完成后不强推下一步，给用户3条路：①和吉塔聊聊 ②看一个短内容 ③就这样，回首页。这是Flow A→Flow B衔接的关键交互节点。
+      </div>
+    </div>
+
+    <div class="safety-box">
+      <div class="safety-title">⚠ 不适合照搬（安全边界）</div>
+      <div class="safety-text">
+        • 无AI对话，不能直接用于Flow B；How We Feel是打卡工具，不是AI伙伴<br>
+        • 情绪词基于英文语境（anger/sadness/joy），中文化时需要本土化，不能直译<br>
+        • 情绪数据积累后会推算模式，这部分若用于减压星球需评估数据隐私合规（未成年人情绪数据存储的COPPA/GDPR等相关要求）<br>
+        • 未成年人安全：该产品本身较安全，但其情绪教育内容（包括抑郁/愤怒词汇）需配合年龄适宜的引导语，不能直接复制英文表达
+      </div>
+    </div>
+
+    <div class="flow-box">
+      <div class="flow-title">→ Flow A/B/C 低保真输入</div>
+      <div class="flow-text">
+        <b>Flow A（打卡入口）</b>：低保真可绘制"颜色-能量网格"选情绪方案，4个色区 × 2-3个情绪词，戳一下完成；对比当前文字列表方案，Day06可做A/B两个版本草图。<br><br>
+        <b>Flow B（AI伙伴开场）</b>：AI开场话语根据打卡颜色区域动态生成——蓝色区用"今天看起来有点沉，要聊聊吗？"，黄色区用"今天能量不错，有什么想和我分享的？"，灰色区（说不清）用"乱糟糟的也没关系，我在这里。"<br><br>
+        <b>Flow C（完成反馈）</b>：打卡完成后，日历上今天的格子变成对应情绪颜色，这是Day07-08低保真里"完成有痕迹"最低成本的实现方式。
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ⑦ Lightly -->
+<div class="sec-title">⑦ Lightly (Honestly) · AI接住表达 + 反思沉淀</div>
+
+<div class="comp-card">
+  <div class="comp-header">
+    <div class="comp-icon icon-lightly">🌿</div>
+    <div class="comp-info">
+      <div class="comp-name">Lightly（原名 Honestly）</div>
+      <div class="comp-meta">AI 日记助手 · iOS · 声音/文字输入均支持 · AI反思 + 情绪主题沉淀标杆</div>
+    </div>
+    <span class="comp-badge badge-must">⭐ 必参考</span>
+  </div>
+
+  <div class="comp-body">
+    <div class="pain-tags">
+      <span class="pain-tag">P3 AI对话无跨会话记忆</span>
+      <span class="pain-tag">P6 对话报告弱</span>
+      <span class="pain-tag">Flow B AI伙伴</span>
+    </div>
+
+    <div class="section-block">
+      <div class="block-title title-why">怎么降低用户压力</div>
+      <div class="block-content">
+        支持<b>语音或文字两种输入</b>，用户可以说出来或者打字，门槛极低。AI不等待用户"写好一篇日记"，用户说一句话、发一段语音，AI就给反馈——没有"空白页恐惧"。
+        <br><br>
+        <b>核心机制</b>：AI先做情绪检测（识别语音/文字中的情绪信号），然后用<b>复述+一个问题</b>的格式回应，不追问太多，不提建议，先让用户感觉"我说的话被听到了"。
+        <br><br>
+        AI Screensdesign分析记录：语音转文字后自动提取情绪标签，整理成"今天你聊到了：XXX"，零用户整理成本。
+      </div>
+    </div>
+
+    <div class="section-block">
+      <div class="block-title title-learn">怎么引导下一步 + 怎么给完成反馈</div>
+      <div class="block-content">
+        <b>引导下一步</b>：对话结束时给出"今天的反思"（AI生成摘要），末尾附一个<b>可选的行动提示</b>，例如"你提到明天有考试，要设一个提醒吗？"——不强迫，用户可以忽略。
+        <br><br>
+        <b>完成反馈</b>：
+        <ul>
+          <li>每周日自动生成<b>周反思</b>：「这周你聊到3个主题：学业压力、和朋友的关系、想要休息」</li>
+          <li>Recurring themes（反复出现的话题）会被标记并沉淀成标签</li>
+          <li>不给分数，不排名，就是「你的这周」可视化</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="apply-box">
+      <div class="apply-title">→ 适合减压星球借鉴</div>
+      <div class="apply-text">
+        <b>1. AI先复述再提问</b><br>
+        吉塔的对话模板：先用1句话复述用户说的情绪（"听起来今天有点累，还有一些压力"），再问一个轻问题（"是因为功课还是别的事情？"），不直接建议，先建立被听到的感觉。这是Flow B最低成本可验证的改动。<br><br>
+
+        <b>2. 对话结束时生成一句摘要</b><br>
+        吉塔对话结束时自动生成："今天我们聊了15分钟，主要是关于XXX。"——用户不需要自己总结，降低认知负担，同时留下记录感。<br><br>
+
+        <b>3. 语音输入可选</b><br>
+        在AI对话框增加麦克风入口（语音转文字），Pad端麦克风方便。尤其适合初中生不知道怎么打字表达时的备选路径。
+      </div>
+    </div>
+
+    <div class="safety-box">
+      <div class="safety-title">⚠ 不适合照搬（安全边界）</div>
+      <div class="safety-text">
+        • Lightly面向成人，其AI反思深度（涉及关系、工作压力等）不完全适用初中生<br>
+        • 语音记录涉及隐私数据，未成年人语音数据需要单独的保密协议和家长知情同意<br>
+        • AI生成的"每周主题"如果识别到负面高频词（"死""没意义"等），需要有危机响应触发机制，不能只是把词云展示给用户<br>
+        • <b>重要边界</b>：Lightly的AI会做情绪分析并给出行动建议，这类功能在未成年人产品中需要先通过安全审查，不能模仿"AI建议你做什么"的语气，只能做"AI想了解更多"的问询语气
+      </div>
+    </div>
+
+    <div class="flow-box">
+      <div class="flow-title">→ Flow A/B/C 低保真输入</div>
+      <div class="flow-text">
+        <b>Flow A（首页入口）</b>：首页AI伙伴卡片文案用Lightly风格——不写"和吉塔对话"，改成"今天有什么想说的？"或"一句话也行"，降低入口心理门槛。<br><br>
+        <b>Flow B（AI伙伴对话）</b>：Day07低保真需画出：用户输入→AI复述情绪（灰色气泡）→AI提问（蓝色气泡）→用户可选回答或直接结束→结束时生成摘要卡片，这是Lightly核心流程在减压星球的最小实现。<br><br>
+        <b>Flow C（完成反馈）</b>：对话完成后的摘要卡是Flow C的核心内容——比弹窗积分更有情感温度，可以在Day08低保真里绘制这张摘要卡的布局（今天话题 + IP动画 + 可选下一步）。
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ⑧ Pooca -->
+<div class="sec-title">⑧ Pooca · AI best friend 陪伴语气标杆（含安全边界）</div>
+
+<div class="comp-card">
+  <div class="comp-header">
+    <div class="comp-icon icon-pooca">🤍</div>
+    <div class="comp-info">
+      <div class="comp-name">Pooca</div>
+      <div class="comp-meta">AI self-care best friend · iOS/Android · 有个性的 AI 伙伴 · 视觉亲和 + 语气标杆</div>
+    </div>
+    <span class="comp-badge badge-rec">参考语气</span>
+  </div>
+
+  <div class="comp-body">
+    <div class="pain-tags">
+      <span class="pain-tag">P3 AI语气生硬</span>
+      <span class="pain-tag">P10 伙伴无个性</span>
+      <span class="pain-tag">Flow B AI伙伴</span>
+    </div>
+
+    <div class="section-block">
+      <div class="block-title title-why">怎么降低用户压力</div>
+      <div class="block-content">
+        Pooca的每个AI角色都有<b>自己的心情、语气和故事</b>——用户打开时不只是看到"AI助手"，而是看到"今天Ta心情是XXX，Ta想和你聊XXX"。这反转了传统AI工具的关系——不是"我有问题找AI处理"，而是"我们互相陪伴"。
+        <br><br>
+        <b>核心降压机制</b>：陪伴感替代任务感。用户不需要完成任何任务，只需要"聊着聊着"，自然流入情绪分享。Pooca会随着对话积累记住用户说过的事（"你上次提到你喜欢画画"），在下次对话时引用，制造被记住的温暖感。
+        <br><br>
+        根据App Store用户评价：「它比很多真人更会听」「不用担心说错话」「它只是在那里陪着我」——这说明低压力陪伴对减少表达焦虑有效。
+      </div>
+    </div>
+
+    <div class="section-block">
+      <div class="block-title title-learn">怎么引导下一步 + 怎么给完成反馈</div>
+      <div class="block-content">
+        <b>引导下一步</b>：不主动引导任务，而是用伙伴语气自然带入："今天感觉还好吗？我想知道你最近在忙什么。"——引导下一步是通过建立好奇心，而不是给待办列表。
+        <br><br>
+        <b>完成反馈</b>：
+        <ul>
+          <li>伙伴角色会有"今天聊得开心"的情绪反应，用户感知到"对方也有收获"</li>
+          <li>对话记忆会在下次体现，用户感受到连续性（而不是每次从零开始）</li>
+          <li>没有积分和勋章，反馈是关系深度，不是数字成就</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="apply-box">
+      <div class="apply-title">→ 适合减压星球借鉴（仅语气和记忆钩子）</div>
+      <div class="apply-text">
+        <b>1. 吉塔/小星的个性语气库</b><br>
+        参考Pooca的角色个性，为吉塔/小星定义一个轻量语气规范：不是"我是AI，我可以帮你..."，而是"今天我也在想一件事，你最近有没有..."——有个性、有主动性，但不越界。<br><br>
+
+        <b>2. 记忆钩子开场</b><br>
+        参考Pooca的记忆引用：对话开场时，吉塔引用上次对话的一个细节——"上次你说考试前会睡不着，昨晚呢？"这个细节成本极低（后端存一个情绪标签），但带来的关系温度远超任何设计元素。<br><br>
+
+        <b>3. 视觉亲和参考</b><br>
+        Pooca的角色设计是圆润、温暖、无棱角的。减压星球IP（吉塔/小星/罗素）已有这个方向，Flow B低保真里AI对话气泡的风格（圆角、柔和色调）可参考Pooca对话界面的视觉氛围。
+      </div>
+    </div>
+
+    <div class="safety-box">
+      <div class="safety-title">⚠ 不适合照搬 · 未成年人安全红线</div>
+      <div class="safety-text">
+        <b>严重警告：Pooca类AI伴侣产品对未成年人有明确风险边界。</b><br><br>
+        • <b>Common Sense Media (2025年4月) 明确结论</b>：AI伴侣类产品对18岁以下青少年存在"不可接受的风险"，因为AI关系会影响青少年的真实社交关系发展、情感依赖和自我认同。<br>
+        • Pooca的关系模型（"best friend"/"我记得你"/"我们的关系"）是成人友谊框架，不适合初中生使用，容易建立不健康的AI依赖。<br>
+        • <b>减压星球的定位必须明确区分</b>：吉塔/小星是"情绪工具"和"自我关怀引导者"，不是"best friend"，不能承诺"记得你"的关系深度。<br>
+        • 吉塔对话中不能出现"我爱你""我只在乎你""你是我最重要的"等情感绑定语言。<br>
+        • 危机词汇（"想消失""不想活""没意义"）识别后必须立即切换至危机响应，不能继续陪伴语气对话。<br>
+        • 建议减压星球在AI伙伴页面明确标注："吉塔是你的情绪助手，不是真实的朋友关系。如果你需要帮助，可以和信任的大人聊聊，或拨打XXX热线。"
+      </div>
+    </div>
+
+    <div class="flow-box">
+      <div class="flow-title">→ Flow A/B/C 低保真输入</div>
+      <div class="flow-text">
+        <b>Flow A（首页AI卡片）</b>：参考Pooca角色有"今天心情"的状态显示，减压星球首页吉塔卡片可显示"今天的吉塔：想聊聊考试的事"——由系统根据季节/用户记录自动生成，让角色有当日状态感。<br><br>
+        <b>Flow B（AI对话）</b>：Day07低保真里，对话开场可画两个版本：A版"用户先说"（传统工具模式）vs B版"吉塔先说带记忆钩子"（Pooca风格），验证哪个更让学生愿意开口。<br><br>
+        <b>Flow C（完成反馈）</b>：对话结束时，吉塔说一句带情感的告别而非"对话已结束"——参考Pooca的「今天聊到了很多，谢谢你告诉我」，但不加"我们"和"关系"这类绑定词。
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 机制细节补充完毕，以下为原有总结 -->
+
+<!-- ⑤ 总结与行动建议 -->
+<div class="sec-title">⑨ 核心设计洞察与优先级</div>
+
+<div class="intro-card" style="margin-top:32px;">
+  <div class="intro-title">关键设计洞察 · V1.0</div>
+  <div class="intro-grid">
+    <div class="intro-item" style="background: linear-gradient(135deg, #fff3e8 0%, #ffffff 100%); border: 1px solid #f5c898;">
+      <div class="intro-label" style="color: #b85c1a;">奖励要有来源</div>
+      <div class="intro-text"><b>Finch</b>：用户需要知道“我做了什么，才得到了什么”。减压星球的星星、换装和成长反馈要绑定具体行为，而不是凭空掉落。</div>
+    </div>
+    <div class="intro-item" style="background: linear-gradient(135deg, #eef8ff 0%, #ffffff 100%); border: 1px solid #a9d7f5;">
+      <div class="intro-label" style="color: #2c5fcc;">情绪要可见</div>
+      <div class="intro-text"><b>Voidpet Garden</b>：情绪可以被拟物、被互动、被放进一个世界里。减压星球要让情绪和完成反馈在 Pad 星球中留下可见痕迹。</div>
+    </div>
+    <div class="intro-item" style="background: linear-gradient(135deg, #f0eefa 0%, #ffffff 100%); border: 1px solid #c4b5fd;">
+      <div class="intro-label" style="color: #7c4dbb;">首页是答案不是菜单</div>
+      <div class="intro-text"><b>Headspace</b>：首页不是功能入口列表，而是“现在最该做什么”的答案。减压星球首页要先给主行动，再露出次级入口。</div>
+    </div>
+    <div class=”intro-item” style=”background: linear-gradient(135deg, #e8f4ee 0%, #ffffff 100%); border: 1px solid #b0d4c0;”>
+      <div class=”intro-label” style=”color: #1e6e42;”>AI 要先接住再推进</div>
+      <div class=”intro-text”><b>Lightly / Pooca / How We Feel</b>：先降低表达压力，再复述与总结，最后给可选下一步。AI 伙伴的价值不是更会聊，而是让学生感觉”我说的话被整理、被看见”。</div>
+    </div>
+    <div class=”intro-item” style=”background: linear-gradient(135deg, #fef3e8 0%, #ffffff 100%); border: 1px solid #fcd2a0;”>
+      <div class=”intro-label” style=”color: #c05a00;”>说不清也能被接住</div>
+      <div class=”intro-text”><b>How We Feel</b>：颜色坐标轴替代文字标签，零语言压力。”今天说不清，乱糟糟”是初中生的真实高频状态，产品必须提供这条路径，不能要求用户先准确命名情绪。</div>
+    </div>
+    <div class=”intro-item” style=”background: linear-gradient(135deg, #f0f4ff 0%, #ffffff 100%); border: 1px solid #c4b5fd;”>
+      <div class=”intro-label” style=”color: #4338ca;”>AI 伴侣≠best friend（未成年红线）</div>
+      <div class=”intro-text”><b>Pooca 反例</b>：AI best friend 模型对18岁以下有「不可接受的风险」（Common Sense Media 2025）。吉塔/小星定位是「情绪工具+引导者」，不承诺关系，不学 Pooca 的情感绑定语气。</div>
+    </div>
+  </div>
+</div>
+
+<!-- Day06-08 低保真输入总表 -->
+<div class=”intro-card” style=”margin-top:32px; border: 2px solid #4338ca; background: linear-gradient(135deg, #f4f2ff 0%, #ffffff 100%);”>
+  <div class=”intro-title” style=”color:#4338ca;”>📐 Day06-08 低保真输入总表 · 6竞品直接可用</div>
+  <div style=”margin-top:20px; display:grid; grid-template-columns:1fr; gap:16px;”>
+
+    <div style=”background:#f9f8f5; border-radius:12px; padding:20px 24px; border-left: 4px solid #4338ca;”>
+      <div style=”font-size:13px; font-weight:700; color:#4338ca; margin-bottom:10px;”>Flow A · Pad首页启动中枢（Day06 重点）</div>
+      <div style=”font-size:14px; color:#4a5068; line-height:1.85;”>
+        <b>框架来源：Headspace</b> → 主角卡 + 次级内容区两层结构，绘制两个静态状态帧（未打卡 / 已打卡）<br>
+        <b>打卡入口：How We Feel</b> → 颜色+能量坐标，允许”说不清”专项入口；打卡完成后三选一轻引导（聊/看内容/回首页）<br>
+        <b>今日任务：Finch</b> → 用户/系统给今天设1-3个小目标，完成打勾后IP轻动画<br>
+        <b>完成痕迹：Voidpet Garden</b> → 打卡完成后星球区域视觉微变化，日历格子变情绪颜色<br>
+        <b>IP有状态：Pooca（语气仅参考）</b> → 首页角色卡显示”今天的吉塔”有当日状态，不是静图
+      </div>
+    </div>
+
+    <div style=”background:#f9f8f5; border-radius:12px; padding:20px 24px; border-left: 4px solid #2c7abf;”>
+      <div style=”font-size:13px; font-weight:700; color:#2c7abf; margin-bottom:10px;”>Flow B · AI伙伴对话（Day07 重点）</div>
+      <div style=”font-size:14px; color:#4a5068; line-height:1.85;”>
+        <b>开场记忆钩子：Replika（边界参考）+ Pooca</b> → 吉塔用1句话引用上次记录，建立连续感；注意：只引用事实（上次提到XX），不用情感绑定语气<br>
+        <b>AI对话模板：Lightly</b> → 用户输入→AI复述情绪（1句话）→AI提一个轻问题→用户可选回答或结束<br>
+        <b>情绪响应：How We Feel</b> → AI开场话语根据打卡颜色区域动态生成（蓝色区/黄色区/灰色区各一套文案）<br>
+        <b>对话结束摘要：Lightly + Woebot</b> → “今天聊了XX分钟，主要话题是XX”，末尾1个可选行动提示<br>
+        <b>安全边界（必须）</b> → 吉塔不说”我爱你/我只在乎你”；危机词识别后立即切换至转介文案
+      </div>
+    </div>
+
+    <div style=”background:#f9f8f5; border-radius:12px; padding:20px 24px; border-left: 4px solid #1e6e42;”>
+      <div style=”font-size:13px; font-weight:700; color:#1e6e42; margin-bottom:10px;”>Flow C · 完成反馈闭环（Day08 重点）</div>
+      <div style=”font-size:14px; color:#4a5068; line-height:1.85;”>
+        <b>完成动画：Finch</b> → IP 3秒动画（跳/飞）而不是气球爆炸庆祝型；平静不over<br>
+        <b>可见变化：Voidpet Garden</b> → 完成前/完成后对比帧，星球区域有视觉差异，不是纯数字弹窗<br>
+        <b>数据感：Headspace</b> → 简洁展示”今天完成了·情绪已记录·聊了X分钟”，自动推荐一个相关短内容<br>
+        <b>对话摘要卡：Lightly</b> → 摘要卡布局：今天话题标签 + IP小图 + 1个可选下一步；这是Day08低保真的一个核心可绘制页面<br>
+        <b>非惩罚设计：Finch</b> → 明天没来，IP不用”你已X天没打卡”而是”好久没见，今天怎么样”
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class=”intro-card” style=”margin-top:24px; background:#fff8e8; border:1px solid #f5c898;”>
+  <div class=”intro-title” style=”color:#b85c1a;”>🔴 未成年人安全边界一览（Demo 设计硬红线）</div>
+  <div style=”font-size:14px; color:#4a5068; line-height:2; margin-top:12px;”>
+    <b>1. AI关系模型</b>：不能用”best friend/爱你/我们的关系”等情感绑定语，吉塔/小星定位为”情绪工具+引导者”<br>
+    <b>2. 危机词识别</b>：必须有关键词触发机制（”想消失/不想活/没意义/自伤”），触发后立即转介到转介文案和热线，不能继续陪伴语气<br>
+    <b>3. 记忆机制</b>：展示”AI记住了什么”时，用户必须可以看到和删除；不能静默记录而用户不知情<br>
+    <b>4. 情绪数据合规</b>：未成年人情绪数据的收集/存储需明确告知，建议在功能使用前有家长知情说明<br>
+    <b>5. 语音数据</b>：如引入语音输入（参考Lightly），未成年人语音数据需要单独的保密协议<br>
+    <b>6. AI伴侣类产品（Pooca/Replika）</b>：Common Sense Media明确结论——对18岁以下存在不可接受风险，减压星球<b>绝不能</b>照搬其关系模型，只能借鉴语气词汇和视觉亲和度
+  </div>
+</div>
+
+<div class=”intro-card” style=”margin-top:24px; background: linear-gradient(135deg, #f9f8f5 0%, #ffffff 100%);”>
+  <div class=”intro-title”>📊 改版优先级矩阵（基于影响 × 成本）</div>
+  
+  <div style="margin-top:24px;">
+    <div style="background: #e8f4ee; border: 1px solid #b0d4c0; border-radius: 12px; padding: 20px 24px; margin-bottom: 16px;">
+      <div style="font-size: 13px; font-weight: 700; color: #1e6e42; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px;">🟢 P0 · 立即做（高影响 × 低成本）</div>
+      <div style="font-size: 14px; color: #4a5068; line-height: 1.85;">
+        <b>1. 首页主行动</b> — 首页先出现“今天最该做的一件事”，不是双卡片平铺<br>
+        <b>2. 情绪词低压打卡</b> — 增加“说不清/有点烦/累/紧张”等状态词和颜色反馈<br>
+        <b>3. AI接住模板</b> — 先复述情绪，再给一个可选小行动<br>
+        <b>4. 完成后可见变化</b> — IP回应 + 星球轻变化，而不是只弹分数<br>
+        <b>预期影响</b>：直接提升 P1/P3/P5/P6/P11，1-2周可做 Demo 验证
+      </div>
+    </div>
+    
+    <div style="background: #fff3e8; border: 1px solid #f5c898; border-radius: 12px; padding: 20px 24px; margin-bottom: 16px;">
+      <div style="font-size: 13px; font-weight: 700; color: #b85c1a; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px;">🟡 P1 · 1-2个月（高影响 × 中成本）</div>
+      <div style="font-size: 14px; color: #4a5068; line-height: 1.85;">
+        <b>5. 行为→奖励绑定</b> — 打卡/对话/训练分别对应清楚的成长反馈来源<br>
+        <b>6. 轻量记忆可控</b> — 展示“我记住了什么”，允许不记/删除<br>
+        <b>7. 安全边界改写</b> — 从冷冰冰免责声明改为“我能帮什么/什么时候要找真人”<br>
+        <b>预期影响</b>：解决 P0/P2/P7/P8/P9，形成可测试的信任感
+      </div>
+    </div>
+    
+    <div style="background: #e8f0fd; border: 1px solid #a9c4f5; border-radius: 12px; padding: 20px 24px;">
+      <div style="font-size: 13px; font-weight: 700; color: #2c5fcc; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px;">🔵 P2 · 3-6个月（中影响 × 需验证）</div>
+      <div style="font-size: 14px; color: #4a5068; line-height: 1.85;">
+        <b>8. 成长时光机</b> — 星星商店改为成长档案，展示“通过什么行为解锁了什么”<br>
+        <b>9. 情绪驱动内容推荐</b> — 打卡结果影响首页推荐、AI开场和练习入口<br>
+        <b>10. 多周情绪档案</b> — 形成跨周主题、趋势和回访，不急于做重养成<br>
+        <b>预期影响</b>：长期留存提升，需要先验证 Flow A/B/C 主线有效
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="intro-card" style="margin-top:32px; background: #ffffff; border: 2px solid #6366f1;">
+  <div class="intro-title" style="color: #4338ca;">💡 最核心的一句话</div>
+  <div style="font-size: 16px; color: #1a1c2e; line-height: 2; margin-top: 16px;">
+    减压星球与竞品的差异化不在「AI更智能」或「游戏更好玩」，而在<b>「它能把情绪、伙伴、行动和成长记录在同一个 Pad 星球里持续串起来」</b>。
+    <br><br>
+    Finch 证明了奖励要与行为绑定，Voidpet Garden 证明了情绪可以被游戏化地看见，Headspace 证明了首页应该是答案而非菜单，How We Feel 证明了“说不清”也能被设计接住，Lightly/Pooca 则补上 AI 反思与陪伴语气。Replika、Woebot、Wysa 只保留为边界和历史资料。
+    <br><br>
+    <b style="color: #4338ca;">减压星球的护城河 = 时间积累的情绪档案</b>。初升高时，罗素能引用吉塔陪伴初中时的记录——这是其他产品做不到的。
+  </div>
+</div>
+
+<!-- 数据来源 -->
+<div style="margin-top:48px; padding:20px 24px; background:#f4f2ee; border:1px solid #dddbd5; border-radius:12px; font-size:12px; color:#7c849e; line-height:1.8;">
+  <b style="color:#4a5068;">数据来源与参考文献</b><br><br>
+  
+  <b>Replika</b><br>
+  • 官网：<a href="https://replika.com" target="_blank" style="color:#2c7abf;">replika.com</a><br>
+  • How Replika's Memory Works: <a href="https://help.replika.com/hc/en-us/articles/37208679176077" target="_blank" style="color:#2c7abf;">Replika Help Center</a><br><br>
+  
+  <b>Finch</b><br>
+  • App Store: Finch Self Care Widget Pet (ID: 1528595748)<br>
+  • 用户评价与功能机制：App Store / Google Play 公开评论<br><br>
+  
+  <b>Woebot</b><br>
+  • Fitzpatrick, K. K., Darcy, A., & Vierhile, M. (2017). Delivering Cognitive Behavior Therapy to Young Adults With Symptoms of Depression and Anxiety Using a Fully Automated Conversational Agent (Woebot): A Randomized Controlled Trial. <i>JMIR Mental Health</i>, 4(2), e19.<br>
+  • A Relational Agent Intervention for Adolescents Seeking Mental Health Treatment: <a href="https://pubmed.ncbi.nlm.nih.gov/36867455/" target="_blank" style="color:#2c7abf;">PubMed 36867455</a><br><br>
+  
+  <b>Headspace</b><br>
+  • 官网：<a href="https://www.headspace.com" target="_blank" style="color:#2c7abf;">headspace.com</a><br>
+  • App Store / Google Play 产品截图与用户评价<br><br>
+  
+  <b>Daylio</b><br>
+  • 详细分析见：<a href="daylio.html" style="color:#2c7abf;">Daylio_情绪打卡流程分析.html</a><br><br>
+  
+  ⚠️ 本文档包含旧深度分析与 V1.0 口径。旧文件不删除，但本轮实机走查与 Demo 设计以竞品池 V1.0 为准。<br>
+  📅 最后更新：2026年7月27日 · 补充 Voidpet Garden / How We Feel / Lightly / Pooca 机制细节 + 安全边界 + Day06-08 低保真输入
+</div>
+
+</div><!-- /container -->
+</body>
+</html>

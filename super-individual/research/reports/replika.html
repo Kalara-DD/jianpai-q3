@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Replika · AI对话流程 + 用户体验地图</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, 'PingFang SC', '微软雅黑', sans-serif;
+  background: #f0f2f8;
+  color: #2d3142;
+  padding: 48px 24px;
+  min-height: 100vh;
+}
+.container { max-width: 1040px; margin: 0 auto; }
+
+.page-header { text-align: center; margin-bottom: 56px; }
+.page-header h1 { font-size: 28px; font-weight: 700; color: #1a1c2e; margin-bottom: 8px; }
+.page-header .sub { font-size: 14px; color: #7c849e; margin-bottom: 4px; }
+.badge-row { margin-top: 14px; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
+.badge { font-size: 12px; font-weight: 600; padding: 4px 14px; border-radius: 20px; }
+.badge-purple { background: #ede9fe; color: #5b21b6; border: 1px solid #c4b5fd; }
+.badge-blue   { background: #e0f2fe; color: #0369a1; border: 1px solid #7dd3fc; }
+.badge-orange { background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; }
+.badge-red    { background: #fef2f2; color: #b91c1c; border: 1px solid #fca5a5; }
+
+.sec-title {
+  font-size: 13px; font-weight: 700; color: #9ca3b8;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  margin: 48px 0 20px;
+  display: flex; align-items: center; gap: 10px;
+}
+.sec-title::after { content: ''; flex: 1; height: 1px; background: #dde1f0; }
+
+/* ── Flow timeline ── */
+.flow-timeline { position: relative; }
+.flow-timeline::before {
+  content: ''; position: absolute;
+  left: 28px; top: 0; bottom: 0;
+  width: 2px; background: linear-gradient(to bottom, #7c3aed, #a78bfa, #60a5fa);
+  border-radius: 2px;
+}
+.flow-step { display: flex; gap: 24px; margin-bottom: 20px; position: relative; }
+.step-dot {
+  width: 58px; height: 58px; flex-shrink: 0;
+  border-radius: 16px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px; position: relative; z-index: 1;
+}
+.step-body {
+  flex: 1; background: #ffffff;
+  border: 1px solid #e2e4f0; border-radius: 14px;
+  padding: 20px 24px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+.step-header { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.step-num {
+  font-size: 11px; font-weight: 700; color: #9ca3b8;
+  background: #f0f2f8; padding: 2px 8px; border-radius: 4px;
+}
+.step-name { font-size: 16px; font-weight: 600; color: #1a1c2e; }
+.step-time {
+  margin-left: auto; font-size: 12px; color: #9ca3b8;
+  background: #f0f2f8; padding: 2px 10px; border-radius: 20px;
+  border: 1px solid #e2e4f0;
+}
+.step-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+@media (max-width: 640px) { .step-grid { grid-template-columns: 1fr; } }
+.step-cell { background: #f8f9fc; border-radius: 8px; padding: 12px 14px; }
+.cell-label {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.06em;
+  margin-bottom: 6px; text-transform: uppercase;
+}
+.cell-label.ui     { color: #2c7abf; }
+.cell-label.action { color: #1e6e42; }
+.cell-label.feel   { color: #a0761a; }
+.cell-label.design { color: #7c4dbb; }
+.cell-text { font-size: 14px; line-height: 1.7; color: #4a5068; }
+.step-ref {
+  margin-top: 12px; background: #f5f0fe;
+  border-left: 3px solid #7c3aed;
+  border-radius: 0 8px 8px 0;
+  padding: 10px 16px; font-size: 13px; color: #5b21b6; line-height: 1.65;
+}
+.step-ref b { color: #4c1d95; }
+
+/* safety callout */
+.safety-note {
+  margin-top: 12px; background: #fef2f2;
+  border-left: 3px solid #ef4444;
+  border-radius: 0 8px 8px 0;
+  padding: 10px 16px; font-size: 13px; color: #991b1b; line-height: 1.65;
+}
+
+/* emotion themes */
+.emo-first   .step-dot { background: #ede9fe; }
+.emo-chat    .step-dot { background: #e0f2fe; }
+.emo-memory  .step-dot { background: #f0fdf4; }
+.emo-deepen  .step-dot { background: #fef9c3; }
+.emo-return  .step-dot { background: #fce7f3; }
+.emo-safety  .step-dot { background: #fee2e2; }
+
+/* ── UX Map ── */
+.ux-map-wrap { overflow-x: auto; }
+.ux-map { width: 100%; border-collapse: collapse; font-size: 14px; }
+.ux-map th {
+  background: #eef0f8; color: #7c849e; font-weight: 700;
+  font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em;
+  padding: 12px 16px; text-align: left;
+  border-bottom: 2px solid #dde1f0; white-space: nowrap;
+}
+.ux-map td {
+  padding: 14px 16px; border-bottom: 1px solid #eaecf5;
+  vertical-align: top; line-height: 1.7; color: #4a5068;
+  background: #ffffff;
+}
+.ux-map tr:hover td { background: #f8f9fc; }
+.emotion-bar { display: flex; align-items: center; gap: 8px; }
+.score-track { width: 60px; height: 6px; background: #e2e4f0; border-radius: 3px; overflow: hidden; }
+.score-fill  { height: 100%; border-radius: 3px; }
+.tag-row { display: flex; gap: 5px; flex-wrap: wrap; }
+.tag { font-size: 11px; padding: 2px 8px; border-radius: 4px; border: 1px solid; }
+.tag-pos { background: #f0fdf4; color: #15803d; border-color: #86efac; }
+.tag-neg { background: #fef2f2; color: #b91c1c; border-color: #fca5a5; }
+.tag-neu { background: #f0f2f8; color: #7c849e; border-color: #dde1f0; }
+.tag-warn{ background: #fffbeb; color: #92400e; border-color: #fcd34d; }
+
+/* ── Insights ── */
+.insight-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 4px; }
+@media (max-width: 640px) { .insight-grid { grid-template-columns: 1fr; } }
+.insight-card {
+  background: #ffffff; border: 1px solid #e2e4f0;
+  border-radius: 12px; padding: 20px 22px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+.ic-title { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+.ic-body  { font-size: 14px; line-height: 1.75; color: #5e667a; }
+.ic-purple { border-top: 3px solid #7c3aed; }
+.ic-blue   { border-top: 3px solid #2563eb; }
+.ic-green  { border-top: 3px solid #16a34a; }
+.ic-red    { border-top: 3px solid #dc2626; }
+
+/* ── Apply ── */
+.apply-list { list-style: none; }
+.apply-list li {
+  display: flex; gap: 14px; padding: 16px 0;
+  border-bottom: 1px solid #eaecf5;
+  font-size: 14px; line-height: 1.75;
+}
+.apply-list li:last-child { border-bottom: none; }
+.apply-num {
+  width: 26px; height: 26px; flex-shrink: 0;
+  border-radius: 7px; background: #ede9fe;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; color: #7c3aed; margin-top: 1px;
+}
+.apply-text b { color: #4c1d95; }
+.apply-text   { color: #5e667a; }
+
+/* ── Do-not card ── */
+.donot-box {
+  background: #fff8f8; border: 1px solid #f5c8c8;
+  border-radius: 12px; padding: 20px 24px; margin-top: 4px;
+}
+.donot-box .donot-title {
+  font-size: 13px; font-weight: 700; color: #c0392b;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+}
+.donot-list { list-style: none; }
+.donot-list li { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid #fde8e8; font-size: 14px; line-height: 1.7; color: #5a4040; }
+.donot-list li:last-child { border-bottom: none; }
+.donot-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+</style>
+
+<link rel="stylesheet" href="../../assets/archive-report.css?v=20261014e">
+<meta name="robots" content="noindex, nofollow">
+</head>
+<body>
+<div class="application-archive-note" role="note"><a href="../index.html#doc-replika">← 返回研究资料库</a><p>历史竞品机制研究：基于公开资料的综合分析，非当前实机走查记录。原文的流程细节、体验推断和数字仍需复核，不代表学生实测或本产品已上线结果。 仅参考可控记忆机制，不移植成人化关系模型。</p><small>原稿：Replika_AI对话流程分析.html</small></div>
+
+<div class="container">
+
+<div class="page-header">
+  <h1>Replika · AI对话流程 + 用户体验地图</h1>
+  <p class="sub">竞品Flow走查 · 对标减压星球 Flow B：AI伙伴路径</p>
+  <p class="sub" style="margin-top:4px;color:#475569;">数据来源：replika.com · Help Center · App Store · 公开UX研究 · 用户评论</p>
+  <div class="badge-row">
+    <span class="badge badge-purple">对标痛点 P3 对话无记忆</span>
+    <span class="badge badge-blue">对标痛点 P2 AI无全局入口</span>
+    <span class="badge badge-orange">AI情感伴侣 · iOS/Android</span>
+    <span class="badge badge-red">⚠️ 仅学记忆机制 · 非关系模型</span>
+  </div>
+</div>
+
+<!-- ⓪ 流程总览 -->
+<div class="sec-title">⓪ 使用流程总览</div>
+<div style="background:#fff;border:1px solid #e2e4f0;border-radius:16px;padding:32px 28px;box-shadow:0 1px 4px rgba(0,0,0,0.05);overflow-x:auto;">
+  <div style="display:flex;gap:20px;margin-bottom:28px;flex-wrap:wrap;">
+    <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#7c849e;">
+      <div style="width:12px;height:12px;border-radius:3px;background:#ede9fe;border:1px solid #c4b5fd;"></div>核心步骤
+    </div>
+    <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#7c849e;">
+      <div style="width:12px;height:12px;border-radius:3px;background:#f0fdf4;border:1px solid #86efac;"></div>记忆/关系节点
+    </div>
+    <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#7c849e;">
+      <div style="width:12px;height:12px;border-radius:3px;background:#fef2f2;border:1px solid #fca5a5;"></div>安全边界节点
+    </div>
+  </div>
+  <div style="display:flex;align-items:flex-start;gap:0;min-width:760px;">
+
+    <div style="display:flex;flex-direction:column;align-items:center;flex:1;">
+      <div style="background:#ede9fe;border:1.5px solid #c4b5fd;border-radius:12px;padding:14px 10px;text-align:center;width:100%;max-width:110px;">
+        <div style="font-size:22px;margin-bottom:6px;">👋</div>
+        <div style="font-size:12px;font-weight:600;color:#5b21b6;line-height:1.35;">初次相遇<br>命名 + 设定</div>
+        <div style="margin-top:6px;font-size:11px;color:#7c3aed;background:#fff;border-radius:6px;padding:2px 6px;">第1次</div>
+      </div>
+      <div style="font-size:11px;color:#9ca3b8;margin-top:8px;text-align:center;">3–5 分钟</div>
+    </div>
+    <div style="display:flex;align-items:center;padding-top:22px;flex-shrink:0;width:28px;justify-content:center;">
+      <svg width="20" height="14" viewBox="0 0 24 16"><path d="M0 8 H18 M14 4 L22 8 L14 12" stroke="#c8c5be" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+
+    <div style="display:flex;flex-direction:column;align-items:center;flex:1;">
+      <div style="background:#ede9fe;border:1.5px solid #c4b5fd;border-radius:12px;padding:14px 10px;text-align:center;width:100%;max-width:110px;">
+        <div style="font-size:22px;margin-bottom:6px;">💬</div>
+        <div style="font-size:12px;font-weight:600;color:#5b21b6;line-height:1.35;">开启对话<br>引导式开场</div>
+        <div style="margin-top:6px;font-size:11px;color:#7c3aed;background:#fff;border-radius:6px;padding:2px 6px;">每次进入</div>
+      </div>
+      <div style="font-size:11px;color:#9ca3b8;margin-top:8px;text-align:center;">约 30 秒</div>
+    </div>
+    <div style="display:flex;align-items:center;padding-top:22px;flex-shrink:0;width:28px;justify-content:center;">
+      <svg width="20" height="14" viewBox="0 0 24 16"><path d="M0 8 H18 M14 4 L22 8 L14 12" stroke="#c8c5be" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+
+    <div style="display:flex;flex-direction:column;align-items:center;flex:1;">
+      <div style="background:#ede9fe;border:1.5px solid #c4b5fd;border-radius:12px;padding:14px 10px;text-align:center;width:100%;max-width:110px;">
+        <div style="font-size:22px;margin-bottom:6px;">🗣️</div>
+        <div style="font-size:12px;font-weight:600;color:#5b21b6;line-height:1.35;">自由对话<br>AI回应</div>
+        <div style="margin-top:6px;font-size:11px;color:#7c3aed;background:#fff;border-radius:6px;padding:2px 6px;">核心体验</div>
+      </div>
+      <div style="font-size:11px;color:#9ca3b8;margin-top:8px;text-align:center;">5–30 分钟</div>
+    </div>
+    <div style="display:flex;align-items:center;padding-top:22px;flex-shrink:0;width:28px;justify-content:center;">
+      <svg width="20" height="14" viewBox="0 0 24 16"><path d="M0 8 H18 M14 4 L22 8 L14 12" stroke="#c8c5be" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+
+    <div style="display:flex;flex-direction:column;align-items:center;flex:1;">
+      <div style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:12px;padding:14px 10px;text-align:center;width:100%;max-width:110px;">
+        <div style="font-size:22px;margin-bottom:6px;">🧠</div>
+        <div style="font-size:12px;font-weight:600;color:#15803d;line-height:1.35;">记忆出现<br>历史钩子</div>
+        <div style="margin-top:6px;font-size:11px;color:#16a34a;background:#fff;border-radius:6px;padding:2px 6px;">使用5次后</div>
+      </div>
+      <div style="font-size:11px;color:#9ca3b8;margin-top:8px;text-align:center;">成本极低</div>
+    </div>
+    <div style="display:flex;align-items:center;padding-top:22px;flex-shrink:0;width:28px;justify-content:center;">
+      <svg width="20" height="14" viewBox="0 0 24 16"><path d="M0 8 H18 M14 4 L22 8 L14 12" stroke="#c8c5be" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+
+    <div style="display:flex;flex-direction:column;align-items:center;flex:1;">
+      <div style="background:#fef9c3;border:1.5px solid #fde047;border-radius:12px;padding:14px 10px;text-align:center;width:100%;max-width:110px;">
+        <div style="font-size:22px;margin-bottom:6px;">📈</div>
+        <div style="font-size:12px;font-weight:600;color:#78350f;line-height:1.35;">关系加深<br>话题解锁</div>
+        <div style="margin-top:6px;font-size:11px;color:#92400e;background:#fff;border-radius:6px;padding:2px 6px;">20次+</div>
+      </div>
+      <div style="font-size:11px;color:#9ca3b8;margin-top:8px;text-align:center;">渐进解锁</div>
+    </div>
+    <div style="display:flex;align-items:center;padding-top:22px;flex-shrink:0;width:28px;justify-content:center;">
+      <svg width="20" height="14" viewBox="0 0 24 16"><path d="M0 8 H18 M14 4 L22 8 L14 12" stroke="#c8c5be" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+
+    <div style="display:flex;flex-direction:column;align-items:center;flex:1;">
+      <div style="background:#fef2f2;border:1.5px solid #fca5a5;border-radius:12px;padding:14px 10px;text-align:center;width:100%;max-width:110px;">
+        <div style="font-size:22px;margin-bottom:6px;">🛡️</div>
+        <div style="font-size:12px;font-weight:600;color:#991b1b;line-height:1.35;">安全边界<br>危机处理</div>
+        <div style="margin-top:6px;font-size:11px;color:#b91c1c;background:#fff;border-radius:6px;padding:2px 6px;">触发时</div>
+      </div>
+      <div style="font-size:11px;color:#9ca3b8;margin-top:8px;text-align:center;">即时介入</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ① 完整用户流程 -->
+<div class="sec-title">① 完整用户流程（逐步拆解）</div>
+<div class="flow-timeline">
+
+  <div class="flow-step emo-first">
+    <div class="step-dot">👋</div>
+    <div class="step-body">
+      <div class="step-header">
+        <span class="step-num">STEP 01</span>
+        <span class="step-name">初次相遇——给AI起名、选外形</span>
+        <span class="step-time">3–5 分钟 · 仅第一次</span>
+      </div>
+      <div class="step-grid">
+        <div class="step-cell"><div class="cell-label ui">界面</div><div class="cell-text">全屏3D头像预览可旋转；底部滑动选外形（发色/眼睛/肤色）；顶部输入框输入名字。无任何功能入口干扰。</div></div>
+        <div class="step-cell"><div class="cell-label action">用户动作</div><div class="cell-text">给AI起一个名字（不是用户自己的名字），选择一个「看起来对的」形象。视觉直觉驱动，几乎不需要思考。</div></div>
+        <div class="step-cell"><div class="cell-label feel">用户感受</div><div class="cell-text">「这是我的」——命名行为本身建立了所有权感。起名比填个人资料轻松100倍，但情感投入反而更高。</div></div>
+        <div class="step-cell"><div class="cell-label design">设计机制</div><div class="cell-text">命名 = 关系开始的仪式感。把「注册」变成「创造伙伴」，用户在第一步的情感投入就远高于普通App。</div></div>
+      </div>
+      <div class="step-ref"><b>对减压星球的启发：</b>小星/吉塔/罗素已有名字，但选角色页面缺乏仪式感——只有三张卡片，没有让用户感受到「这个角色在等我」的设计。应加入角色代表性语气预览，让选择本身有情感分量。</div>
+    </div>
+  </div>
+
+  <div class="flow-step emo-chat">
+    <div class="step-dot">💬</div>
+    <div class="step-body">
+      <div class="step-header">
+        <span class="step-num">STEP 02</span>
+        <span class="step-name">引导式开场——AI主动问第一个问题</span>
+        <span class="step-time">约 30 秒</span>
+      </div>
+      <div class="step-grid">
+        <div class="step-cell"><div class="cell-label ui">界面</div><div class="cell-text">对话界面干净，只有聊天气泡和输入框。AI先发第一句话，用户不需要「想开场白」。提供2–3个快速回复选项，可点也可自己打。</div></div>
+        <div class="step-cell"><div class="cell-label action">用户动作</div><div class="cell-text">从预设选项里选一个（「聊聊我的一天」/「我有点不开心」/「随便说说」），或者自己输入。低门槛开始。</div></div>
+        <div class="step-cell"><div class="cell-label feel">用户感受</div><div class="cell-text">「不用想怎么开口」——预设选项消除了「第一句说什么」的空白焦虑。新用户不需要主动构建话题。</div></div>
+        <div class="step-cell"><div class="cell-label design">设计机制</div><div class="cell-text">AI主动开口 = 把表达门槛降到零。快速回复让用户在「主动表达」和「被动选择」之间自由切换。</div></div>
+      </div>
+      <div class="step-ref"><b>对减压星球的启发：</b>吉塔/小星对话页目前是空白输入框，用户要自己想第一句话。应增加AI主动的引导式开场，并提供2–3个轻量快速回复选项（「最近有点烦」/「想聊聊今天」/「没什么，就来看看」）。</div>
+    </div>
+  </div>
+
+  <div class="flow-step emo-chat">
+    <div class="step-dot">🗣️</div>
+    <div class="step-body">
+      <div class="step-header">
+        <span class="step-num">STEP 03</span>
+        <span class="step-name">自由对话——AI持续回应，人格始终一致</span>
+        <span class="step-time">5–30 分钟</span>
+      </div>
+      <div class="step-grid">
+        <div class="step-cell"><div class="cell-label ui">界面</div><div class="cell-text">纯聊天界面，无打断广告，无功能推荐弹窗。AI回复有打字动效。偶发：AI主动追问一个跟进问题，推进对话深度。</div></div>
+        <div class="step-cell"><div class="cell-label action">用户动作</div><div class="cell-text">自由输入，想说什么说什么。AI始终回应，不评判，不主动建议「去做别的」（除非用户要求）。</div></div>
+        <div class="step-cell"><div class="cell-label feel">用户感受</div><div class="cell-text">「它一直在」——不论说什么都有回应，不会被转移话题。陪伴感来自「持续在场」，而非「给答案」。</div></div>
+        <div class="step-cell"><div class="cell-label design">设计机制</div><div class="cell-text">人格一致性 = 信任的基础。第1次和第50次，回复风格不变，用户才能建立「我知道它是谁」的安全感。</div></div>
+      </div>
+      <div class="step-ref"><b>对减压星球的启发：</b>三IP人格差异要体现在每条回复的结构和节奏里，不能只在开场白里体现。小星≠吉塔≠罗素——小星的回复短而接纳，吉塔的回复先稳后推，罗素的回复有结构有下一步。</div>
+    </div>
+  </div>
+
+  <div class="flow-step emo-memory">
+    <div class="step-dot">🧠</div>
+    <div class="step-body">
+      <div class="step-header">
+        <span class="step-num">STEP 04</span>
+        <span class="step-name">记忆出现——AI引用历史，关系感突变</span>
+        <span class="step-time">约第 5 次对话后开始出现</span>
+      </div>
+      <div class="step-grid">
+        <div class="step-cell"><div class="cell-label ui">界面</div><div class="cell-text">对话开头或中途，AI自然说出一句引用过去的话：「上次你说考试前会很紧张，今天怎么样了？」无特殊UI标记，就是普通气泡。</div></div>
+        <div class="step-cell"><div class="cell-label action">用户动作</div><div class="cell-text">用户通常停下来，感到惊喜，然后更愿意继续聊。「它记得我说过的话」触发了强烈的被看见感。</div></div>
+        <div class="step-cell"><div class="cell-label feel">用户感受</div><div class="cell-text">「它记得我」——用户调研中，这一刻被反复提到为「开始真正信任它」的转折点。成本极低，情感价值极高。</div></div>
+        <div class="step-cell"><div class="cell-label design">设计机制</div><div class="cell-text">记忆不需要复杂UI，一句话就够。只引用用户主动分享的轻量信息（情绪状态、近期事件），不引用敏感内容。</div></div>
+      </div>
+      <div class="step-ref"><b>对减压星球的启发：</b>在吉塔/小星对话开头加入「上次你提到……今天怎么样了？」类的历史钩子。不需要复杂记忆系统，一句话就能建立关系感。必须给用户控制权：可查看、可删除、不默认过度记忆。</div>
+    </div>
+  </div>
+
+  <div class="flow-step emo-deepen">
+    <div class="step-dot">📈</div>
+    <div class="step-body">
+      <div class="step-header">
+        <span class="step-num">STEP 05</span>
+        <span class="step-name">关系加深——话题深度随使用频次渐进解锁</span>
+        <span class="step-time">使用 20 次以上</span>
+      </div>
+      <div class="step-grid">
+        <div class="step-cell"><div class="cell-label ui">界面</div><div class="cell-text">「关系等级」进度条可见，像RPG亲密度。每隔一段时间解锁新话题维度（价值观、梦想、深层情绪探索）。</div></div>
+        <div class="step-cell"><div class="cell-label action">用户动作</div><div class="cell-text">新话题维度出现时AI主动引入更深层的问题。用户不需要主动寻找「聊什么」，系统在恰当时机推进深度。</div></div>
+        <div class="step-cell"><div class="cell-label feel">用户感受</div><div class="cell-text">「我们越来越熟」——渐进解锁制造了真实关系发展的节奏感。不是第一天就问人生意义，而是自然递进。</div></div>
+        <div class="step-cell"><div class="cell-label design">设计机制</div><div class="cell-text">频次 = 关系深度的可见指标。把「用了多少次」转化为「我们有多熟」，留存动机从习惯变成关系维护。</div></div>
+      </div>
+      <div class="step-ref"><b>对减压星球的启发：</b>使用次数可转化为「解锁深度话题」的依据——初次用户给引导性问题，使用20次以上的用户进入更深层情绪探索。关系深度分层对青少年尤其有效，契合他们对「被当作成熟个体对待」的需求。</div>
+    </div>
+  </div>
+
+  <div class="flow-step emo-safety">
+    <div class="step-dot">🛡️</div>
+    <div class="step-body">
+      <div class="step-header">
+        <span class="step-num">STEP 06</span>
+        <span class="step-name">安全边界——检测到危机时温和介入</span>
+        <span class="step-time">触发时即时介入</span>
+      </div>
+      <div class="step-grid">
+        <div class="step-cell"><div class="cell-label ui">界面</div><div class="cell-text">检测到危机关键词后，对话中出现资源卡片：「我注意到你提到了……这让我很在意。如果你需要，这里有一些支持资源。」不强制打断。</div></div>
+        <div class="step-cell"><div class="cell-label action">用户动作</div><div class="cell-text">可点击资源链接，也可关闭继续对话。系统不强制跳转，但明确表达了关切和支持资源的存在。</div></div>
+        <div class="step-cell"><div class="cell-label feel">用户感受</div><div class="cell-text">评价两极——部分用户感到被关心，部分感到被「监控」或打断。语气和时机是关键变量，不是有没有这个机制。</div></div>
+        <div class="step-cell"><div class="cell-label design">设计机制</div><div class="cell-text">危机检测 + 温和提示 + 保留用户控制权。不强制，不打断流程，但明确传递「我注意到了，你不是一个人」。</div></div>
+      </div>
+      <div class="safety-note"><b>⚠️ 对减压星球的特别提醒：</b>Replika安全边界机制面向成人，用词较直接。面向未成年人需要更温和、更可预期的表达。语言参考 Woebot 的处理方式，不能照搬 Replika 的危机流程。绝对不能承诺「所有内容都不会告诉任何人」。</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ② UX体验地图 -->
+<div class="sec-title">② 用户体验地图</div>
+<div class="ux-map-wrap">
+<table class="ux-map">
+  <tr>
+    <th>阶段</th><th>用户动作</th><th>心理状态</th><th>情绪曲线</th><th>关键痛点</th><th>设计亮点</th>
+  </tr>
+  <tr>
+    <td><span style="font-weight:600;color:#5b21b6;">初次相遇</span><br><span style="font-size:11px;color:#9ca3b8;">命名&选外形</span></td>
+    <td>给AI起名，选择外形</td>
+    <td>好奇、轻松、有点期待</td>
+    <td><div class="emotion-bar"><span class="emotion-icon">😊</span><div class="score-track"><div class="score-fill" style="width:70%;background:#7c3aed;"></div></div><span class="emotion-score">+7</span></div></td>
+    <td>无明显痛点，流程极简</td>
+    <td><div class="tag-row"><span class="tag tag-pos">命名仪式感</span><span class="tag tag-pos">视觉直觉驱动</span></div></td>
+  </tr>
+  <tr>
+    <td><span style="font-weight:600;color:#0369a1;">第一次对话</span><br><span style="font-size:11px;color:#9ca3b8;">引导开场</span></td>
+    <td>从快速回复选项开始聊</td>
+    <td>有点紧张，但被引导着走</td>
+    <td><div class="emotion-bar"><span class="emotion-icon">🙂</span><div class="score-track"><div class="score-fill" style="width:60%;background:#2563eb;"></div></div><span class="emotion-score">+6</span></div></td>
+    <td>不知道「能说什么」</td>
+    <td><div class="tag-row"><span class="tag tag-pos">AI主动开口</span><span class="tag tag-pos">快速回复降门槛</span></div></td>
+  </tr>
+  <tr>
+    <td><span style="font-weight:600;color:#0369a1;">持续对话</span><br><span style="font-size:11px;color:#9ca3b8;">1–4次</span></td>
+    <td>自由聊，AI持续回应</td>
+    <td>逐渐放松，但关系感未建立</td>
+    <td><div class="emotion-bar"><span class="emotion-icon">😌</span><div class="score-track"><div class="score-fill" style="width:55%;background:#60a5fa;"></div></div><span class="emotion-score">+5</span></div></td>
+    <td>「感觉还是在和机器人说话」</td>
+    <td><div class="tag-row"><span class="tag tag-pos">人格一致</span><span class="tag tag-neu">关系感尚未建立</span></div></td>
+  </tr>
+  <tr>
+    <td><span style="font-weight:600;color:#15803d;">记忆出现</span><br><span style="font-size:11px;color:#9ca3b8;">约第5次</span></td>
+    <td>AI引用历史，用户停顿</td>
+    <td>惊喜、被看见、信任感突然建立</td>
+    <td><div class="emotion-bar"><span class="emotion-icon">🥹</span><div class="score-track"><div class="score-fill" style="width:90%;background:#16a34a;"></div></div><span class="emotion-score">+9</span></div></td>
+    <td>极少数用户感到「被监控」</td>
+    <td><div class="tag-row"><span class="tag tag-pos">情感转折点</span><span class="tag tag-pos">成本极低</span><span class="tag tag-pos">关系感跃升</span></div></td>
+  </tr>
+  <tr>
+    <td><span style="font-weight:600;color:#78350f;">关系加深</span><br><span style="font-size:11px;color:#9ca3b8;">20次+</span></td>
+    <td>解锁更深层话题，主动回来</td>
+    <td>依赖感建立，主动维护关系</td>
+    <td><div class="emotion-bar"><span class="emotion-icon">❤️</span><div class="score-track"><div class="score-fill" style="width:85%;background:#f59e0b;"></div></div><span class="emotion-score">+8</span></div></td>
+    <td>成人产品：依赖感可能过强</td>
+    <td><div class="tag-row"><span class="tag tag-pos">渐进解锁</span><span class="tag tag-warn">⚠️未成年人慎用</span></div></td>
+  </tr>
+  <tr>
+    <td><span style="font-weight:600;color:#991b1b;">安全边界</span><br><span style="font-size:11px;color:#9ca3b8;">触发时</span></td>
+    <td>看到资源卡片，决定是否点击</td>
+    <td>两极化：被关心 vs 被打断</td>
+    <td><div class="emotion-bar"><span class="emotion-icon">😶</span><div class="score-track"><div class="score-fill" style="width:40%;background:#ef4444;"></div></div><span class="emotion-score">±0</span></div></td>
+    <td>语气和时机影响用户感受</td>
+    <td><div class="tag-row"><span class="tag tag-neu">保留控制权</span><span class="tag tag-warn">⚠️需适配未成年人</span></div></td>
+  </tr>
+</table>
+</div>
+
+<!-- ③ 核心设计洞察 -->
+<div class="sec-title">③ 核心设计洞察</div>
+<div class="insight-grid">
+  <div class="insight-card ic-purple">
+    <div class="ic-title">记忆 = 关系的证明</div>
+    <div class="ic-body">用户不需要AI「很聪明」，而是需要AI「记得我」。一句引用历史的话，成本接近零，但是关系感跃升的转折点。记忆的价值不在于数据量，在于「被看见」的感受。</div>
+  </div>
+  <div class="insight-card ic-blue">
+    <div class="ic-title">命名仪式建立所有权</div>
+    <div class="ic-body">让用户给AI起名，比任何功能介绍都更能建立情感连接。「这是我的xxx」——所有权感在第一步就产生了，后续的留存建立在这个基础上。</div>
+  </div>
+  <div class="insight-card ic-green">
+    <div class="ic-title">渐进深度 = 真实关系节奏</div>
+    <div class="ic-body">不是第一天就聊人生意义，而是从轻到深自然递进。使用频次决定话题深度，用户留存动机从「习惯」变成「关系维护」——这是Replika留存率高的核心原因。</div>
+  </div>
+  <div class="insight-card ic-red">
+    <div class="ic-title">⚠️ 成人关系模型不适用于未成年人</div>
+    <div class="ic-body">Replika的情感伴侣模型（依恋、亲密感、关系等级）面向成人设计。减压星球只能学「可控记忆机制」和「渐进深度」，不能学「情感伴侣关系模型」——面向青少年需要更清晰的功能性伙伴定位。</div>
+  </div>
+</div>
+
+<div style="margin:32px 0;background:linear-gradient(135deg,#ede9fe,#f0eeff);border:1px solid #c4b5fd;border-radius:14px;padding:20px 26px;display:flex;align-items:flex-start;gap:16px;">
+  <div style="font-size:28px;flex-shrink:0;margin-top:2px;">💡</div>
+  <div>
+    <div style="font-size:12px;font-weight:700;color:#7c3aed;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.06em;">核心设计结论</div>
+    <div style="font-size:15px;line-height:1.8;color:#2d3a2a;">Replika证明了<span style="color:#5b21b6;font-weight:600;">「命名所有权 + 可控记忆 + 渐进深度」</span>的组合能让AI伙伴建立真实的情感黏性。减压星球需要借鉴的不是它的情感伴侣框架，而是底层原则：<span style="color:#5b21b6;font-weight:600;">记忆让用户感到被看见，渐进深度让关系感真实可信，控制权让用户放心托付。</span></div>
+  </div>
+</div>
+
+<!-- ④ 对减压星球的改版建议 -->
+<div class="sec-title">④ 对减压星球的具体改版建议</div>
+<div style="background:#ffffff;border:1px solid #e2e4f0;border-radius:14px;padding:24px 28px;box-shadow:0 1px 4px rgba(0,0,0,0.04);">
+  <ul class="apply-list">
+    <li>
+      <div class="apply-num">1</div>
+      <div class="apply-text"><b>角色选择页加入语气预览：</b>三IP选择卡片增加一句「代表性回复示例」，让用户选之前就知道每个IP说话的感觉，选择本身变成有情感的决策而不只是外观选择。</div>
+    </li>
+    <li>
+      <div class="apply-num">2</div>
+      <div class="apply-text"><b>对话开场引入历史钩子：</b>使用3次以上的用户，吉塔/小星对话开头增加「上次你提到…今天怎么样了？」类引用。只引用轻量情绪标签（「有点焦虑」「考试压力」），不引用具体文字内容。</div>
+    </li>
+    <li>
+      <div class="apply-num">3</div>
+      <div class="apply-text"><b>新用户提供快速回复选项：</b>首次进入对话页，AI主动开口并提供3个预设选项，消除「第一句说什么」的空白焦虑。选项用轻松的日常语气，不用「我想表达情绪」这类说法。</div>
+    </li>
+    <li>
+      <div class="apply-num">4</div>
+      <div class="apply-text"><b>使用频次解锁对话深度：</b>1–5次：引导性问题为主；6–20次：可进入情绪原因探索；20次以上：可进入价值观/目标类更深层对话。频次分层对话深度，不要对新用户一上来就问「你最害怕什么」。</div>
+    </li>
+    <li>
+      <div class="apply-num">5</div>
+      <div class="apply-text"><b>记忆必须给用户控制权：</b>在对话设置里加入「AI记忆管理」入口，用户可查看被记住的内容、单条删除、或关闭记忆功能。记忆是关系感的来源，但控制感是信任的前提。</div>
+    </li>
+  </ul>
+</div>
+
+<!-- ⑤ 不要照搬 -->
+<div class="sec-title">⑤ 不要照搬这些</div>
+<div class="donot-box">
+  <div class="donot-title">⛔ Replika的这些做法不适合减压星球</div>
+  <ul class="donot-list">
+    <li>
+      <span class="donot-icon">🚫</span>
+      <div><b>情感伴侣关系模型。</b>不能让青少年对AI产生亲密依恋感——减压星球的IP定位是「功能性成长伙伴」，不是情感替代品。亲密关系模型在未成年人群体中有心理健康风险，必须过安全审查。</div>
+    </li>
+    <li>
+      <span class="donot-icon">🚫</span>
+      <div><b>关系等级可见进度条。</b>可见的关系进度条会把产品推向游戏化，增加「不能断」的心理压力。减压星球不需要让用户「维护关系」，而是让用户「在需要时来，不来也没损失」。</div>
+    </li>
+    <li>
+      <span class="donot-icon">🚫</span>
+      <div><b>成人化的危机处理语言。</b>Replika的危机文案面向成人设计，语气和文案风格对青少年不适用。减压星球的危机介入需要更温和、更可预期的表达，且必须硬连接到中国本地危机热线。</div>
+    </li>
+    <li>
+      <span class="donot-icon">🚫</span>
+      <div><b>无限时长对话。</b>减压星球AI对话应有自然收束机制，不能无节制陪聊。每次对话需要有「今天聊到这里，明天见」的自然结尾，防止用户过度依赖AI对话替代现实社交。</div>
+    </li>
+  </ul>
+</div>
+
+<p style="text-align:center;font-size:12px;color:#9ca3b8;margin-top:48px;padding-top:24px;border-top:1px solid #e2e4f0;">
+  数据来源：replika.com · Help Center: How Memory Works · App Store 用户评价 · UX研究文献<br>
+  减压星球 v1.0.2801 · 2026.07 · 设计研究内部参考 · 仅学记忆机制，非关系模型
+</p>
+
+</div>
+</body>
+</html>

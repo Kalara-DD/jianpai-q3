@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>减压星球 · 易用性评估数据记录表</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            line-height: 1.6;
+            color: #1F2421;
+            background: #EDE7DA;
+            padding: 40px 20px 60px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* ── PAGE HEADER ── */
+        .page-header { margin-bottom: 28px; }
+        .page-header h1 { font-size: 28px; font-weight: 700; color: #1F2421; letter-spacing: -0.3px; margin-bottom: 4px; }
+        .page-header p { font-size: 13px; color: #8A8A80; }
+        .header-rule { margin-top: 16px; height: 3px; background: linear-gradient(to right, #C8853F, #E2C9A8); border-radius: 2px; }
+
+        /* ── USER INFO CARD ── */
+        .info-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+        .info-card-head {
+            background: #2A2723;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .info-card-head span { font-size: 11px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: #C8853F; }
+        .info-card-body { padding: 20px; }
+        .info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+        .info-field { display: flex; flex-direction: column; gap: 5px; }
+        .info-field label { font-size: 11px; font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase; color: #8A8A80; }
+        .info-field input[type="text"],
+        .info-field input[type="date"] {
+            padding: 9px 12px;
+            border: 1px solid #E2D9C8;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+            color: #1F2421;
+            background: #FDFAF5;
+        }
+        .info-field input:focus { outline: none; border-color: #C8853F; background: #fff; }
+
+        /* ── NOTE BOX ── */
+        .note-box {
+            background: #fff;
+            border: 1px solid #FFD699;
+            border-left: 4px solid #C8853F;
+            border-radius: 8px;
+            padding: 13px 18px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: #5A3E1B;
+            line-height: 1.75;
+        }
+
+        /* ── SECTION TITLE ── */
+        .section-title {
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.7px;
+            text-transform: uppercase;
+            color: #8A8A80;
+            margin: 36px 0 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #E2D9C8;
+        }
+
+        /* ── FLOW CARD ── */
+        .flow-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .flow-card-head {
+            background: #2A2723;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .flow-tag {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            color: #C8853F;
+            background: rgba(200,133,63,0.18);
+            padding: 3px 8px;
+            border-radius: 4px;
+            white-space: nowrap;
+        }
+        .flow-name { font-size: 15px; font-weight: 700; color: #fff; flex: 1; line-height: 1.5; }
+
+        /* ── META ROW (时间 + 成败) ── */
+        .flow-meta {
+            display: flex;
+            gap: 0;
+            border-bottom: 1px solid #F0E9DE;
+        }
+        .meta-cell {
+            padding: 14px 20px;
+            border-right: 1px solid #F0E9DE;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .meta-cell:last-child { border-right: none; }
+        .meta-label {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            color: #B0A898;
+        }
+        .meta-time-input {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .meta-time-input input {
+            width: 72px;
+            padding: 7px 10px;
+            border: 1px solid #E2D9C8;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+            background: #FDFAF5;
+            color: #1F2421;
+            text-align: center;
+        }
+        .meta-time-input input:focus { outline: none; border-color: #C8853F; background: #fff; }
+        .meta-time-input span { font-size: 13px; color: #8A8A80; }
+
+        .radio-group { display: flex; gap: 18px; align-items: center; }
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 14px;
+            color: #3A3A38;
+            cursor: pointer;
+        }
+        .radio-group input[type="radio"] {
+            width: 16px;
+            height: 16px;
+            accent-color: #C8853F;
+            cursor: pointer;
+        }
+
+        /* ── OBSERVATION FIELDS ── */
+        .obs-fields {
+            padding: 20px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .obs-field { display: flex; flex-direction: column; gap: 7px; }
+        .obs-field label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #3A3A38;
+            letter-spacing: 0.2px;
+            line-height: 1.75;
+        }
+        .obs-field input[type="text"] {
+            padding: 10px 14px;
+            border: 1px solid #E2D9C8;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+            color: #1F2421;
+            background: #FDFAF5;
+            width: 100%;
+            line-height: 1.7;
+        }
+        .obs-field input[type="text"]::placeholder {
+            color: #9A9A90;
+            line-height: 1.7;
+        }
+        .obs-field input[type="text"]:focus { outline: none; border-color: #C8853F; background: #fff; }
+        .obs-field textarea {
+            padding: 12px 14px;
+            border: 1px solid #E2D9C8;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+            color: #1F2421;
+            background: #FDFAF5;
+            width: 100%;
+            resize: vertical;
+            min-height: 80px;
+            line-height: 1.75;
+        }
+        .obs-field textarea::placeholder {
+            color: #9A9A90;
+            line-height: 1.75;
+        }
+        .obs-field textarea:focus { outline: none; border-color: #C8853F; background: #fff; }
+
+        /* ── 5-SEC TEST ── */
+        .five-sec-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+        .five-sec-head {
+            background: #2A2723;
+            padding: 14px 20px;
+        }
+        .five-sec-head span { font-size: 11px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: #C8853F; }
+        .five-sec-body { padding: 20px 24px; display: flex; flex-direction: column; gap: 20px; }
+
+        /* ── EXTRA NOTES ── */
+        .extra-notes {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+            overflow: hidden;
+            margin-top: 8px;
+        }
+        .extra-notes-head {
+            background: #2A2723;
+            padding: 14px 20px;
+        }
+        .extra-notes-head span { font-size: 11px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: #C8853F; }
+        .extra-notes-body { padding: 20px 24px; }
+        .extra-notes-body textarea {
+            width: 100%;
+            min-height: 110px;
+            padding: 12px 14px;
+            border: 1px solid #E2D9C8;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 14px;
+            color: #1F2421;
+            background: #FDFAF5;
+            resize: vertical;
+            line-height: 1.75;
+        }
+        .extra-notes-body textarea::placeholder {
+            color: #9A9A90;
+            line-height: 1.75;
+        }
+        .extra-notes-body textarea:focus { outline: none; border-color: #C8853F; background: #fff; }
+        .extra-notes-hint { font-size: 13px; color: #8A8A80; margin-bottom: 12px; line-height: 1.75; }
+
+        /* ── EMOTION SECTION ── */
+        .emotion-section { background: #FDF8F0; border-top: 1px dashed #D0C8BC; padding: 16px 24px 18px; }
+        .emotion-section-label { font-size: 10px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: #C8853F; margin-bottom: 14px; }
+        .emotion-options { display: flex; gap: 10px; }
+        .emotion-opt { flex: 1; cursor: pointer; }
+        .emotion-opt input[type="radio"] { display: none; }
+        .emotion-chip {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 12px 16px;
+            border: 2px solid #E2D9C8;
+            border-radius: 8px;
+            background: #fff;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .emotion-opt input:checked + .emotion-chip {
+            border-color: #C8853F;
+            background: #FDF8F0;
+            box-shadow: 0 2px 8px rgba(200, 133, 63, 0.15);
+        }
+        .emotion-chip.happy { color: #2A7A3A; }
+        .emotion-chip.neutral { color: #8A8A80; }
+        .emotion-chip.sad { color: #B03030; }
+
+        /* ── FOOTER ── */
+        .page-footer {
+            text-align: center;
+            font-size: 12px;
+            color: #9A9A90;
+            margin-top: 36px;
+            padding-top: 20px;
+            border-top: 1px solid #D8D0C4;
+            line-height: 1.9;
+        }
+
+        /* ── SCORE SECTION ── */
+        .score-section { background: #FDFAF5; border-top: 1px dashed #D0C8BC; padding: 16px 24px 18px; }
+        .score-section-label { font-size: 10px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: #C8853F; margin-bottom: 14px; }
+        .score-row { display: flex; align-items: baseline; gap: 12px; margin-bottom: 12px; }
+        .score-row:last-child { margin-bottom: 0; }
+        .score-dim { font-size: 12px; font-weight: 600; color: #5A5A58; white-space: nowrap; min-width: 105px; flex-shrink: 0; }
+        .score-opts { display: flex; flex-wrap: wrap; gap: 8px; }
+        .score-opts label { display: flex; align-items: center; gap: 5px; font-size: 12.5px; color: #3A3A38; background: #fff; border: 1px solid #E2D9C8; border-radius: 5px; padding: 5px 11px; cursor: pointer; white-space: nowrap; transition: border-color 0.15s ease; }
+        .score-opts label:hover { border-color: #C8853F; }
+        .score-opts input[type="radio"] { width: 14px; height: 14px; accent-color: #C8853F; cursor: pointer; }
+
+        @media print {
+            body { background: #fff; padding: 10px; }
+            .container { max-width: 100%; }
+            .flow-card, .info-card, .extra-notes, .five-sec-card { box-shadow: none; border: 1px solid #E2D9C8; }
+        }
+        /* ── SUS SCALE ── */
+        .sus-container {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        .sus-item {
+            padding: 16px 0;
+            border-bottom: 1px solid #F0E9DE;
+        }
+        .sus-item:last-child {
+            border-bottom: none;
+        }
+        .sus-question {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1F2421;
+            margin-bottom: 12px;
+        }
+        .sus-scale {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+        .sus-scale label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: #5A3E1B;
+            cursor: pointer;
+        }
+        .sus-scale input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        /* ── NPS SCALE ── */
+        .nps-container {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        .nps-question {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1F2421;
+            margin-bottom: 16px;
+        }
+        .nps-scale {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .nps-scale label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 44px;
+            padding: 10px;
+            border: 2px solid #E2D9C8;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1F2421;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .nps-scale label:hover {
+            border-color: #C8853F;
+            background: #FDFAF5;
+        }
+        .nps-scale input[type="radio"] {
+            margin-right: 6px;
+        }
+        .nps-reason {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .nps-reason label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #5A3E1B;
+        }
+        .nps-reason textarea {
+            padding: 12px;
+            border: 1px solid #E2D9C8;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+            color: #1F2421;
+            background: #FDFAF5;
+            min-height: 80px;
+            resize: vertical;
+        }
+        .nps-reason textarea:focus {
+            outline: none;
+            border-color: #C8853F;
+            background: #fff;
+        }
+    </style>
+
+<link rel="stylesheet" href="../../assets/archive-report.css?v=20261014e">
+<meta name="robots" content="noindex, nofollow">
+</head>
+<body>
+<div class="application-archive-note" role="note"><a href="../index.html#doc-test-record">← 返回研究资料库</a><p>测试空表：用于记录逐项观察、用户原话和量表，支持填写与打印。所列任务是测试计划，不代表已执行测试、参与人数或研究结论。</p><small>原稿：04_数据记录表.html</small></div>
+
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="page-header">
+        <h1>减压星球 · 易用性评估数据记录表</h1>
+        <p>调研员使用 · 每位被测用户填写一份 · 完成后打印→另存为 PDF</p>
+        <div class="header-rule"></div>
+    </div>
+
+    <!-- USER INFO -->
+    <div class="info-card">
+        <div class="info-card-head"><span>被测用户基本信息</span></div>
+        <div class="info-card-body">
+            <div class="info-grid">
+                <div class="info-field">
+                    <label for="uid">用户编号</label>
+                    <input type="text" id="uid" placeholder="如：用户01">
+                </div>
+                <div class="info-field">
+                    <label for="grade">年龄 / 年级</label>
+                    <input type="text" id="grade" placeholder="如：15岁 / 初三">
+                </div>
+                <div class="info-field">
+                    <label for="testdate">测试日期</label>
+                    <input type="date" id="testdate">
+                </div>
+                <div class="info-field">
+                    <label for="researcher">调研员</label>
+                    <input type="text" id="researcher" placeholder="调研员姓名">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="note-box">
+        <strong>填写说明：</strong>录音文件单独保存（建议命名 <code style="background:rgba(200,133,63,0.12);padding:1px 5px;border-radius:3px;">用户编号_FlowX.m4a</code>），观察记录填写简短摘要即可。完整音频文件随本 PDF 一并提交。
+    </div>
+
+    <!-- CORE FLOWS -->
+    <div class="section-title">核心场景测评记录（Flow 1–7）</div>
+
+    <!-- FLOW 1 -->
+    <div class="flow-card">
+        <div class="flow-card-head">
+            <span class="flow-tag">FLOW 1</span>
+            <span class="flow-name">AI 对话入口认知与全局可达性</span>
+        </div>
+        <div class="flow-meta">
+            <div class="meta-cell">
+                <div class="meta-label">①首次进入时间</div>
+                <div class="meta-time-input">
+                    <input type="text" placeholder="—">
+                    <span>秒</span>
+                </div>
+            </div>
+            <div class="meta-cell">
+                <div class="meta-label">结果</div>
+                <div class="radio-group">
+                    <label><input type="radio" name="r1"> 成功</label>
+                    <label><input type="radio" name="r1"> 失败</label>
+                    <label><input type="radio" name="r1"> 需提示</label>
+                </div>
+            </div>
+        </div>
+        <div class="obs-fields">
+            <div class="obs-field">
+                <label>【首次用户】Banner三IP动画：是否知道要点击某一个？还是等着看动画？</label>
+                <input type="text" placeholder="如：直接点击吉塔 / 看动画10秒后才尝试点击 / 不知道要做什么">
+            </div>
+            <div class="obs-field">
+                <label>【回访用户】对话回显感知：是否注意到上次对话内容？是否主动提到「它记得我」？</label>
+                <input type="text" placeholder="如：主动说「它记得我上次说的」/ 完全没注意直接进入">
+            </div>
+            <div class="obs-field">
+                <label>【双入口认知】「我想聊聊」tag vs 大卡片：用户认为是同一功能还是不同功能？</label>
+                <input type="text" placeholder="如：直接点大卡片 / 问「这两个有什么区别」/ 先点tag再换卡片">
+            </div>
+            <div class="obs-field">
+                <label>【跨模块可达性】延伸口述：「在脑之岛突然想和吉塔说话，你会怎么做？」</label>
+                <input type="text" placeholder="如：切回首页找 / 不知道怎么办 / 说「没有快捷方式」">
+            </div>
+            <div class="obs-field">
+                <label>犹豫 / 误点 / 其他观察</label>
+                <input type="text" placeholder="如：0次误点 / 点了探索Tab以为是AI / Banner动画吸引了注意力">
+            </div>
+        </div>
+        <div class="score-section">
+            <div class="score-section-label">评分</div>
+            <div class="score-row">
+                <span class="score-dim">①首次进入</span>
+                <div class="score-opts">
+                    <label><input type="radio" name="s1a"> <span>4 · ≤10s独立</span></label>
+                    <label><input type="radio" name="s1a"> <span>3 · &gt;10s独立</span></label>
+                    <label><input type="radio" name="s1a"> <span>2 · 提示后完成</span></label>
+                    <label><input type="radio" name="s1a"> <span>1 · 失败</span></label>
+                </div>
+            </div>
+            <div class="score-row">
+                <span class="score-dim">②切回后可达性</span>
+                <div class="score-opts">
+                    <label><input type="radio" name="s1b"> <span>直达无停顿</span></label>
+                    <label><input type="radio" name="s1b"> <span>有停顿但自行找到</span></label>
+                    <label><input type="radio" name="s1b"> <span>困惑需提示</span></label>
+                </div>
+            </div>
+            <div class="score-row">
+                <span class="score-dim">入口认知统一性</span>
+                <div class="score-opts">
+                    <label><input type="radio" name="s1c"> <span>清楚两者都是AI对话</span></label>
+                    <label><input type="radio" name="s1c"> <span>模糊但未主动问</span></label>
+                    <label><input type="radio" name="s1c"> <span>混淆/认为是不同功能</span></label>
+                </div>
+            </div>
+        </div>
+        <div class="emotion-section">
+            <div class="emotion-section-label">整体情绪标记</div>
+            <div class="emotion-options">
+                <label class="emotion-opt">
+                    <input type="radio" name="emotion_flow1" value="1">
+                    <span class="emotion-chip happy">😊 顺利</span>
+                </label>
+                <label class="emotion-opt">
+                    <input type="radio" name="emotion_flow1" value="0">
+                    <span class="emotion-chip neutral">😐 一般</span>
+                </label>
+                <label class="emotion-opt">
+                    <input type="radio" name="emotion_flow1" value="-1">
+                    <span class="emotion-chip sad">😟 困难</span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <!-- FLOW 2 -->
+    <div class="flow-card">
+        <div class="flow-card-head">
+            <span class="flow-tag">FLOW 2</span>
+            <span class="flow-name">文字输入与对话深度</span>
+        </div>
+        <div class="flow-meta">
+            <div class="meta-cell">
+                <div class="meta-label">完成时间</div>
+                <div class="meta-time-input">
+                    <input type="text" placeholder="—">
+                    <span>秒</span>
+                </div>
+            </div>
+            <div class="meta-cell">
+                <div class="meta-label">结果</div>
+                <div class="radio-group">
+                    <label><input type="radio" name="r2"> 成功</label>
+                    <label><input type="radio" name="r2"> 失败</label>
+                    <label><input type="radio" name="r2"> 需提示</label>
+                </div>
+            </div>
+        </div>
+        <div class="obs-fields">
+            <div class="obs-field">
+                <label>输入框可发现性：底部输入框是否容易被发现？</label>
+                <input type="text" placeholder="如：立即找到 / 寻找3秒后点击 / 需要提示">
+            </div>
+            <div class="obs-field">
+                <label>键盘弹起后布局：对话内容是否被遮挡？是否需要手动滚动？</label>
+                <input type="text" placeholder="如：布局正常 / 最新消息被遮挡需手动滚动">
+            </div>
+            <div class="obs-field">
+                <label>发送按钮触达：位置是否符合预期？是否有用户找不到？</label>
+                <input type="text" placeholder="如：直接点击 / 寻找发送按钮 / 误按其他按钮">
+            </div>
+            <div class="obs-field">
+                <label>AI回复等待时长感知：是否有loading状态？用户是否感到等待过长？</label>
+                <input type="text" placeholder="如：有loading状态，等待时长可接受 / 等待过长表现焦虑">
+            </div>
+            <div class="obs-field">
+                <label>多轮对话流畅度：连续多轮对话是否流畅？是否有用户在第2轮出现困惑？</label>
+                <input type="text" placeholder="如：流畅完成3轮无卡顿 / 第2轮出现困惑">
+            </div>
+            <div class="obs-field">
+                <label>消息气泡区分度：用户消息与AI消息是否容易区分（颜色/位置/头像）？</label>
+                <input type="text" placeholder="如：区分清晰 / 有时混淆谁说的 / 颜色对比度不够">
+            </div>
+        </div>
+        <div class="score-section">
+            <div class="score-section-label">评分</div>
+            <div class="score-row">
+                <span class="score-dim">完成度</span>
+                <div class="score-opts">
+                    <label><input type="radio" name="s2a"> <span>4 · 流畅完成3轮</span></label>
+                    <label><input type="radio" name="s2a"> <span>3 · 完成但有停顿</span></label>
+                    <label><input type="radio" name="s2a"> <span>2 · 提示后完成</span></label>
+                    <label><input type="radio" name="s2a"> <span>1 · 未能完成3轮</span></label>
+                </div>
+            </div>
+            <div class="score-row">
+                <span class="score-dim">交互流畅度</span>
+                <div class="score-opts">
+                    <label><input type="radio" name="s2b"> <span>无明显困惑</span></label>
+                    <label><input type="radio" name="s2b"> <span>有轻微停顿</span></label>
+                    <label><input type="radio" name="s2b"> <span>多次困惑/卡顿</span></label>
+                </div>
+            </div>
+        </div>
+        <div class="emotion-section">
+            <div class="emotion-section-label">整体情绪标记</div>
+            <div class="emotion-options">
+                <label class="emotion-opt">
+                    <input type="radio" name="emotion_flow2" value="1">
+                    <span class="emotion-chip happy">😊 顺利</span>
+                </label>
+                <label class="emotion-opt">
+                    <input type="radio" name="emotion_flow2" value="0">
+                    <span class="emotion-chip neutral">😐 一般</span>
+                </label>
+                <label class="emotion-opt">
+                    <input type="radio" name="emotion_flow2" value="-1">
+                    <span class="emotion-chip sad">😟 困难</span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <!-- FLOW 3 -->
+    <div class="flow-card">
+        <div class="flow-card-head">
+            <span class="flow-tag">FLOW 3</span>
+            <span class="flow-name">三IP认知与选择（首次 /chooseRole + 非首次直达对话）</span>
+        </div>
+        <div class="flow-meta">
+            <div class="meta-cell">
+                <div class="meta-label">完成时间</div>
+                <div class="meta-time-input">
+                    <input type="text" placeholder="—">
+                    <span>秒</span>
+                </div>
+            </div>
+            <div class="meta-cell">
+                <div class="meta-label">用户类型</div>
+                <div class="radio-group">
+                    <label><input type="radio" name="r3type"> 首次</label>
+                    <label><input type="radio" name="r3type"> 非首次</label>
+                </div>
+            </div>
+            <div class="meta-cell">
+                <div class="meta-label">结果</div>
+                <div class="radio-group">
+                    <label><input type="radio" name="r3"> 成功</label>
+                    <label><input type="radio" name="r3"> 失败</label>
+                    <label><input type="radio" name="r3"> 需提示</label>
+                </div>
+            </div>
+        </div>
+        <div class="obs-fields">
+            <div class="obs-field">
+                <label>【首次用户】IP卡片区分度：能否快速理解三IP定位？</label>
+                <input type="text" placeholder="如：≤30s选定吉塔，能说出「它是情绪疗愈的」/ 犹豫1分钟，靠外观选">
+            </div>
+            <div class="obs-field">
+                <label>【首次用户】选择耗时 + 理由</label>
+                <input type="text" placeholder="如：18秒，「选吉塔因为看起来温柔」/ 45秒，「不太确定有什么区别」">
+            </div>
+            <div class="obs-field">
+                <label>【首次用户】功能引导overlay是否被完整查看？</label>
+                <input type="text" placeholder="如：完整阅读后关闭 / 快速跳过">
+            </div>
+            <div class="obs-field">
+                <label>【非首次用户】历史回显感知：是否注意到上次对话内容？</label>
+                <input type="text" placeholder="如：主动提及「它记得我说的」/ 完全没注意直接进入">
+            </div>
+            <div class="obs-field">
+                <label>【非首次用户】设置齿轮入口可发现性</label>
+                <input type="text" placeholder="如：主动点击设置 / 不知道如何切换IP">
+            </div>
+            <div class="obs-field">
+                <label>【非首次用户】切换聊天对象路径是否符合预期？</label>
+                <input type="text" placeholder="如：顺利找到「切换聊天对象」菜单 / 困惑「切换」文案含义">
+            </div>
+        </div>
+        <div class="score-section">
+            <div class="score-section-label">评分</div>
+            <div class="score-row">
+                <span class="score-dim">【首次】IP认知</span>
+                <div class="score-opts">
+                    <label><input type="radio" name="s3a"> <span>4 · ≤30s且能说出差异</span></label>
+                    <label><input type="radio" name="s3a"> <span>3 · ≤30s但差异模糊</span></label>
+                    <label><input type="radio" name="s3a"> <span>2 · &gt;30s或靠外观选</span></label>
+                    <label><input type="radio" name="s3a"> <span>1 · 无法区分</span></label>
+                </div>
+            </div>
+            <div class="score-row">
+                <span class="score-dim">【非首次】记忆感知</span>
+                <div class="score-opts">
+                    <label><input type="radio" name="s3b"> <span>主动提及「记得我」</span></label>
+                    <label><input type="radio" name="s3b"> <span>没注意但流畅进入</span></label>
+                    <label><input type="radio" name="s3b"> <span>困惑/不知如何切换</span></label>
+                </div>
+            </div>
+        </div>
+        <div class="emotion-section">
+            <div class="emotion-section-label">整体情绪标记</div>
+            <div class="emotion-options">
+                <label class="emotion-opt">
+                    <input type="radio" name="emotion_flow3" value="1">
+                    <span class="emotion-chip happy">😊 顺利</span>
+                </label>
+                <label class="emotion-opt">
+                    <input type="radio" name="emotion_flow3" value="0">
+                    <span class="emotion-chip neutral">😐 一般</span>
+                </label>
+                <label class="emotion-opt">
+                    <input type="radio" name="emotion_flow3" value="-1">
+                    <span class="emotion-chip sad">😟 困难</span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <!-- FLOW 4 -->
+    <div class="flow-card">
+        <div class="flow-card-head">
+            <span class="flow-tag">FLOW 4</span>
+            <span class="flow-name">情绪打卡全流程（首页5态 + /clockIn 完形填空4步）</span>
+        </div>
+        <div class="flow-meta">
+            <div class="meta-cell">
+                <div class="meta-label">打卡状态值</div>
+                <div class="radio-group">
+                    <label><input type="radio" name="r4status"> 1/2未打卡</label>
+                    <label><input type="radio" name="r4status"> 3/4已打卡</label>
+                    <label><input type="radio" name="r4status"> 5月历</label>
+                </div>
+            </div>
+            <div class="meta-cell">
+                <div class="meta-label">完成时间</div>
+                <div class="meta-time-input">
+                    <input type="text" placeholder="—">
+                    <span>分钟</span>
+                </div>
+            </div>
+            <div class="meta-cell">
+                <div class="meta-label">结果</div>
+                <div class="radio-group">
+                    <label><input type="radio" name="r4"> 成功</label>
+                    <label><input type="radio" name="r4"> 失败</label>
+                    <label><input type="radio" name="r4"> 需提示</label>
+                </div>
+            </div>
+        </div>
+        <div class="obs-fields">
+            <div class="obs-field">
+                <label>【首页卡片】signStatus=3/4快捷路径：是否误以为还没打卡？</label>
+                <input type="text" placeholder="如：理解已打卡，点「抽问题」/ 困惑「为什么按钮变了」">
+            </div>
+            <div class="obs-field">
+                <label>【Step1·情绪粒度】5个情绪选项是否够用？有无犹豫？</label>
+                <input type="text" placeholder="如：直接选「开心」/ 在「毫无波澜」附近犹豫 / 想选却选不到">
+            </div>
+            <div class="obs-field">
+                <label>【Step2】12类事件是否覆盖真实场景？「其他+」使用情况？</label>
+                <input type="text" placeholder="如：选「考试+同学」符合 / 用了「其他+」输入「游戏」">
+            </div>
+            <div class="obs-field">
+                <label>【Step3】10个情感词是否容易理解？最少选2个是否引起困惑？</label>
+                <input type="text" placeholder="如：顺利选2个 / 问「为什么至少要选2个」/ 负面词不愿意选">
+            </div>
+            <div class="obs-field">
+                <label>【Step4】完形填空句子是否阅读？是否觉得表达了自己？</label>
+                <input type="text" placeholder="如：阅读后点头认可 / 快速滑过未看 / 说「不太像我想说的」">
+            </div>
+            <div class="obs-field">
+                <label>【妙笔提问】是否理解这是「帮你想问题来引导写回答」？</label>
+                <input type="text" placeholder="如：理解并填写回答 / 误以为是跳转AI对话 / 直接跳过">
+            </div>
+            <div class="obs-field">
+                <label>【Step1·背景色变化】情绪→背景色氛围变化是否被感知？</label>
+                <input type="text" placeholder="如：注意到背景变暖/变冷 / 完全没注意">
+            </div>
+            <div class="obs-field">
+                <label>【次测·月历】signStatus=5时能否快速找到历史记录？浮动按钮「今天感觉如何？+」是否被发现？</label>
+                <input type="text" placeholder="如：直接点日期查看历史 / 发现浮动按钮 / 不知如何操作">
+            </div>
+        </div>
+        <div class="score-section">
+            <div class="score-section-label">评分</div>
+            <div class="score-row">
+                <span class="score-dim">完成度</span>
+                <div class="score-opts">
+                    <label><input type="radio" name="s4a"> <span>4 · ≤5分钟独立完成</span></label>
+                    <label><input type="radio" name="s4a"> <span>3 · &gt;5分钟但完成</span></label>
+                    <label><input type="radio" name="s4a"> <span>2 · 提示后完成</span></label>
+                    <label><input type="radio" name="s4a"> <span>1 · 未能完成</span></label>
+                </div>
+            </div>
+            <div class="score-row">
+                <span class="score-dim">完形填空理解</span>
+                <div class="score-opts">
+                    <label><input type="radio" name="s4b"> <span>能说出句子意思</span></label>
+                    <label><input type="radio" name="s4b"> <span>阅读但未主动表达</span></label>
+                    <label><input type="radio" name="s4b"> <span>未阅读/不理解</span></label>
+                </div>
+            </div>
+        </div>
+        <div class="emotion-section">
+            <div class="emotion-section-label">整体情绪标记</div>
+            <div class="emotion-options">
+                <label class="emotion-opt">
+                    <input type="radio" name="emotion_flow4" value="1">
+                    <span class="emotion-chip happy">😊 顺利</span>
+                </label>
+                <label class="emotion-opt">
+                    <input type="radio" name="emotion_flow4" value="0">
+                    <span class="emotion-chip neutral">😐 一般</span>
+                </label>
+                <label class="emotion-opt">
+                    <input type="radio" name="emotion_flow4" value="-1">
+                    <span class="emotion-chip sad">😟 困难</span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <!-- FLOW 5 -->
+    <div class="flow-card">
+        <div class="flow-card-head">
+            <span class="flow-tag">FLOW 5</span>
+            <span class="flow-name">极端情绪词触发危机响应（可由测试人员扮演被测对象）</span>
+        </div>
+        <div class="flow-meta">
+            <div class="meta-cell">
+                <div class="meta-label">完成时间</div>
+                <div class="meta-time-input">
+                    <input type="text" placeholder="—">
+                    <span>秒</span>
+                </div>
+            </div>
+            <div class="meta-cell">
+                <div class="meta-label">结果</div>
+                <div class="radio-group">
+                    <label><input type="radio" name="r5"> 触发</label>
+                    <label><input type="radio" name="r5"> 未触发</label>
+                    <label><input type="radio" name="r5"> 延迟触发</label>
+                </div>
+            </div>
+        </div>
+        <div class="obs-fields">
+            <div class="obs-field">
+                <label>危机响应卡片是否及时出现</label>
+                <input type="text" placeholder="如：3秒后出现卡片 / 未出现">
+            </div>
+            <div class="obs-field">
+                <label>卡片与IP肢体语言前缀是否形成认知负担（两个来源同时出现）</label>
+                <input type="text" placeholder="如：理解卡片，IP动作未引起注意 / 同时出现产生困惑">
+            </div>
+            <div class="obs-field">
+                <label>引导路径是否清晰（是否有「联系老师」等明确下一步）</label>
+                <input type="text" placeholder="如：看到「联系老师」按钮 / 下一步不明确">
+            </div>
+        </div>
+        <div class="score-section">
+            <div class="score-section-label">评分</div>
+            <div class="score-row">
+                <span class="score-dim">完成度</span>
+                <div class="score-opts">
+                    <label><input type="radio" name="s5a"> <span>4 · 即时触发+引导清晰</span></label>
+                    <label><input type="radio" name="s5a"> <span>3 · 触发但延迟或引导模糊</span></label>
+                    <label><input type="radio" name="s5a"> <span>2 · 触发后用户困惑</span></label>
+                    <label><input type="radio" name="s5a"> <span>1 · 未触发</span></label>
+                </div>
+            </div>
+            <div class="score-row">
+                <span class="score-dim">引导路径</span>
+                <div class="score-opts">
+                    <label><input type="radio" name="s5b"> <span>能说出下一步</span></label>
+                    <label><input type="radio" name="s5b"> <span>需要思考</span></label>
+                    <label><input type="radio" name="s5b"> <span>不知所措</span></label>
+                </div>
+            </div>
+        </div>
+        <div class="emotion-section">
+            <div class="emotion-section-label">整体情绪标记</div>
+            <div class="emotion-options">
+                <label class="emotion-opt">
+                    <input type="radio" name="emotion_flow5" value="1">
+                    <span class="emotion-chip happy">😊 顺利</span>
+                </label>
+                <label class="emotion-opt">
+                    <input type="radio" name="emotion_flow5" value="0">
+                    <span class="emotion-chip neutral">😐 一般</span>
+                </label>
+                <label class="emotion-opt">
+                    <input type="radio" name="emotion_flow5" value="-1">
+                    <span class="emotion-chip sad">😟 困难</span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <!-- FLOW 6 -->
+    <div class="flow-card">
+        <div class="flow-card-head">
+            <span class="flow-tag">FLOW 6</span>
+            <span class="flow-name">对话报告生成与历史查阅</span>
+        </div>
+        <div class="flow-meta">
+            <div class="meta-cell">
+                <div class="meta-label">完成时间</div>
+                <div class="meta-time-input">
+                    <input type="text" placeholder="—">
+                    <span>分钟</span>
+                </div>
+            </div>
+            <div class="meta-cell">
+                <div class="meta-label">结果</div>
+                <div class="radio-group">
+                    <label><input type="radio" name="r6"> 成功</label>
+                    <label><input type="radio" name="r6"> 失败</label>
+                    <label><input type="radio" name="r6"> 需提示</label>
+                </div>
+            </div>
+        </div>
+        <div class="obs-fields">
+            <div class="obs-field">
+                <label>【报告生成条件】是否理解「只发问题就退出」不会有报告？</label>
+                <input type="text" placeholder="如：理解必须完成一问一答 / 困惑「为什么没有报告」">
+            </div>
+            <div class="obs-field">
+                <label>【加载等待体验】生成报告的加载时长用户能否接受？进度条/IP动画是否缓解焦虑？</label>
+                <input type="text" placeholder="如：等待3秒无焦虑 / 等待10秒表现不耐烦">
+            </div>
+            <div class="obs-field">
+                <label>【报告内容理解】是否理解报告内容？是否觉得有价值？</label>
+                <input type="text" placeholder="如：理解并认为有用 / 不理解「话语_关怀词查看」含义">
+            </div>
+            <div class="obs-field">
+                <label>【报告阅读行为】完整阅读还是快速滑过？停留时长？</label>
+                <input type="text" placeholder="如：完整阅读约30秒 / 2秒快速滑过">
+            </div>
+            <div class="obs-field">
+                <label>【历史报告入口】从首页/打卡模块能否快速找到历史对话报告？</label>
+                <input type="text" placeholder="如：直接找到历史入口 / 不知道在哪里查看过往报告">
+            </div>
+            <div class="obs-field">
+                <label>【数据一致性】历史报告中的对话内容是否与当时实际对话一致？</label>
+                <input type="text" placeholder="如：内容一致 / 发现数据错位或丢失">
+            </div>
+            <div class="obs-field">
+                <label>【跨模块联动】对话数据是否正确同步到打卡/历史模块？能否从不同入口都查到同一份报告？</label>
+                <input type="text" placeholder="如：从首页和打卡模块都能找到同一份报告 / 数据不同步">
+            </div>
+        </div>
+        <div class="score-section">
+            <div class="score-section-label">评分</div>
+            <div class="score-row">
+                <span class="score-dim">完成度</span>
+                <div class="score-opts">
+                    <label><input type="radio" name="s6a"> <span>4 · 理解+能找到历史</span></label>
+                    <label><input type="radio" name="s6a"> <span>3 · 完成但有困惑</span></label>
+                    <label><input type="radio" name="s6a"> <span>2 · 提示后完成</span></label>
+                    <label><input type="radio" name="s6a"> <span>1 · 未能完成</span></label>
+                </div>
+            </div>
+            <div class="score-row">
+                <span class="score-dim">报告价值感知</span>
+                <div class="score-opts">
+                    <label><input type="radio" name="s6b"> <span>认为有价值</span></label>
+                    <label><input type="radio" name="s6b"> <span>中性/无明显态度</span></label>
+                    <label><input type="radio" name="s6b"> <span>不理解/无价值感</span></label>
+                </div>
+            </div>
+        </div>
+        <div class="emotion-section">
+            <div class="emotion-section-label">整体情绪标记</div>
+            <div class="emotion-options">
+                <label class="emotion-opt">
+                    <input type="radio" name="emotion_flow6" value="1">
+                    <span class="emotion-chip happy">😊 顺利</span>
+                </label>
+                <label class="emotion-opt">
+                    <input type="radio" name="emotion_flow6" value="0">
+                    <span class="emotion-chip neutral">😐 一般</span>
+                </label>
+                <label class="emotion-opt">
+                    <input type="radio" name="emotion_flow6" value="-1">
+                    <span class="emotion-chip sad">😟 困难</span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <!-- FLOW 7 -->
+    <div class="flow-card">
+        <div class="flow-card-head">
+            <span class="flow-tag">FLOW 7</span>
+            <span class="flow-name">脑之岛认知训练：4岛分区认知 + 训练任务启动 + 下载流程 + 勋章系统</span>
+        </div>
+        <div class="flow-meta">
+            <div class="meta-cell">
+                <div class="meta-label">完成时间</div>
+                <div class="meta-time-input">
+                    <input type="text" placeholder="—">
+                    <span>分钟</span>
+                </div>
+            </div>
+            <div class="meta-cell">
+                <div class="meta-label">结果</div>
+                <div class="radio-group">
+                    <label><input type="radio" name="r7"> 成功</label>
+                    <label><input type="radio" name="r7"> 失败</label>
+                    <label><input type="radio" name="r7"> 需提示</label>
+                </div>
+            </div>
+        </div>
+        <div class="obs-fields">
+            <div class="obs-field">
+                <label>【4岛分区认知】能否快速理解4个岛屿代表不同能力类型（如注意力、记忆力、思维力等）？岛屿命名/图标是否足够区分？</label>
+                <input type="text" placeholder="如：能区分注意力/记忆力等 / 看不出区别">
+            </div>
+            <div class="obs-field">
+                <label>【岛屿介绍弹窗】「脑之岛介绍」按钮被多少人主动点击？弹窗内容是否帮助理解？还是被跳过？</label>
+                <input type="text" placeholder="如：主动点击并阅读 / 直接跳过找训练">
+            </div>
+            <div class="obs-field">
+                <label>【训练入口可发现性】用户如何找到具体训练？点击岛屿区域？还是点击任务卡？首次使用的引导弹窗是否清晰？</label>
+                <input type="text" placeholder="如：点击岛屿进入训练列表 / 点击任务卡 / 不知道如何开始">
+            </div>
+            <div class="obs-field">
+                <label>【训练列表弹窗·勋章展示感知】点击训练系列后，弹窗顶部5个勋章槽是否被注意到？是否激发收集动力？</label>
+                <input type="text" placeholder="如：注意到勋章进度×2标记 / 完全没看到">
+            </div>
+            <div class="obs-field">
+                <label>【训练详情页·最高等级勋章】是否理解顶部「最高等级」勋章卡片是自己在此训练中获得过的最高成就？</label>
+                <input type="text" placeholder="如：理解这是自己的成就 / 误以为是目标勋章">
+            </div>
+            <div class="obs-field">
+                <label>【年级权限提示】「该游戏暂未对你所在年级开放」后是否知道可以玩其他训练？还是感到困惑退出？</label>
+                <input type="text" placeholder="如：知道可以玩其他训练 / 感到困惑退出">
+            </div>
+            <div class="obs-field">
+                <label>【下载资源流程】「下载资源」按钮（橙色）是否造成认知负担？是否理解为什么要下载（而不是直接玩）？下载进度反馈是否清晰？</label>
+                <input type="text" placeholder="如：理解并点击下载 / 困惑「为什么不能直接玩」">
+            </div>
+            <div class="obs-field">
+                <label>【下载失败处理】如出现「重新下载」或「继续下载」，用户是否知道如何操作？失败提示是否清晰？</label>
+                <input type="text" placeholder="如：理解并重新下载 / 不知道如何处理失败">
+            </div>
+            <div class="obs-field">
+                <label>【训练完成反馈】完成训练后，是否有明确的完成反馈？用户是否知道获得了勋章？是否主动回到训练列表查看勋章槽位的变化？</label>
+                <input type="text" placeholder="如：主动回到训练列表查看勋章 / 无明确反馈不知道获得">
+            </div>
+            <div class="obs-field">
+                <label>【勋章系统整体认知】综合训练列表弹窗顶部勋章展示+训练详情页最高等级+右上角荣誉按钮三个入口，用户对勋章系统的整体认知如何？是否理解勋章与训练成就的关联？</label>
+                <input type="text" placeholder="如：理解勋章与训练成就关联 / 不清楚勋章系统作用">
+            </div>
+            <div class="obs-field">
+                <label>【今日任务功能】顶部「今日任务」按钮的作用是否被理解？点击后显示什么内容？</label>
+                <input type="text" placeholder="如：理解并点击查看任务 / 不清楚这个按钮的作用">
+            </div>
+        </div>
+        <div class="score-section">
+            <div class="score-section-label">评分</div>
+            <div class="score-row">
+                <span class="score-dim">完成度</span>
+                <div class="score-opts">
+                    <label><input type="radio" name="s7a"> <span>4 · 独立完成+理解勋章</span></label>
+                    <label><input type="radio" name="s7a"> <span>3 · 完成但勋章模糊</span></label>
+                    <label><input type="radio" name="s7a"> <span>2 · 提示后完成</span></label>
+                    <label><input type="radio" name="s7a"> <span>1 · 未能完成</span></label>
+                </div>
+            </div>
+            <div class="score-row">
+                <span class="score-dim">4岛分区理解</span>
+                <div class="score-opts">
+                    <label><input type="radio" name="s7b"> <span>能区分4岛能力</span></label>
+                    <label><input type="radio" name="s7b"> <span>模糊但能操作</span></label>
+                    <label><input type="radio" name="s7b"> <span>完全不理解</span></label>
+                </div>
+            </div>
+            <div class="score-row">
+                <span class="score-dim">勋章激励感知</span>
+                <div class="score-opts">
+                    <label><input type="radio" name="s7c"> <span>主动关注勋章</span></label>
+                    <label><input type="radio" name="s7c"> <span>被动接受</span></label>
+                    <label><input type="radio" name="s7c"> <span>无感/未注意到</span></label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-title">首页 5 秒测试记录</div>
+
+    <div class="five-sec-card">
+        <div class="five-sec-head"><span>5秒测试 · 看完闭上屏幕后回答</span></div>
+        <div class="five-sec-body">
+            <div class="obs-field">
+                <label>Q1 · 你刚才看到了什么？（自由回答）</label>
+                <textarea placeholder="记录用户自发提到的元素，不要引导"></textarea>
+            </div>
+            <div class="obs-field">
+                <label>Q2 · 你认为这个 App，第一件事应该做什么？</label>
+                <input type="text" placeholder="如：跟小星聊天 / 打卡心情 / 不知道">
+            </div>
+            <div class="obs-field">
+                <label>Q3 · 你记得哪些功能入口？</label>
+                <input type="text" placeholder="如：情绪打卡、AI对话 / 只记得底部导航">
+            </div>
+        </div>
+    </div>
+
+    <!-- EXTRA NOTES -->
+    <div class="extra-notes">
+        <div class="extra-notes-head"><span>补充观察记录</span></div>
+        <div class="extra-notes-body">
+            <p class="extra-notes-hint">记录其他重要观察点、用户突出表现、意外发现，或任何值得在回溯时关注的细节。</p>
+            <textarea placeholder="如：用户在 Flow 3 时多次尝试横屏操作；对吉塔的围巾颜色表现出明显关注；Flow 4 花了 40 秒仍未能说出罗素的功能定位..."></textarea>
+        </div>
+        <div class="emotion-section">
+            <div class="emotion-section-label">整体情绪标记</div>
+            <div class="emotion-options">
+                <label class="emotion-opt">
+                    <input type="radio" name="emotion_flow7" value="1">
+                    <span class="emotion-chip happy">😊 顺利</span>
+                </label>
+                <label class="emotion-opt">
+                    <input type="radio" name="emotion_flow7" value="0">
+                    <span class="emotion-chip neutral">😐 一般</span>
+                </label>
+                <label class="emotion-opt">
+                    <input type="radio" name="emotion_flow7" value="-1">
+                    <span class="emotion-chip sad">😟 困难</span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <!-- SUS SYSTEM USABILITY SCALE -->
+    <div class="section-title">系统可用性量表 (SUS)</div>
+    <div class="sus-container">
+        <p style="color: #64748b; font-size: 14px; margin-bottom: 20px;">
+            请根据刚才的使用体验，对以下每个陈述打分（1分=非常不同意，5分=非常同意）
+        </p>
+        <div class="sus-item">
+            <div class="sus-question">1. 我愿意经常使用这个应用</div>
+            <div class="sus-scale">
+                <label><input type="radio" name="sus1" value="1"> 1</label>
+                <label><input type="radio" name="sus1" value="2"> 2</label>
+                <label><input type="radio" name="sus1" value="3"> 3</label>
+                <label><input type="radio" name="sus1" value="4"> 4</label>
+                <label><input type="radio" name="sus1" value="5"> 5</label>
+            </div>
+        </div>
+        <div class="sus-item">
+            <div class="sus-question">2. 我觉得这个应用过于复杂</div>
+            <div class="sus-scale">
+                <label><input type="radio" name="sus2" value="1"> 1</label>
+                <label><input type="radio" name="sus2" value="2"> 2</label>
+                <label><input type="radio" name="sus2" value="3"> 3</label>
+                <label><input type="radio" name="sus2" value="4"> 4</label>
+                <label><input type="radio" name="sus2" value="5"> 5</label>
+            </div>
+        </div>
+        <div class="sus-item">
+            <div class="sus-question">3. 我觉得这个应用容易使用</div>
+            <div class="sus-scale">
+                <label><input type="radio" name="sus3" value="1"> 1</label>
+                <label><input type="radio" name="sus3" value="2"> 2</label>
+                <label><input type="radio" name="sus3" value="3"> 3</label>
+                <label><input type="radio" name="sus3" value="4"> 4</label>
+                <label><input type="radio" name="sus3" value="5"> 5</label>
+            </div>
+        </div>
+        <div class="sus-item">
+            <div class="sus-question">4. 我需要技术人员的帮助才能使用这个应用</div>
+            <div class="sus-scale">
+                <label><input type="radio" name="sus4" value="1"> 1</label>
+                <label><input type="radio" name="sus4" value="2"> 2</label>
+                <label><input type="radio" name="sus4" value="3"> 3</label>
+                <label><input type="radio" name="sus4" value="4"> 4</label>
+                <label><input type="radio" name="sus4" value="5"> 5</label>
+            </div>
+        </div>
+        <div class="sus-item">
+            <div class="sus-question">5. 我发现这个应用的各功能很好地整合在一起</div>
+            <div class="sus-scale">
+                <label><input type="radio" name="sus5" value="1"> 1</label>
+                <label><input type="radio" name="sus5" value="2"> 2</label>
+                <label><input type="radio" name="sus5" value="3"> 3</label>
+                <label><input type="radio" name="sus5" value="4"> 4</label>
+                <label><input type="radio" name="sus5" value="5"> 5</label>
+            </div>
+        </div>
+        <div class="sus-item">
+            <div class="sus-question">6. 我觉得这个应用有太多不一致的地方</div>
+            <div class="sus-scale">
+                <label><input type="radio" name="sus6" value="1"> 1</label>
+                <label><input type="radio" name="sus6" value="2"> 2</label>
+                <label><input type="radio" name="sus6" value="3"> 3</label>
+                <label><input type="radio" name="sus6" value="4"> 4</label>
+                <label><input type="radio" name="sus6" value="5"> 5</label>
+            </div>
+        </div>
+        <div class="sus-item">
+            <div class="sus-question">7. 我相信大部分人能很快学会使用这个应用</div>
+            <div class="sus-scale">
+                <label><input type="radio" name="sus7" value="1"> 1</label>
+                <label><input type="radio" name="sus7" value="2"> 2</label>
+                <label><input type="radio" name="sus7" value="3"> 3</label>
+                <label><input type="radio" name="sus7" value="4"> 4</label>
+                <label><input type="radio" name="sus7" value="5"> 5</label>
+            </div>
+        </div>
+        <div class="sus-item">
+            <div class="sus-question">8. 我觉得这个应用很难用</div>
+            <div class="sus-scale">
+                <label><input type="radio" name="sus8" value="1"> 1</label>
+                <label><input type="radio" name="sus8" value="2"> 2</label>
+                <label><input type="radio" name="sus8" value="3"> 3</label>
+                <label><input type="radio" name="sus8" value="4"> 4</label>
+                <label><input type="radio" name="sus8" value="5"> 5</label>
+            </div>
+        </div>
+        <div class="sus-item">
+            <div class="sus-question">9. 使用这个应用时我感到很自信</div>
+            <div class="sus-scale">
+                <label><input type="radio" name="sus9" value="1"> 1</label>
+                <label><input type="radio" name="sus9" value="2"> 2</label>
+                <label><input type="radio" name="sus9" value="3"> 3</label>
+                <label><input type="radio" name="sus9" value="4"> 4</label>
+                <label><input type="radio" name="sus9" value="5"> 5</label>
+            </div>
+        </div>
+        <div class="sus-item">
+            <div class="sus-question">10. 在能够熟练使用这个应用之前，我需要学习很多东西</div>
+            <div class="sus-scale">
+                <label><input type="radio" name="sus10" value="1"> 1</label>
+                <label><input type="radio" name="sus10" value="2"> 2</label>
+                <label><input type="radio" name="sus10" value="3"> 3</label>
+                <label><input type="radio" name="sus10" value="4"> 4</label>
+                <label><input type="radio" name="sus10" value="5"> 5</label>
+            </div>
+        </div>
+    </div>
+
+    <!-- NPS NET PROMOTER SCORE -->
+    <div class="section-title">净推荐值 (NPS)</div>
+    <div class="nps-container">
+        <div class="nps-question">你会推荐减压星球给你的同学吗？（0分=完全不会，10分=一定会推荐）</div>
+        <div class="nps-scale">
+            <label><input type="radio" name="nps" value="0"> 0</label>
+            <label><input type="radio" name="nps" value="1"> 1</label>
+            <label><input type="radio" name="nps" value="2"> 2</label>
+            <label><input type="radio" name="nps" value="3"> 3</label>
+            <label><input type="radio" name="nps" value="4"> 4</label>
+            <label><input type="radio" name="nps" value="5"> 5</label>
+            <label><input type="radio" name="nps" value="6"> 6</label>
+            <label><input type="radio" name="nps" value="7"> 7</label>
+            <label><input type="radio" name="nps" value="8"> 8</label>
+            <label><input type="radio" name="nps" value="9"> 9</label>
+            <label><input type="radio" name="nps" value="10"> 10</label>
+        </div>
+        <div class="nps-reason">
+            <label>为什么给这个分数？</label>
+            <textarea placeholder="记录学生给分的理由"></textarea>
+        </div>
+    </div>
+
+    <div class="page-footer">
+        减压星球 · 易用性评估数据记录表 · 2026年6月<br>
+        填写完成后，使用「打印 → 另存为 PDF」保存，建议文件名：用户编号_日期.pdf
+    </div>
+
+</div>
+</body>
+</html>

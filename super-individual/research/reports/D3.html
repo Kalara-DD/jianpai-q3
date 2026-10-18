@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>减压星球 · 家长端首页原型</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family:'PingFang SC','Noto Sans SC',sans-serif;
+  background:#f0f8ff;
+  color:#2d3142;
+  width:375px;
+  height:812px;
+  overflow:hidden;
+  position:relative;
+}
+
+/* 顶部渐变背景 */
+.top-gradient {
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  height:280px;
+  background:linear-gradient(135deg, #e0f2fe 0%, #dbeafe 50%, #e0e7ff 100%);
+}
+
+/* 主滚动容器 */
+.main-scroll {
+  position:relative;
+  height:100%;
+  overflow-y:auto;
+  padding-bottom:80px;
+}
+
+/* 顶部栏 */
+.top-bar {
+  position:relative;
+  padding:16px 20px 0;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.logo {
+  font-size:20px;
+  font-weight:900;
+  color:#0369a1;
+}
+
+.notification-btn {
+  width:36px;
+  height:36px;
+  border-radius:50%;
+  background:rgba(255,255,255,0.9);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:18px;
+  cursor:pointer;
+  box-shadow:0 2px 8px rgba(0,0,0,0.08);
+  position:relative;
+}
+
+.notification-badge {
+  position:absolute;
+  top:4px;
+  right:4px;
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#f87171;
+}
+
+/* AI咨询师卡片 */
+.ai-coach-card {
+  position:relative;
+  margin:20px 20px 16px;
+  background:#fff;
+  border-radius:24px;
+  padding:24px;
+  box-shadow:0 8px 24px rgba(3,105,161,0.12);
+}
+
+.coach-header {
+  display:flex;
+  align-items:center;
+  gap:16px;
+  margin-bottom:20px;
+}
+
+.coach-avatar {
+  width:72px;
+  height:72px;
+  border-radius:50%;
+  background:linear-gradient(135deg, #60a5fa, #3b82f6);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:42px;
+  box-shadow:0 4px 12px rgba(59,130,246,0.3);
+}
+
+.coach-info {
+  flex:1;
+}
+
+.coach-name {
+  font-size:18px;
+  font-weight:800;
+  color:#0369a1;
+  margin-bottom:4px;
+}
+
+.coach-title {
+  font-size:13px;
+  color:#64748b;
+  margin-bottom:8px;
+}
+
+.coach-badges {
+  display:flex;
+  gap:6px;
+  flex-wrap:wrap;
+}
+
+.badge {
+  background:#e0f2fe;
+  color:#0369a1;
+  border-radius:20px;
+  padding:4px 10px;
+  font-size:11px;
+  font-weight:600;
+}
+
+.quick-chat {
+  background:linear-gradient(135deg, #3b82f6, #2563eb);
+  color:#fff;
+  border-radius:16px;
+  padding:16px;
+  cursor:pointer;
+  transition:all 0.2s;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.quick-chat:active {
+  transform:scale(0.98);
+}
+
+.quick-chat-text {
+  flex:1;
+}
+
+.quick-chat-title {
+  font-size:15px;
+  font-weight:700;
+  margin-bottom:4px;
+}
+
+.quick-chat-subtitle {
+  font-size:12px;
+  opacity:0.85;
+}
+
+.quick-chat-icon {
+  font-size:28px;
+}
+
+/* 孩子情绪记录 */
+.section {
+  padding:0 20px 20px;
+}
+
+.section-header {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:12px;
+}
+
+.section-title {
+  font-size:17px;
+  font-weight:800;
+  color:#1e293b;
+}
+
+.section-more {
+  font-size:13px;
+  color:#3b82f6;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  gap:4px;
+}
+
+/* 情绪时间轴 */
+.emotion-timeline {
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.emotion-item {
+  background:#fff;
+  border-radius:16px;
+  padding:16px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.04);
+  cursor:pointer;
+  transition:all 0.2s;
+}
+
+.emotion-item:active {
+  transform:scale(0.98);
+}
+
+.emotion-item-header {
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:10px;
+}
+
+.emotion-icon-circle {
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:22px;
+}
+
+.emotion-icon-circle.happy {
+  background:#fef3c7;
+}
+
+.emotion-icon-circle.calm {
+  background:#d1fae5;
+}
+
+.emotion-icon-circle.anxious {
+  background:#fed7aa;
+}
+
+.emotion-item-info {
+  flex:1;
+}
+
+.emotion-time {
+  font-size:12px;
+  color:#94a3b8;
+  margin-bottom:2px;
+}
+
+.emotion-status {
+  font-size:14px;
+  font-weight:700;
+  color:#1e293b;
+}
+
+.emotion-tags {
+  display:flex;
+  gap:6px;
+  flex-wrap:wrap;
+  margin-bottom:8px;
+}
+
+.emotion-tag {
+  background:#f1f5f9;
+  color:#64748b;
+  border-radius:12px;
+  padding:3px 10px;
+  font-size:11px;
+}
+
+.emotion-advice {
+  font-size:13px;
+  color:#475569;
+  line-height:1.6;
+  padding:10px 12px;
+  background:#f8fafc;
+  border-radius:10px;
+  border-left:3px solid #3b82f6;
+}
+
+/* 成长数据卡片 */
+.growth-cards {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin-top:12px;
+}
+
+.growth-card {
+  background:#fff;
+  border-radius:16px;
+  padding:16px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.04);
+  cursor:pointer;
+  transition:all 0.2s;
+}
+
+.growth-card:active {
+  transform:scale(0.98);
+}
+
+.growth-card-icon {
+  font-size:28px;
+  margin-bottom:8px;
+}
+
+.growth-card-value {
+  font-size:24px;
+  font-weight:900;
+  color:#0369a1;
+  margin-bottom:2px;
+}
+
+.growth-card-label {
+  font-size:12px;
+  color:#64748b;
+}
+
+/* 底部导航 */
+.bottom-nav {
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  background:#fff;
+  border-top:1px solid #e2e8f0;
+  display:flex;
+  padding:8px 0 20px;
+  box-shadow:0 -2px 12px rgba(0,0,0,0.04);
+}
+
+.nav-item {
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;
+  cursor:pointer;
+  padding:8px 0;
+}
+
+.nav-item.active .nav-icon {
+  color:#3b82f6;
+  transform:scale(1.1);
+}
+
+.nav-item.active .nav-label {
+  color:#3b82f6;
+  font-weight:700;
+}
+
+.nav-icon {
+  font-size:24px;
+  color:#94a3b8;
+  transition:all 0.2s;
+}
+
+.nav-label {
+  font-size:11px;
+  color:#94a3b8;
+  transition:all 0.2s;
+}
+
+/* 滚动条 */
+.main-scroll::-webkit-scrollbar {
+  width:4px;
+}
+
+.main-scroll::-webkit-scrollbar-track {
+  background:transparent;
+}
+
+.main-scroll::-webkit-scrollbar-thumb {
+  background:rgba(59,130,246,0.2);
+  border-radius:2px;
+}
+</style>
+
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="../../assets/archive-report.css?v=20261014e">
+<style id="archive-parent-reading">
+body { width:auto; height:auto; overflow:visible; }
+.archive-parent-scroll { max-width:100%; overflow-x:auto; padding:0 0 24px; }
+.archive-parent-frame { width:375px; height:812px; position:relative; overflow:hidden; margin:0 auto; }
+.archive-parent-frame .bottom-nav { position:absolute; }
+@media (max-width:375px) { .archive-parent-frame { margin:0; } }
+</style>
+</head>
+<body>
+<div class="application-archive-note" role="note"><a href="../index.html#doc-D3">← 返回研究资料库</a><strong>Q3研究基础 · 原报告阅读副本</strong><p><b>家长端原型候选 · 2026.06 批次</b></p><p>历史研究/设计提案；文中评分、预测、预算与排期属于当时的分析或假设，不作为本次已实现业绩。当前采用与状态以成果档案说明为准。</p><p>儿童姓名、情绪指数、聊天摘要与使用数据均为示例；不包含真实学生记录，也不代表已开放的家长查看权限。</p><small>原稿：D3_家长端首页重设计原型.html</small></div>
+
+
+<div class="archive-parent-scroll" tabindex="0" role="region" aria-label="历史家长端原型，窄屏可横向滚动"><div class="archive-parent-frame"><div class="top-gradient"></div>
+
+<div class="main-scroll">
+
+  <!-- 顶部栏 -->
+  <div class="top-bar">
+    <div class="logo">减压星球</div>
+    <div class="notification-btn" onclick="alert('3条新通知')">
+      🔔
+      <div class="notification-badge"></div>
+    </div>
+  </div>
+
+  <!-- AI咨询师卡片 -->
+  <div class="ai-coach-card">
+    <div class="coach-header">
+      <div class="coach-avatar">👩‍🏫</div>
+      <div class="coach-info">
+        <div class="coach-name">AI家育咨询师</div>
+        <div class="coach-title">专属家庭指导</div>
+        <div class="coach-badges">
+          <span class="badge">专业家育AI顾问</span>
+          <span class="badge">24h在线</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="quick-chat" onclick="alert('进入AI对话')">
+      <div class="quick-chat-text">
+        <div class="quick-chat-title">和我聊聊孩子的情况</div>
+        <div class="quick-chat-subtitle">倾诉陪伴 · 安全隐私</div>
+      </div>
+      <div class="quick-chat-icon">💬</div>
+    </div>
+  </div>
+
+  <!-- 孩子情绪记录 -->
+  <div class="section">
+    <div class="section-header">
+      <h2 class="section-title">孩子情绪记录</h2>
+      <div class="section-more" onclick="alert('查看全部')">
+        查看全部 <span>→</span>
+      </div>
+    </div>
+
+    <div class="emotion-timeline">
+      <div class="emotion-item" onclick="alert('查看详情')">
+        <div class="emotion-item-header">
+          <div class="emotion-icon-circle happy">😊</div>
+          <div class="emotion-item-info">
+            <div class="emotion-time">今天 14:20</div>
+            <div class="emotion-status">情绪状态：平静放松</div>
+          </div>
+        </div>
+        <div class="emotion-tags">
+          <span class="emotion-tag">学习压力</span>
+          <span class="emotion-tag">同学关系</span>
+        </div>
+        <div class="emotion-advice">
+          <strong>养育建议：</strong>孩子今天情绪比较稳定，在与AI对话中主动表达了对学习的积极态度。建议家长可以适当给予鼓励。
+        </div>
+      </div>
+
+      <div class="emotion-item" onclick="alert('查看详情')">
+        <div class="emotion-item-header">
+          <div class="emotion-icon-circle anxious">😰</div>
+          <div class="emotion-item-info">
+            <div class="emotion-time">昨天 16:45</div>
+            <div class="emotion-status">情绪状态：有些焦虑</div>
+          </div>
+        </div>
+        <div class="emotion-tags">
+          <span class="emotion-tag">考试压力</span>
+        </div>
+        <div class="emotion-advice">
+          <strong>养育建议：</strong>孩子对即将到来的测验有一定担忧。建议晚上与孩子轻松交流，帮助其缓解压力，避免施加额外期待。
+        </div>
+      </div>
+
+      <div class="emotion-item" onclick="alert('查看详情')">
+        <div class="emotion-item-header">
+          <div class="emotion-icon-circle calm">😌</div>
+          <div class="emotion-item-info">
+            <div class="emotion-time">6月3日 15:30</div>
+            <div class="emotion-status">情绪状态：开心愉快</div>
+          </div>
+        </div>
+        <div class="emotion-tags">
+          <span class="emotion-tag">好朋友</span>
+          <span class="emotion-tag">运动</span>
+        </div>
+        <div class="emotion-advice">
+          <strong>养育建议：</strong>孩子在体育课后心情很好，与好友的互动积极。这是很好的情绪调节方式，可以鼓励孩子多参与类似活动。
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 本周成长数据 -->
+  <div class="section">
+    <div class="section-header">
+      <h2 class="section-title">本周成长数据</h2>
+    </div>
+
+    <div class="growth-cards">
+      <div class="growth-card" onclick="alert('查看情绪趋势')">
+        <div class="growth-card-icon">📊</div>
+        <div class="growth-card-value">85</div>
+        <div class="growth-card-label">情绪健康指数</div>
+      </div>
+
+      <div class="growth-card" onclick="alert('查看对话记录')">
+        <div class="growth-card-icon">💬</div>
+        <div class="growth-card-value">12</div>
+        <div class="growth-card-label">对话次数</div>
+      </div>
+
+      <div class="growth-card" onclick="alert('查看放松记录')">
+        <div class="growth-card-icon">🎵</div>
+        <div class="growth-card-value">45</div>
+        <div class="growth-card-label">减压时长(分钟)</div>
+      </div>
+
+      <div class="growth-card" onclick="alert('查看测评报告')">
+        <div class="growth-card-icon">📝</div>
+        <div class="growth-card-value">3</div>
+        <div class="growth-card-label">完成测评</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="height:20px;"></div>
+
+</div>
+
+<!-- 底部导航 -->
+<div class="bottom-nav">
+  <div class="nav-item active">
+    <div class="nav-icon">🏠</div>
+    <div class="nav-label">首页</div>
+  </div>
+  <div class="nav-item" onclick="alert('进入成长档案')">
+    <div class="nav-icon">📂</div>
+    <div class="nav-label">档案</div>
+  </div>
+  <div class="nav-item" onclick="alert('进入个人中心')">
+    <div class="nav-icon">👤</div>
+    <div class="nav-label">我的</div>
+  </div>
+</div>
+
+<script>
+// 情绪记录点击交互
+document.querySelectorAll('.emotion-item').forEach((item, index) => {
+  item.addEventListener('click', function() {
+    this.style.transform = 'scale(0.98)';
+    setTimeout(() => {
+      this.style.transform = 'scale(1)';
+    }, 100);
+  });
+});
+
+// 入场动画
+document.addEventListener('DOMContentLoaded', () => {
+  const cards = document.querySelectorAll('.ai-coach-card, .emotion-item, .growth-card');
+  cards.forEach((card, index) => {
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(20px)';
+    setTimeout(() => {
+      card.style.transition = 'all 0.4s ease-out';
+      card.style.opacity = '1';
+      card.style.transform = 'translateY(0)';
+    }, index * 80);
+  });
+});
+
+// 底部导航切换
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', function() {
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+</script>
+
+
+</div></div><div style="text-align:center;padding:24px 0 16px;font-size:11px;color:#94a3b8;">署名已省略</div>
+</body>
+</html>

@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>AI星球 · 竞品深度分析</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'PingFang SC','Noto Sans SC',sans-serif; background:#07080f; color:#e2e8f0; line-height:1.75; }
+.hero {
+  min-height:55vh; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center;
+  background:radial-gradient(ellipse at 20% 30%,rgba(99,102,241,0.15) 0%,transparent 55%),radial-gradient(ellipse at 80% 70%,rgba(239,68,68,0.08) 0%,transparent 50%),#07080f;
+  padding:80px 40px;
+}
+.hero-badge { display:inline-flex; align-items:center; gap:8px; background:rgba(99,102,241,0.12); border:1px solid rgba(99,102,241,0.3); border-radius:100px; padding:6px 18px; font-size:12px; font-weight:700; color:#a5b4fc; margin-bottom:28px; letter-spacing:1px; }
+.hero h1 { font-size:52px; font-weight:900; line-height:1.1; margin-bottom:14px; background:linear-gradient(135deg,#fff 0%,#c4b5fd 35%,#f87171 80%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.hero-sub { font-size:15px; color:#475569; max-width:600px; line-height:1.8; }
+.sticky-nav { position:sticky; top:0; z-index:100; background:rgba(7,8,15,0.97); backdrop-filter:blur(12px); border-bottom:1px solid rgba(255,255,255,0.05); display:flex; justify-content:center; overflow-x:auto; }
+.sticky-nav a { display:block; padding:14px 15px; font-size:11px; font-weight:700; color:#334155; text-decoration:none; white-space:nowrap; border-bottom:2px solid transparent; transition:all 0.2s; }
+.sticky-nav a:hover { color:#c4b5fd; border-bottom-color:#6366f1; }
+.wrap { padding:64px 40px; max-width:1120px; margin:0 auto; }
+.s-eyebrow { font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:2px; margin-bottom:10px; }
+.s-title { font-size:28px; font-weight:900; color:#f1f5f9; margin-bottom:8px; }
+.s-sub { font-size:13px; color:#64748b; margin-bottom:32px; max-width:680px; line-height:1.8; }
+.notice { background:rgba(251,191,36,0.08); border:1px solid rgba(251,191,36,0.2); border-radius:10px; padding:14px 18px; font-size:12px; color:#a16207; margin-bottom:32px; line-height:1.7; }
+
+/* Market zones */
+.zone-row { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:28px; }
+.zone-block { border-radius:14px; padding:20px; border:1px solid; }
+.z-global { background:rgba(99,102,241,0.07); border-color:rgba(99,102,241,0.2); }
+.z-cn    { background:rgba(20,184,166,0.07); border-color:rgba(20,184,166,0.2); }
+.z-edu   { background:rgba(251,191,36,0.07); border-color:rgba(251,191,36,0.2); }
+.zone-title { font-size:13px; font-weight:800; color:#f1f5f9; margin-bottom:8px; }
+.zone-list { font-size:12px; color:#64748b; line-height:2; }
+
+/* Competitor grid */
+.comp-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:14px; }
+.comp-card { border-radius:16px; padding:22px; border:1px solid; }
+.comp-name { font-size:16px; font-weight:900; color:#fff; margin-bottom:3px; }
+.comp-meta { font-size:11px; margin-bottom:10px; }
+.comp-feat { font-size:12px; color:#94a3b8; line-height:1.9; }
+.comp-feat b { color:#e2e8f0; }
+.comp-gap { font-size:11px; border-radius:6px; padding:6px 10px; margin-top:10px; line-height:1.6; }
+.threat-tag { display:inline-block; border-radius:20px; padding:2px 10px; font-size:10px; font-weight:800; margin-top:8px; }
+
+.c-blue  { background:rgba(56,189,248,0.07); border-color:rgba(56,189,248,0.2); }
+.c-green { background:rgba(20,184,166,0.07); border-color:rgba(20,184,166,0.2); }
+.c-purple{ background:rgba(167,139,250,0.07); border-color:rgba(167,139,250,0.2); }
+.c-orange{ background:rgba(251,146,60,0.07); border-color:rgba(251,146,60,0.2); }
+.c-pink  { background:rgba(244,114,182,0.07); border-color:rgba(244,114,182,0.2); }
+.c-red   { background:rgba(239,68,68,0.07);  border-color:rgba(239,68,68,0.2); }
+.t-high  { background:rgba(239,68,68,0.2); color:#fca5a5; }
+.t-mid   { background:rgba(251,191,36,0.2); color:#fde68a; }
+.t-low   { background:rgba(34,197,94,0.2);  color:#86efac; }
+
+/* Matrix */
+.matrix-wrap { overflow-x:auto; margin:20px 0; }
+.matrix { width:100%; border-collapse:collapse; font-size:12px; min-width:800px; }
+.matrix th { background:#0a0c16; padding:12px 10px; text-align:center; font-size:10px; font-weight:800; color:#475569; border-bottom:1px solid rgba(255,255,255,0.06); text-transform:uppercase; letter-spacing:.5px; }
+.matrix th:first-child { text-align:left; width:160px; }
+.matrix td { padding:10px; border-bottom:1px solid rgba(255,255,255,0.04); text-align:center; }
+.matrix td:first-child { text-align:left; font-size:12px; font-weight:700; color:#cbd5e1; padding-left:0; }
+.matrix tr:hover td { background:rgba(255,255,255,0.02); }
+.m3 { color:#22c55e; font-weight:900; font-size:13px; }
+.m2 { color:#f59e0b; font-weight:800; }
+.m1 { color:#475569; }
+.m0 { color:#1e293b; font-size:11px; }
+
+/* Positioning */
+.quad { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:20px 0; }
+.quad-item { border-radius:14px; padding:20px; border:1px solid; }
+.qi-blue   { background:rgba(99,102,241,0.07); border-color:rgba(99,102,241,0.2); }
+.qi-teal   { background:rgba(20,184,166,0.07); border-color:rgba(20,184,166,0.2); }
+.qi-yellow { background:rgba(251,191,36,0.07); border-color:rgba(251,191,36,0.2); }
+.qi-red    { background:rgba(239,68,68,0.07);  border-color:rgba(239,68,68,0.2); }
+.qi-title  { font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; }
+.qi-body   { font-size:12px; color:#64748b; line-height:1.8; }
+.qi-body b { color:#e2e8f0; }
+
+/* Insight & threat */
+.insight { background:rgba(99,102,241,0.08); border:1px solid rgba(99,102,241,0.2); border-radius:14px; padding:24px; margin:24px 0; }
+.insight-title { font-size:11px; font-weight:800; color:#a5b4fc; text-transform:uppercase; letter-spacing:1.5px; margin-bottom:12px; }
+.insight-body { font-size:14px; color:#cbd5e1; line-height:2; }
+.insight-body b { color:#f1f5f9; }
+.threat-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:20px 0; }
+.threat-card { border-radius:12px; padding:18px; border:1px solid; }
+.tc-high   { background:rgba(239,68,68,0.07);  border-color:rgba(239,68,68,0.25); }
+.tc-mid    { background:rgba(251,191,36,0.07); border-color:rgba(251,191,36,0.2); }
+.tc-low    { background:rgba(34,197,94,0.07);  border-color:rgba(34,197,94,0.2); }
+.tc-level  { font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:1px; margin-bottom:6px; }
+.tc-name   { font-size:14px; font-weight:800; color:#f1f5f9; margin-bottom:6px; }
+.tc-desc   { font-size:12px; color:#64748b; line-height:1.7; }
+.tc-action { font-size:11px; margin-top:10px; padding:8px 10px; border-radius:6px; background:rgba(255,255,255,0.04); color:#94a3b8; font-style:italic; line-height:1.6; }
+</style>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="../../assets/archive-report.css?v=20261014e">
+<style id="archive-narrow-layout">.archive-narrow-table { display:contents; }
+@media screen and (max-width:720px) {
+ .archive-narrow-table { display:block; max-width:100%; overflow-x:auto; }
+ .archive-narrow-table > table { min-width:650px; }
+ .sticky-nav { justify-content:flex-start; }
+ .sticky-nav a { flex:0 0 auto; }
+.wrap { padding:40px 20px; } .zone-row,.comp-grid,.quad,.threat-row { grid-template-columns:minmax(0,1fr); } .wrap [style*="display:grid"] { grid-template-columns:minmax(0,1fr) !important; }
+}</style>
+</head>
+<body>
+<div class="application-archive-note" role="note"><a href="../index.html#doc-A6">← 返回研究资料库</a><strong>Q3研究基础 · 原报告阅读副本</strong><p><b>竞品研究 · 2026.06.11</b></p><p>历史研究/设计提案；文中评分、预测、预算与排期属于当时的分析或假设，不作为本次已实现业绩。当前采用与状态以成果档案说明为准。</p><p>竞品细节来自公开信息；用户量与市场规模为公开资料或行业估算，尚非统一条件下的实机比较。</p><small>原稿：A6_竞品深度分析.html</small></div>
+
+
+<section class="hero">
+  <div class="hero-badge">⚔️ 竞品深度分析 · Doc 18 · AI星球</div>
+  <h1>竞争格局<br>战略定位</h1>
+  <p class="hero-sub">整合 Doc 02 / 04 / 11 / 12 全部竞品分析，新增中国本土市场专题与威胁评估，明确 AI星球的不可替代区间。</p>
+</section>
+
+<nav class="sticky-nav">
+  <a href="#landscape">🗺️ 市场全景</a>
+  <a href="#profiles">🔍 竞品详析</a>
+  <a href="#matrix">📊 功能矩阵</a>
+  <a href="#position">🎯 战略定位</a>
+  <a href="#china">🇨🇳 中国市场</a>
+  <a href="#threat">⚠️ 威胁评估</a>
+</nav>
+
+<!-- 市场全景 -->
+<section id="landscape" style="background:#07080f; padding:64px 0;">
+<div class="wrap">
+  <div class="s-eyebrow" style="color:#6366f1;">Market Landscape · 市场全景</div>
+  <div class="s-title">三大竞争区域</div>
+  <div class="notice">⚠️ 数据说明：用户数据、市场规模均来自公开来源（App Store/应用宝排名、融资公告、媒体报道），产品功能基于公开信息截至2026年6月。</div>
+
+  <div class="zone-row">
+    <div class="zone-block z-global">
+      <div class="zone-title">🌍 全球正念/心理健康</div>
+      <div class="zone-list">
+        Headspace — 冥想/睡眠/CBT，7000万+用户<br>
+        Calm — 正念冥想，苹果年度最佳应用<br>
+        Finch — 游戏化自我关怀，青年用户为主<br>
+        BetterHelp — 专业咨询在线平台<br>
+        <span style="color:#334155;">→ 均无青少年B2B学校模式</span>
+      </div>
+    </div>
+    <div class="zone-block z-cn">
+      <div class="zone-title">🇨🇳 中国心理健康</div>
+      <div class="zone-list">
+        壹心理 — 最大心理社区，专业内容+咨询<br>
+        简单心理 — 咨询师市场，中高端用户<br>
+        朝夕 — AI情感陪伴，成人市场<br>
+        林间聊愈室 — 200+情绪工具<br>
+        <span style="color:#334155;">→ 无系统性青少年学校模式</span>
+      </div>
+    </div>
+    <div class="zone-block z-edu">
+      <div class="zone-title">🏫 教育科技</div>
+      <div class="zone-list">
+        作业帮/猿辅导 — 学习辅导，无心理模块<br>
+        学而思 — 学科培训，无心理健康<br>
+        字节教育 — 资源丰富，无专注心理SaaS<br>
+        知心姐姐（讯飞合作） — 线下内容品牌<br>
+        <span style="color:#334155;">→ 均无系统性心理健康+生涯AI一体化</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight">
+    <div class="insight-title">核心结论</div>
+    <div class="insight-body"><b>AI星球所在的区间——B2B学校采购 × AI心理健康 × 生涯规划一体化——当前市场上没有直接对标者。</b><br>真正的竞争来自优秀的C端心理健康产品(朝夕/林间、Finch):它们在AI对话深度、情感化设计、用户黏性上有成熟经验。AI星球需要对标它们的产品能力,同时保持B2B学校采购这一独特优势。大厂(字节/腾讯)威胁被高估,监管壁垒和低商业优先级使其短期内不太可能专注此领域。</div>
+  </div>
+</div>
+</section>
+
+<!-- 竞品详析 -->
+<section id="profiles" style="background:#0a0c16; padding:64px 0;">
+<div class="wrap">
+  <div class="s-eyebrow" style="color:#6366f1;">Competitor Profiles · 竞品详析</div>
+  <div class="s-title">六大竞品深度剖析</div>
+
+  <div class="comp-grid">
+    <div class="comp-card c-blue">
+      <div class="comp-name">Headspace</div>
+      <div class="comp-meta" style="color:#7dd3fc;">全球正念领导者 · 订阅制 · 7000万+用户</div>
+      <div class="comp-feat">
+        <b>核心优势：</b>1000+冥想课程，临床研究背书（斯坦福合作），Apple Watch深度集成，企业B端已规模化（Headspace for Work）<br>
+        <b>AI星球机会：</b>无青少年专项设计，无生涯规划，无学校采购体系，内容以英语为主
+      </div>
+      <div class="comp-gap" style="background:rgba(56,189,248,0.1);color:#7dd3fc;">AI星球放松专区体验远不及 → 短期不要正面竞争，专注B端差异化</div>
+      <span class="threat-tag t-low">威胁 低</span>
+    </div>
+
+    <div class="comp-card c-green">
+      <div class="comp-name">Finch</div>
+      <div class="comp-meta" style="color:#5eead4;">游戏化情绪健康 · iOS/Android · 青年用户</div>
+      <div class="comp-feat">
+        <b>核心优势：</b>虚拟宠物 × 自我关怀习惯养成，完成任务宠物成长探险，社交好友互动，游戏化激励极强<br>
+        <b>AI星球机会：</b>无AI对话，无专业测评，无生涯规划，无B端能力
+      </div>
+      <div class="comp-gap" style="background:rgba(20,184,166,0.1);color:#5eead4;">AI星球游戏化激励闭环弱于Finch → 减压星球世界观设计可弥补（Doc 17提案）</div>
+      <span class="threat-tag t-low">威胁 低</span>
+    </div>
+
+    <div class="comp-card c-purple">
+      <div class="comp-name">壹心理</div>
+      <div class="comp-meta" style="color:#c4b5fd;">中国最大心理社区 · 内容+咨询双引擎</div>
+      <div class="comp-feat">
+        <b>核心优势：</b>心理知识内容生态最完整，咨询师数量领先，心理测评题库丰富，公众认知度高<br>
+        <b>AI星球机会：</b>无AI对话功能，无青少年专项，无学校B端，无生涯规划模块
+      </div>
+      <div class="comp-gap" style="background:rgba(167,139,250,0.1);color:#c4b5fd;">壹心理有内容深度但无AI×学校闭环 → 可考虑内容合作而非竞争</div>
+      <span class="threat-tag t-mid">威胁 中</span>
+    </div>
+
+    <div class="comp-card c-orange">
+      <div class="comp-name">简单心理</div>
+      <div class="comp-meta" style="color:#fdba74;">咨询师市场平台 · 高端定位 · HKEX上市</div>
+      <div class="comp-feat">
+        <b>核心优势：</b>咨询师品控体系成熟（平均执照+培训），用户付费意愿高，中产家庭认可度高<br>
+        <b>AI星球机会：</b>青少年用户少，无AI主动对话，无学校渠道，客单价高（500-1000+元/次）不适合学生
+      </div>
+      <div class="comp-gap" style="background:rgba(251,146,60,0.1);color:#fdba74;">AI星球专业咨询模块可参考其咨询师质控体系，在平台分成设计上竞争价位段</div>
+      <span class="threat-tag t-low">威胁 低</span>
+    </div>
+
+    <div class="comp-card c-pink">
+      <div class="comp-name">朝夕 / 林间聊愈室</div>
+      <div class="comp-meta" style="color:#f9a8d4;">中国AI情感陪伴赛道 · 快速成长期</div>
+      <div class="comp-feat">
+        <b>核心优势：</b>朝夕AI对话质量较高，林间工具库丰富（200+），两者均强调"情感陪伴"而非测评<br>
+        <b>AI星球机会：</b>均面向成人用户，无生涯规划，无B端学校能力，无危机干预机制
+      </div>
+      <div class="comp-gap" style="background:rgba(244,114,182,0.1);color:#f9a8d4;">AI对话深度是最直接竞争点 → 三IP差异化人格设计是关键（Doc 14 规范执行质量）</div>
+      <span class="threat-tag t-mid">威胁 中</span>
+    </div>
+
+    <div class="comp-card c-red">
+      <div class="comp-name">字节 / 腾讯系</div>
+      <div class="comp-meta" style="color:#fca5a5;">潜在进入者 · 资源强 · 短期不太可能专注</div>
+      <div class="comp-feat">
+        <b>理论威胁：</b>字节教育有青少年用户基础,豆包AI具备通用对话能力;腾讯企微在学校有渠道<br>
+        <b>实际评估：</b>大厂进入青少年心理健康赛道受强监管制约(数据、内容审核、未成年人保护),且ROI不够吸引,短期(2-3年)内不太可能将此作为战略重点
+      </div>
+      <div class="comp-gap" style="background:rgba(34,197,94,0.1);color:#86efac;">监管壁垒+低商业优先级 → 大厂威胁被市场高估,真正竞争来自专注的C端产品</div>
+      <span class="threat-tag t-low">威胁 低</span>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- 功能矩阵 -->
+<section id="matrix" style="background:#07080f; padding:64px 0;">
+<div class="wrap">
+  <div class="s-eyebrow" style="color:#6366f1;">Feature Matrix · 功能对比</div>
+  <div class="s-title">九维功能矩阵</div>
+  <div class="s-sub">★★★ 强 · ★★ 中 · ★ 弱 · — 无</div>
+
+  <div class="matrix-wrap">
+  <div class="archive-narrow-table" tabindex="0" role="region" aria-label="研究表格，可横向滚动"><table class="matrix">
+    <tr>
+      <th>功能维度</th>
+      <th>AI星球</th>
+      <th>Headspace</th>
+      <th>Finch</th>
+      <th>壹心理</th>
+      <th>简单心理</th>
+      <th>朝夕/林间</th>
+    </tr>
+    <tr>
+      <td>AI对话（质量/深度）</td>
+      <td><span class="m2">★★</span></td>
+      <td><span class="m0">—</span></td>
+      <td><span class="m0">—</span></td>
+      <td><span class="m0">—</span></td>
+      <td><span class="m0">—</span></td>
+      <td><span class="m3">★★★</span></td>
+    </tr>
+    <tr>
+      <td>心理测评（专业程度）</td>
+      <td><span class="m2">★★</span></td>
+      <td><span class="m1">★</span></td>
+      <td><span class="m0">—</span></td>
+      <td><span class="m3">★★★</span></td>
+      <td><span class="m2">★★</span></td>
+      <td><span class="m1">★</span></td>
+    </tr>
+    <tr>
+      <td>生涯规划 / 选科</td>
+      <td><span class="m3">★★★</span></td>
+      <td><span class="m0">—</span></td>
+      <td><span class="m0">—</span></td>
+      <td><span class="m0">—</span></td>
+      <td><span class="m0">—</span></td>
+      <td><span class="m0">—</span></td>
+    </tr>
+    <tr>
+      <td>游戏化 / 激励系统</td>
+      <td><span class="m1">★</span></td>
+      <td><span class="m2">★★</span></td>
+      <td><span class="m3">★★★</span></td>
+      <td><span class="m1">★</span></td>
+      <td><span class="m0">—</span></td>
+      <td><span class="m1">★</span></td>
+    </tr>
+    <tr>
+      <td>专业咨询预约</td>
+      <td><span class="m1">★</span></td>
+      <td><span class="m0">—</span></td>
+      <td><span class="m0">—</span></td>
+      <td><span class="m3">★★★</span></td>
+      <td><span class="m3">★★★</span></td>
+      <td><span class="m1">★</span></td>
+    </tr>
+    <tr>
+      <td>学校 B 端采购</td>
+      <td><span class="m2">★★</span></td>
+      <td><span class="m1">★</span></td>
+      <td><span class="m0">—</span></td>
+      <td><span class="m0">—</span></td>
+      <td><span class="m0">—</span></td>
+      <td><span class="m0">—</span></td>
+    </tr>
+    <tr>
+      <td>青少年专项设计</td>
+      <td><span class="m3">★★★</span></td>
+      <td><span class="m1">★</span></td>
+      <td><span class="m2">★★</span></td>
+      <td><span class="m1">★</span></td>
+      <td><span class="m0">—</span></td>
+      <td><span class="m0">—</span></td>
+    </tr>
+    <tr>
+      <td>危机干预机制</td>
+      <td><span class="m2">★★</span></td>
+      <td><span class="m0">—</span></td>
+      <td><span class="m0">—</span></td>
+      <td><span class="m0">—</span></td>
+      <td><span class="m1">★</span></td>
+      <td><span class="m0">—</span></td>
+    </tr>
+    <tr>
+      <td>家长端 / 家校协同</td>
+      <td><span class="m2">★★</span></td>
+      <td><span class="m0">—</span></td>
+      <td><span class="m0">—</span></td>
+      <td><span class="m0">—</span></td>
+      <td><span class="m0">—</span></td>
+      <td><span class="m0">—</span></td>
+    </tr>
+    <tr>
+      <td>硬件渠道（预装分发）</td>
+      <td><span class="m3">★★★</span></td>
+      <td><span class="m0">—</span></td>
+      <td><span class="m0">—</span></td>
+      <td><span class="m0">—</span></td>
+      <td><span class="m0">—</span></td>
+      <td><span class="m0">—</span></td>
+    </tr>
+  </table></div>
+  </div>
+
+  <div class="insight" style="margin-top:28px;">
+    <div class="insight-title">矩阵解读</div>
+    <div class="insight-body">AI星球在<b>生涯规划、青少年专项、硬件渠道、家校协同</b>四个维度是唯一玩家。这四项合在一起构成了真正的竞争壁垒。<br>劣势在于<b>AI对话深度（vs 朝夕）、游戏化系统（vs Finch）、测评专业度（vs 壹心理）</b>——每项都可以被单一对手超越，但没有任何对手能同时超越所有项。<br>→ 战略核心：<b>不要追求单维度最强，而要在「组合深度」上形成不可复制性。</b></div>
+  </div>
+</div>
+</section>
+
+<!-- 战略定位 -->
+<section id="position" style="background:#0a0c16; padding:64px 0;">
+<div class="wrap">
+  <div class="s-eyebrow" style="color:#6366f1;">Strategic Positioning · 定位</div>
+  <div class="s-title">竞争格局四象限</div>
+  <div class="s-sub">X轴：服务对象（个人C端 ↔ 机构B端）/ Y轴：功能深度（单一功能 ↔ 综合平台）</div>
+
+  <div class="quad">
+    <div class="quad-item qi-blue">
+      <div class="qi-title" style="color:#a5b4fc;">① 综合 × B端（AI星球所在）</div>
+      <div class="qi-body"><b>AI星球独自占据的区间。</b>同时具备完整功能 + 学校机构渠道，当前无直接对手。壁垒来自学校关系网络的积累周期。</div>
+    </div>
+    <div class="quad-item qi-teal">
+      <div class="qi-title" style="color:#5eead4;">② 综合 × C端（壹心理 / 简单心理）</div>
+      <div class="qi-body">功能综合，但面向个人消费者。用户质量高，但获客成本高、学校场景缺失。<b>不与AI星球直接竞争，可作为内容或咨询师来源合作方。</b></div>
+    </div>
+    <div class="quad-item qi-yellow">
+      <div class="qi-title" style="color:#fbbf24;">③ 单一 × C端（Headspace / Finch / 朝夕）</div>
+      <div class="qi-body">专注一个方向，体验极致。Headspace=冥想，Finch=宠物激励，朝夕=AI对话。<b>对AI星球的某一个模块构成深度威胁，但无学校渠道。</b></div>
+    </div>
+    <div class="quad-item qi-red">
+      <div class="qi-title" style="color:#fca5a5;">④ 综合 × B端（潜在威胁区）</div>
+      <div class="qi-body">当前此区间空白，但<b>字节/腾讯系有能力快速进入。</b>AI星球需要在大厂入场前建立足够深的学校关系护城河，让切换成本极高。</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- 中国市场专题 -->
+<section id="china" style="background:#07080f; padding:64px 0;">
+<div class="wrap">
+  <div class="s-eyebrow" style="color:#6366f1;">China Market · 中国市场专题</div>
+  <div class="s-title">本土竞争的三个关键变量</div>
+
+  <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin:28px 0;">
+    <div style="background:rgba(99,102,241,0.07); border:1px solid rgba(99,102,241,0.2); border-radius:14px; padding:22px;">
+      <div style="font-size:13px; font-weight:800; color:#a5b4fc; margin-bottom:10px;">🔒 监管壁垒（AI星球有利）</div>
+      <div style="font-size:12px; color:#64748b; line-height:1.9;">
+        《未成年人网络保护条例》要求未成年人专项审批，外资/无教育资质平台进入门槛极高。科大讯飞的国企背景 + 教育部备案资质是隐性护城河。<br>
+        <b style="color:#e2e8f0;">→ 海外竞品无法直接进入中小学场景。</b>
+      </div>
+    </div>
+    <div style="background:rgba(20,184,166,0.07); border:1px solid rgba(20,184,166,0.2); border-radius:14px; padding:22px;">
+      <div style="font-size:13px; font-weight:800; color:#5eead4; margin-bottom:10px;">🏫 学校关系网络（先发优势）</div>
+      <div style="font-size:12px; color:#64748b; line-height:1.9;">
+        教育SaaS的特殊性：学校采购有惯性，一旦心理老师习惯某套系统，替换成本极高（数据迁移 + 重新培训 + 采购审批）。<br>
+        <b style="color:#e2e8f0;">→ 当前签约学校是最值钱的资产，比功能迭代更重要。</b>
+      </div>
+    </div>
+    <div style="background:rgba(251,191,36,0.07); border:1px solid rgba(251,191,36,0.2); border-radius:14px; padding:22px;">
+      <div style="font-size:13px; font-weight:800; color:#fbbf24; margin-bottom:10px;">🧠 讯飞AI能力（技术护城河）</div>
+      <div style="font-size:12px; color:#64748b; line-height:1.9;">
+        中文语音识别+情感分析是科大讯飞核心优势，其他国内心理App均无此底层能力。语音日记、情绪识别等功能在国内心理App中独家。<br>
+        <b style="color:#e2e8f0;">→ AI能力是差异化，但需要在产品体验中充分体现，否则用户感知不到。</b>
+      </div>
+    </div>
+  </div>
+
+  <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06); border-radius:14px; padding:24px;">
+    <div style="font-size:13px; font-weight:800; color:#f1f5f9; margin-bottom:16px;">中国本土心理健康App格局（2026年6月）</div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; font-size:12px; color:#94a3b8;">
+      <div>
+        <b style="color:#e2e8f0;">壹心理</b> — 内容生态最全（文章/测评/课程），咨询师3000+，但无AI对话无青少年B端<br>
+        <b style="color:#e2e8f0;">简单心理</b> — 上市公司，咨询品控最高，但客单价500元+定位成人中产<br>
+      </div>
+      <div>
+        <b style="color:#e2e8f0;">朝夕</b> — AI对话体验目前最接近"朋友感"，但无学校B端无青少年专项<br>
+        <b style="color:#e2e8f0;">林间聊愈室</b> — 工具库最丰富，但缺乏叙事/角色体系，用户粘性弱
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- 威胁评估 -->
+<section id="threat" style="background:#0a0c16; padding:64px 0;">
+<div class="wrap">
+  <div class="s-eyebrow" style="color:#ef4444;">Threat Assessment · 威胁评估</div>
+  <div class="s-title">六大威胁与对策</div>
+
+  <div class="threat-row">
+    <div class="threat-card tc-high">
+      <div class="tc-level" style="color:#fca5a5;">🔴 高威胁</div>
+      <div class="tc-name">字节跳动进入</div>
+      <div class="tc-desc">豆包AI + 教育渠道 + 海量青少年用户，一旦专注青少年心理健康，资源碾压。预计入场时间：12-24个月内。</div>
+      <div class="tc-action">对策：在字节入场前，把学校签约数量做到500+，形成不可撼动的关系网络。单纯功能竞争必败，靠关系护城河守住。</div>
+    </div>
+    <div class="threat-card tc-high">
+      <div class="tc-level" style="color:#fca5a5;">🔴 高威胁</div>
+      <div class="tc-name">朝夕/林间类产品强化学生场景</div>
+      <div class="tc-desc">现有优秀AI对话产品若专门推出青少年版并投入BD资源进学校,AI星球的AI对话优势将被压制。这些产品在AI对话深度、情感化设计、用户黏性上已有成熟经验,是真正的产品能力竞争。</div>
+      <div class="tc-action">对策:加速三IP人格深度开发,让"减压星球"世界观成为差异化记忆点,纯功能对手无法快速复制情感连接;同时强化B2B学校关系网络,建立渠道护城河。</div>
+    </div>
+    <div class="threat-card tc-mid">
+      <div class="tc-level" style="color:#fde68a;">🟡 中威胁</div>
+      <div class="tc-name">监管政策收紧</div>
+      <div class="tc-desc">AI对未成年人提供心理服务属于高敏感领域,若出台专项法规要求"AI不得独立提供心理干预",核心功能可能受限。</div>
+      <div class="tc-action">对策:全程将AI定位为"辅助工具"不做"专业诊断";与专业心理机构合作建立合规背书;主动参与行业标准制定。</div>
+    </div>
+    <div class="threat-card tc-mid">
+      <div class="tc-level" style="color:#fde68a;">🟡 中威胁</div>
+      <div class="tc-name">数据安全/隐私事故</div>
+      <div class="tc-desc">学生心理数据泄露是极高影响事件。一次事故将触发学校大规模撤约和媒体负面报道，比竞品进入更具破坏性。</div>
+      <div class="tc-action">对策：等保三级认证 + 端对端加密必须在商业化扩张前完成，不可跳过。这是商业信任的基础。</div>
+    </div>
+    <div class="threat-card tc-low" style="background:rgba(34,197,94,0.07); border-color:rgba(34,197,94,0.2);">
+      <div class="tc-level" style="color:#86efac;">🟢 低威胁</div>
+      <div class="tc-name">字节/腾讯等大厂进入</div>
+      <div class="tc-desc">理论上大厂有资源和渠道快速进入,但青少年心理健康受强监管制约(数据、内容审核、未成年人保护),且ROI不够吸引大厂战略投入。短期(2-3年)内不太可能将此作为重点方向。</div>
+      <div class="tc-action">对策:持续关注大厂动向,但无需过度防御;真正竞争来自专注的C端产品和垂直玩家,而非大厂全面进攻。</div>
+    </div>
+    <div class="threat-card tc-low" style="background:rgba(34,197,94,0.07); border-color:rgba(34,197,94,0.2);">
+      <div class="tc-level" style="color:#86efac;">🟢 低威胁</div>
+      <div class="tc-name">Headspace / 壹心理 直接竞争</div>
+      <div class="tc-desc">两者服务对象和渠道与AI星球不同。Headspace无中文学校渠道;壹心理无AI和生涯规划。短期内直接冲突可能性低。</div>
+      <div class="tc-action">对策:可考虑合作(壹心理的心理测评内容授权,Headspace的冥想内容引入),而非竞争。</div>
+    </div>
+  </div>
+
+  <div style="margin-top:24px; background:rgba(99,102,241,0.06); border:1px solid rgba(99,102,241,0.2); border-radius:14px; padding:24px;">
+    <div style="font-size:12px; font-weight:800; color:#a5b4fc; margin-bottom:14px; text-transform:uppercase; letter-spacing:1px;">竞争战略一句话总结</div>
+    <div style="font-size:15px; color:#e2e8f0; line-height:2;">
+      AI星球的护城河不是某一个功能做到最好,而是<b>「B2B学校关系 × 讯飞AI底层 × 青少年专项世界观」三位一体的组合</b>——这个组合,任何单一竞争对手都无法在18个月内复制。
+      <br>真正竞争:对标优秀C端产品(朝夕/Finch)的产品能力,同时保持B2B独特优势。大厂威胁被高估。
+    </div>
+  </div>
+
+  <p style="font-size:11px; color:#1e293b; font-style:italic; margin-top:20px;">竞品深度分析 · Doc 18 · 整合自 Doc 02/04/11/12 · 2026.06.11 · 竞品功能信息来自公开资料，市场数据为行业估算。</p>
+</div>
+</section>
+
+<div style="background:#07080f; padding:40px; text-align:center; border-top:1px solid rgba(255,255,255,0.04);">
+  <div style="font-size:11px; color:#1e293b; line-height:2.5;">AI星球 · 竞品深度分析 · Doc 18 · 2026.06.11<br>本文档取代并整合 Doc 04 竞品章节，Doc 11 竞品对标节，Doc 02 / 12 竞品相关内容<br>竞品数据来自公开来源（App Store / 融资公告 / 媒体报道），不代表实际运营数据</div>
+</div>
+
+
+<div style="text-align:center;padding:24px 0 16px;font-size:11px;color:#94a3b8;">署名已省略</div>
+</body>
+</html>

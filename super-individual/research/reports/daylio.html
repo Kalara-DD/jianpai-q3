@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daylio · 情绪打卡流程 + 用户体验地图</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, 'PingFang SC', '微软雅黑', sans-serif;
+  background: #f4f2ee;
+  color: #2d3142;
+  padding: 48px 24px;
+  min-height: 100vh;
+}
+.container { max-width: 1040px; margin: 0 auto; }
+
+.page-header { text-align: center; margin-bottom: 56px; }
+.page-header h1 { font-size: 28px; font-weight: 700; color: #1a1c2e; margin-bottom: 8px; }
+.page-header .sub { font-size: 14px; color: #7c849e; margin-bottom: 4px; }
+.page-header .badge-row { margin-top: 14px; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
+.badge {
+  font-size: 12px; font-weight: 600;
+  padding: 4px 14px; border-radius: 20px;
+}
+.badge-green  { background: #e8f4ee; color: #1e6e42; border: 1px solid #b0d4c0; }
+.badge-blue   { background: #e8f0fd; color: #2c5fcc; border: 1px solid #a9c4f5; }
+.badge-orange { background: #fff3e8; color: #b85c1a; border: 1px solid #f5c898; }
+
+/* ── Section titles ── */
+.sec-title {
+  font-size: 13px; font-weight: 700; color: #9ca3b8;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  margin: 48px 0 20px;
+  display: flex; align-items: center; gap: 10px;
+}
+.sec-title::after {
+  content: ''; flex: 1; height: 1px; background: #dddbd5;
+}
+
+/* ── Flow timeline ── */
+.flow-timeline { position: relative; }
+.flow-timeline::before {
+  content: ''; position: absolute;
+  left: 28px; top: 0; bottom: 0;
+  width: 2px; background: linear-gradient(to bottom, #6366f1, #a78bfa, #ec4899);
+  border-radius: 2px;
+}
+.flow-step {
+  display: flex; gap: 24px;
+  margin-bottom: 20px;
+  position: relative;
+}
+.step-dot {
+  width: 58px; height: 58px; flex-shrink: 0;
+  border-radius: 16px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px;
+  position: relative; z-index: 1;
+}
+.step-body {
+  flex: 1;
+  background: #ffffff;
+  border: 1px solid #e2dfd8;
+  border-radius: 14px;
+  padding: 20px 24px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  transition: border-color 0.2s;
+}
+.step-body:hover { border-color: #c8c5be; }
+
+.step-header {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 14px;
+}
+.step-num {
+  font-size: 11px; font-weight: 700; color: #9ca3b8;
+  background: #f0ede8; padding: 2px 8px; border-radius: 4px;
+}
+.step-name { font-size: 16px; font-weight: 600; color: #1a1c2e; }
+.step-time {
+  margin-left: auto; font-size: 12px;
+  color: #9ca3b8; background: #f4f2ee;
+  padding: 2px 10px; border-radius: 20px;
+  border: 1px solid #e2dfd8;
+}
+
+.step-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+@media (max-width: 640px) { .step-grid { grid-template-columns: 1fr; } }
+
+.step-cell { background: #f9f8f5; border-radius: 8px; padding: 12px 14px; }
+.cell-label {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.06em;
+  margin-bottom: 6px; text-transform: uppercase;
+}
+.cell-label.ui    { color: #2c7abf; }
+.cell-label.action{ color: #1e6e42; }
+.cell-label.feel  { color: #a0761a; }
+.cell-label.design{ color: #7c4dbb; }
+.cell-text { font-size: 14px; line-height: 1.7; color: #4a5068; }
+
+.step-ref {
+  margin-top: 12px;
+  background: #f0eefa;
+  border-left: 3px solid #6366f1;
+  border-radius: 0 8px 8px 0;
+  padding: 10px 16px;
+  font-size: 13px; color: #5046a0; line-height: 1.65;
+}
+.step-ref b { color: #3730a3; }
+
+/* emotion color themes */
+.emo-neutral  .step-dot { background: #eef0f6; }
+.emo-positive .step-dot { background: #e8f4ee; }
+.emo-active   .step-dot { background: #eeebfa; }
+.emo-reward   .step-dot { background: #f5eefa; }
+.emo-mild     .step-dot { background: #edf7ee; }
+
+/* ── UX Map table ── */
+.ux-map-wrap { overflow-x: auto; }
+.ux-map {
+  width: 100%; border-collapse: collapse;
+  font-size: 14px;
+}
+.ux-map th {
+  background: #f0ede8;
+  color: #7c849e; font-weight: 700;
+  font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em;
+  padding: 12px 16px; text-align: left;
+  border-bottom: 2px solid #dddbd5;
+  white-space: nowrap;
+}
+.ux-map td {
+  padding: 14px 16px;
+  border-bottom: 1px solid #ede9e3;
+  vertical-align: top;
+  line-height: 1.7;
+  color: #4a5068;
+  background: #ffffff;
+}
+.ux-map tr:hover td { background: #faf9f6; }
+.stage-chip {
+  display: inline-block;
+  font-size: 12px; font-weight: 600;
+  padding: 3px 10px; border-radius: 20px;
+  white-space: nowrap;
+}
+.emotion-bar {
+  display: flex; align-items: center; gap: 6px;
+}
+.emotion-icon { font-size: 18px; }
+.emotion-score { font-size: 12px; color: #9ca3b8; }
+
+.score-track {
+  width: 60px; height: 6px;
+  background: #e8e5df; border-radius: 3px; overflow: hidden;
+}
+.score-fill { height: 100%; border-radius: 3px; }
+
+.tag-row { display: flex; gap: 5px; flex-wrap: wrap; }
+.tag {
+  font-size: 11px; padding: 2px 8px;
+  border-radius: 4px; border: 1px solid;
+}
+.tag-pos { background: #e8f4ee; color: #1e6e42; border-color: #b0d4c0; }
+.tag-neg { background: #fdecea; color: #c0392b; border-color: #f5b4ae; }
+.tag-neu { background: #f0ede8; color: #7c849e; border-color: #dddbd5; }
+
+/* ── Key insights ── */
+.insight-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 16px; margin-top: 4px;
+}
+@media (max-width: 640px) { .insight-grid { grid-template-columns: 1fr; } }
+
+.insight-card {
+  background: #ffffff; border: 1px solid #e2dfd8;
+  border-radius: 12px; padding: 20px 22px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+.insight-card .ic-title {
+  font-size: 14px; font-weight: 700;
+  margin-bottom: 8px;
+}
+.insight-card .ic-body {
+  font-size: 14px; line-height: 1.75; color: #5e667a;
+}
+.ic-green  { border-top: 3px solid #4a9e72; }
+.ic-red    { border-top: 3px solid #e05252; }
+.ic-purple { border-top: 3px solid #8b5cf6; }
+.ic-blue   { border-top: 3px solid #3b82f6; }
+
+/* ── Apply to 减压星球 ── */
+.apply-list { list-style: none; }
+.apply-list li {
+  display: flex; gap: 14px;
+  padding: 16px 0;
+  border-bottom: 1px solid #ede9e3;
+  font-size: 14px; line-height: 1.75;
+}
+.apply-list li:last-child { border-bottom: none; }
+.apply-num {
+  width: 26px; height: 26px; flex-shrink: 0;
+  border-radius: 7px; background: #eeebfa;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; color: #6366f1;
+  margin-top: 1px;
+}
+.apply-text b { color: #3730a3; }
+.apply-text { color: #5e667a; }
+
+.img-placeholder {
+  background: #f0ede8;
+  border: 2px dashed #dddbd5;
+  border-radius: 12px;
+  padding: 40px 20px;
+  text-align: center;
+  color: #7c849e;
+  font-size: 13px;
+  margin: 14px auto;
+  max-width: 210px;
+}
+.img-placeholder::before {
+  content: "📷";
+  display: block;
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+
+.step-content-wrap {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+.step-content-main {
+  flex: 1;
+  min-width: 0;
+}
+.step-content-side {
+  flex-shrink: 0;
+  width: 280px;
+}
+.step-img {
+  width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.09);
+  border: 1px solid #e2dfd8;
+}
+@media (max-width: 900px) {
+  .step-content-wrap {
+    flex-direction: column;
+  }
+  .step-content-side {
+    width: 100%;
+    max-width: 280px;
+    margin: 0 auto;
+  }
+}
+
+</style>
+
+<link rel="stylesheet" href="../../assets/archive-report.css?v=20261014e">
+<meta name="robots" content="noindex, nofollow">
+</head>
+<body>
+<div class="application-archive-note" role="note"><a href="../index.html#doc-daylio">← 返回研究资料库</a><p>历史竞品机制研究：基于公开资料的综合分析，非当前实机走查记录。原文的流程细节、体验推断和数字仍需复核，不代表学生实测或本产品已上线结果。</p><small>原稿：Daylio_情绪打卡流程分析.html</small></div>
+
+<div class="container">
+
+<div class="page-header">
+  <h1>Daylio · 情绪打卡流程 + 用户体验地图</h1>
+  <p class="sub">竞品Flow走查 · 基于公开资料 + UX研究文献综合分析</p>
+  <p class="sub" style="margin-top:4px;color:#475569;">数据来源：Daylio官网 / App Store / 学术可用性研究 / UX设计评论</p>
+  <div class="badge-row">
+    <span class="badge badge-green">全程约10–30秒</span>
+    <span class="badge badge-blue">3步核心流程</span>
+    <span class="badge badge-orange">对标 减压星球 情绪打卡</span>
+  </div>
+</div>
+
+<!-- ⓪ 可视化流程图 -->
+<div class="sec-title">⓪ 使用流程总览</div>
+<div style="background:#fff;border:1px solid #e2dfd8;border-radius:16px;padding:32px 28px;box-shadow:0 1px 4px rgba(0,0,0,0.05);overflow-x:auto;">
+
+  <!-- 图例 -->
+  <div style="display:flex;gap:20px;margin-bottom:28px;flex-wrap:wrap;">
+    <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#7c849e;">
+      <div style="width:12px;height:12px;border-radius:3px;background:#eeebfa;border:1px solid #c4b5fd;"></div>核心步骤（必须）
+    </div>
+    <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#7c849e;">
+      <div style="width:12px;height:12px;border-radius:3px;background:#f4f2ee;border:1px solid #dddbd5;border-style:dashed;"></div>可选步骤
+    </div>
+    <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#7c849e;">
+      <div style="width:12px;height:12px;border-radius:3px;background:#e8f4ee;border:1px solid #b0d4c0;"></div>奖励/反馈环节
+    </div>
+  </div>
+
+  <!-- 流程节点 -->
+  <div style="display:flex;align-items:flex-start;gap:0;min-width:720px;">
+
+    <!-- Node 1 -->
+    <div style="display:flex;flex-direction:column;align-items:center;flex:1;">
+      <div style="background:#eeebfa;border:1.5px solid #c4b5fd;border-radius:12px;padding:14px 10px;text-align:center;width:100%;max-width:120px;">
+        <div style="font-size:22px;margin-bottom:6px;">🔔</div>
+        <div style="font-size:13px;font-weight:600;color:#3730a3;line-height:1.35;">收到通知<br>打开App</div>
+        <div style="margin-top:6px;font-size:11px;color:#7c74c0;background:#fff;border-radius:6px;padding:2px 6px;">触发</div>
+      </div>
+      <div style="font-size:11px;color:#9ca3b8;margin-top:8px;text-align:center;">0 秒</div>
+    </div>
+
+    <!-- Arrow -->
+    <div style="display:flex;align-items:center;padding-top:22px;flex-shrink:0;width:32px;justify-content:center;">
+      <svg width="24" height="16" viewBox="0 0 24 16"><path d="M0 8 H18 M14 4 L22 8 L14 12" stroke="#c8c5be" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+
+    <!-- Node 2 -->
+    <div style="display:flex;flex-direction:column;align-items:center;flex:1;">
+      <div style="background:#eeebfa;border:1.5px solid #c4b5fd;border-radius:12px;padding:14px 10px;text-align:center;width:100%;max-width:120px;">
+        <div style="font-size:22px;margin-bottom:6px;">😊</div>
+        <div style="font-size:13px;font-weight:600;color:#3730a3;line-height:1.35;">选择情绪<br>5级量表</div>
+        <div style="margin-top:6px;font-size:11px;color:#7c74c0;background:#fff;border-radius:6px;padding:2px 6px;">必选 · 单击</div>
+      </div>
+      <div style="font-size:11px;color:#9ca3b8;margin-top:8px;text-align:center;">约 3 秒</div>
+    </div>
+
+    <!-- Arrow -->
+    <div style="display:flex;align-items:center;padding-top:22px;flex-shrink:0;width:32px;justify-content:center;">
+      <svg width="24" height="16" viewBox="0 0 24 16"><path d="M0 8 H18 M14 4 L22 8 L14 12" stroke="#c8c5be" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+
+    <!-- Node 3 -->
+    <div style="display:flex;flex-direction:column;align-items:center;flex:1;">
+      <div style="background:#f4f2ee;border:1.5px dashed #c8c5be;border-radius:12px;padding:14px 10px;text-align:center;width:100%;max-width:120px;">
+        <div style="font-size:22px;margin-bottom:6px;">🏃</div>
+        <div style="font-size:13px;font-weight:600;color:#4a5068;line-height:1.35;">选择活动<br>图标标签</div>
+        <div style="margin-top:6px;font-size:11px;color:#9ca3b8;background:#fff;border-radius:6px;padding:2px 6px;">可选 · 多选</div>
+      </div>
+      <div style="font-size:11px;color:#9ca3b8;margin-top:8px;text-align:center;">5–15 秒</div>
+    </div>
+
+    <!-- Arrow -->
+    <div style="display:flex;align-items:center;padding-top:22px;flex-shrink:0;width:32px;justify-content:center;">
+      <svg width="24" height="16" viewBox="0 0 24 16"><path d="M0 8 H18 M14 4 L22 8 L14 12" stroke="#c8c5be" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+
+    <!-- Node 4 -->
+    <div style="display:flex;flex-direction:column;align-items:center;flex:1;">
+      <div style="background:#f4f2ee;border:1.5px dashed #c8c5be;border-radius:12px;padding:14px 10px;text-align:center;width:100%;max-width:120px;">
+        <div style="font-size:22px;margin-bottom:6px;">📝</div>
+        <div style="font-size:13px;font-weight:600;color:#4a5068;line-height:1.35;">添加备注<br>自由文本</div>
+        <div style="margin-top:6px;font-size:11px;color:#9ca3b8;background:#fff;border-radius:6px;padding:2px 6px;">更可选 · 多数跳过</div>
+      </div>
+      <div style="font-size:11px;color:#9ca3b8;margin-top:8px;text-align:center;">0–60 秒</div>
+    </div>
+
+    <!-- Arrow -->
+    <div style="display:flex;align-items:center;padding-top:22px;flex-shrink:0;width:32px;justify-content:center;">
+      <svg width="24" height="16" viewBox="0 0 24 16"><path d="M0 8 H18 M14 4 L22 8 L14 12" stroke="#c8c5be" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+
+    <!-- Node 5 -->
+    <div style="display:flex;flex-direction:column;align-items:center;flex:1;">
+      <div style="background:#e8f4ee;border:1.5px solid #b0d4c0;border-radius:12px;padding:14px 10px;text-align:center;width:100%;max-width:120px;">
+        <div style="font-size:22px;margin-bottom:6px;">✅</div>
+        <div style="font-size:13px;font-weight:600;color:#1e5c3a;line-height:1.35;">保存<br>日历变色</div>
+        <div style="margin-top:6px;font-size:11px;color:#2d7a52;background:#fff;border-radius:6px;padding:2px 6px;">即时反馈</div>
+      </div>
+      <div style="font-size:11px;color:#9ca3b8;margin-top:8px;text-align:center;">约 2 秒</div>
+    </div>
+
+    <!-- Arrow (dashed = optional path) -->
+    <div style="display:flex;align-items:center;padding-top:22px;flex-shrink:0;width:32px;justify-content:center;">
+      <svg width="24" height="16" viewBox="0 0 24 16"><path d="M0 8 H18 M14 4 L22 8 L14 12" stroke="#c8c5be" stroke-width="1.5" stroke-dasharray="3 2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+
+    <!-- Node 6 -->
+    <div style="display:flex;flex-direction:column;align-items:center;flex:1;">
+      <div style="background:#f0eefa;border:1.5px solid #c4b5fd;border-radius:12px;padding:14px 10px;text-align:center;width:100%;max-width:120px;">
+        <div style="font-size:22px;margin-bottom:6px;">📊</div>
+        <div style="font-size:13px;font-weight:600;color:#4c389e;line-height:1.35;">查看统计<br>情绪趋势</div>
+        <div style="margin-top:6px;font-size:11px;color:#7c74c0;background:#fff;border-radius:6px;padding:2px 6px;">可选 · 数据积累后</div>
+      </div>
+      <div style="font-size:11px;color:#9ca3b8;margin-top:8px;text-align:center;">30–120 秒</div>
+    </div>
+
+  </div>
+
+  <!-- 核心数据 -->
+  <div style="display:flex;gap:16px;margin-top:28px;flex-wrap:wrap;">
+    <div style="background:#f4f2ee;border-radius:10px;padding:12px 18px;flex:1;min-width:140px;text-align:center;">
+      <div style="font-size:22px;font-weight:700;color:#3730a3;">10–30秒</div>
+      <div style="font-size:12px;color:#7c849e;margin-top:2px;">典型一次打卡时长</div>
+    </div>
+    <div style="background:#f4f2ee;border-radius:10px;padding:12px 18px;flex:1;min-width:140px;text-align:center;">
+      <div style="font-size:22px;font-weight:700;color:#3730a3;">2步</div>
+      <div style="font-size:12px;color:#7c849e;margin-top:2px;">必须完成的步骤</div>
+    </div>
+    <div style="background:#f4f2ee;border-radius:10px;padding:12px 18px;flex:1;min-width:140px;text-align:center;">
+      <div style="font-size:22px;font-weight:700;color:#3730a3;">0次</div>
+      <div style="font-size:12px;color:#7c849e;margin-top:2px;">确认弹窗 / 打断</div>
+    </div>
+    <div style="background:#f4f2ee;border-radius:10px;padding:12px 18px;flex:1;min-width:140px;text-align:center;">
+      <div style="font-size:22px;font-weight:700;color:#2d7a52;">↑留存</div>
+      <div style="font-size:12px;color:#7c849e;margin-top:2px;">渐进披露降低摩擦</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ① Flow Steps -->
+<div class="sec-title">① 完整用户流程</div>
+<div class="flow-timeline">
+
+<!-- Step 1 -->
+<div class="flow-step emo-neutral">
+  <div class="step-dot">🔔</div>
+  <div class="step-body">
+    <div class="step-header">
+      <span class="step-num">STEP 1</span>
+      <span class="step-name">触发入口 — 通知/习惯唤起</span>
+      <span class="step-time">0 秒</span>
+    </div>
+    <div class="step-grid">
+      <div class="step-cell">
+        <div class="cell-label ui">界面状态</div>
+        <div class="cell-text">系统通知栏推送「Time to check in! ✨」，可自定义时间（默认晚9点）。通知文案轻柔，无焦虑感。</div>
+      </div>
+      <div class="step-cell">
+        <div class="cell-label action">用户行为</div>
+        <div class="cell-text">点击通知直接跳入情绪选择页，或主动打开App——首屏即是打卡入口，无需导航。</div>
+      </div>
+      <div class="step-cell">
+        <div class="cell-label feel">用户情绪</div>
+        <div class="cell-text">😐 中性。没有"你今天还没打卡！"的焦虑催促，通知语气友好，进入门槛几乎为零。</div>
+      </div>
+      <div class="step-cell">
+        <div class="cell-label design">设计决策</div>
+        <div class="cell-text">通知不说「你漏打卡了」，而是正向邀请。减少内疚感，降低拒绝通知的概率，长期留存更稳定。</div>
+      </div>
+    </div>
+    <div class="step-ref"><b>减压星球参考：</b>打卡提醒文案可以从「去打卡」改成「小星在等你聊聊今天」——同等功能，情感温度差一个量级。</div>
+  </div>
+</div>
+
+<!-- Step 2 -->
+<div class="flow-step emo-active">
+  <div class="step-dot">😊</div>
+  <div class="step-body">
+    <div class="step-header">
+      <span class="step-num">STEP 2</span>
+      <span class="step-name">选择情绪 — 5级色彩量表</span>
+      <span class="step-time">约 3 秒</span>
+    </div>
+    <div class="step-grid">
+      <div class="step-cell">
+        <div class="cell-label ui">界面状态</div>
+        <div class="cell-text">全屏展示5个大号 emoji 脸（Rad / Good / Meh / Bad / Awful），各有专属颜色（黄→绿→灰→橙→红）。颜色在背景漫染，整页随选择变色。点击即选中，无需确认按钮直接跳下一步。</div>
+      </div>
+      <div class="step-cell">
+        <div class="cell-label action">用户行为</div>
+        <div class="cell-text">单击选择当前情绪。默认5级，高级用户可展开「…」看次级情绪（如 Good 下有 Excited / Calm / Happy）。选中后页面色彩立即响应。</div>
+      </div>
+      <div class="step-cell">
+        <div class="cell-label feel">用户情绪</div>
+        <div class="cell-text">🌟 轻快。整页变色的即时反馈非常有满足感，不需要想太多——视觉直接告诉你"选对了"。认知负担接近零。</div>
+      </div>
+      <div class="step-cell">
+        <div class="cell-label design">设计决策</div>
+        <div class="cell-text">色彩代替文字传达情绪等级，绕过语言理解成本。5个选项是魔法数字（7±2以内），不让用户陷入选择困难。全屏颜色变化提供强烈的即时反馈感。</div>
+      </div>
+    </div>
+    <div class="step-content-wrap">
+      <div class="step-content-main">
+        <div class="step-ref"><b>减压星球参考：</b>情绪选择后背景/IP形象颜色随之变化——吉塔在「很焦虑」时换深色系，在「很好」时换暖色系，让IP成为情绪的镜子而非固定摆件。</div>
+      </div>
+      <div class="step-content-side">
+        <a href="https://play.google.com/store/apps/details?id=net.daylio&hl=en&gl=US#screenshots" target="_blank" rel="noopener" style="display:block;text-decoration:none;color:inherit;">
+          <div style="background:#f0ede8;border:2px dashed #dddbd5;border-radius:12px;padding:50px 20px;text-align:center;color:#7c849e;font-size:14px;line-height:1.8;transition:all 0.2s;cursor:pointer;" onmouseover="this.style.background='#e8e5df';this.style.borderColor='#b8b5ae';" onmouseout="this.style.background='#f0ede8';this.style.borderColor='#dddbd5';">
+            <div style="font-size:32px;margin-bottom:12px;">📱</div>
+            <div style="font-weight:600;color:#5e667a;margin-bottom:8px;">情绪选择界面示意</div>
+            <div style="font-size:12px;margin-bottom:12px;">Daylio App 界面截图</div>
+            <div style="display:inline-block;margin-top:8px;padding:8px 16px;background:#6366f1;color:#fff;border-radius:8px;font-size:12px;font-weight:600;">查看应用截图（情绪选择） →</div>
+          </div>
+        </a>
+        <div style="font-size:11px;color:#9ca3b8;margin-top:5px;text-align:center;">情绪选择界面 · 5级量表+全屏变色</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Step 3 -->
+<div class="flow-step emo-active">
+  <div class="step-dot">🏃</div>
+  <div class="step-body">
+    <div class="step-header">
+      <span class="step-num">STEP 3</span>
+      <span class="step-name">选择活动标签 — 图标网格多选</span>
+      <span class="step-time">约 5–15 秒</span>
+    </div>
+    <div class="step-grid">
+      <div class="step-cell">
+        <div class="cell-label ui">界面状态</div>
+        <div class="cell-text">滚动网格，每个活动用图标+文字标签呈现（如🏃运动 / 😴睡眠 / 🍕食物 / 👥社交）。预设约20个，可无限自定义。选中状态：图标高亮+圆形填充色，未选中灰色。</div>
+      </div>
+      <div class="step-cell">
+        <div class="cell-label action">用户行为</div>
+        <div class="cell-text">多选，点击任意数量的活动，可以0选直接跳过。无强制，整体是「可选项」心理定位而非「必填项」。</div>
+      </div>
+      <div class="step-cell">
+        <div class="cell-label feel">用户情绪</div>
+        <div class="cell-text">🤔 略有思考，但无压力。图标减少了阅读负担，选多少都可以——用户感到自由而非被考核。自定义标签让老用户有归属感。</div>
+      </div>
+      <div class="step-cell">
+        <div class="cell-label design">设计决策</div>
+        <div class="cell-text">渐进披露：情绪是必选（Step 2），活动是可选，备注是更可选。越往后越可跳过，但每多填一项就多一条统计数据线索——用户被激励但不被强迫。</div>
+      </div>
+    </div>
+    <div class="step-content-wrap">
+      <div class="step-content-main">
+        <div class="step-ref"><b>减压星球参考：</b>情绪打卡后可加入「今天做了什么」的轻量活动标签（上课/运动/考试/和朋友玩），这些数据后续能与情绪趋势做相关分析，增加数据价值密度。</div>
+      </div>
+      <div class="step-content-side">
+        <a href="https://play.google.com/store/apps/details?id=net.daylio&hl=en&gl=US#screenshots" target="_blank" rel="noopener" style="display:block;text-decoration:none;color:inherit;">
+          <div style="background:#f0ede8;border:2px dashed #dddbd5;border-radius:12px;padding:50px 20px;text-align:center;color:#7c849e;font-size:14px;line-height:1.8;transition:all 0.2s;cursor:pointer;" onmouseover="this.style.background='#e8e5df';this.style.borderColor='#b8b5ae';" onmouseout="this.style.background='#f0ede8';this.style.borderColor='#dddbd5';">
+            <div style="font-size:32px;margin-bottom:12px;">📱</div>
+            <div style="font-weight:600;color:#5e667a;margin-bottom:8px;">活动标签网格示意</div>
+            <div style="font-size:12px;margin-bottom:12px;">Daylio App 界面截图</div>
+            <div style="display:inline-block;margin-top:8px;padding:8px 16px;background:#6366f1;color:#fff;border-radius:8px;font-size:12px;font-weight:600;">查看应用截图（活动选择） →</div>
+          </div>
+        </a>
+        <div style="font-size:11px;color:#9ca3b8;margin-top:5px;text-align:center;">活动标签网格 · 图标多选</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Step 4 -->
+<div class="flow-step emo-neutral">
+  <div class="step-dot">📝</div>
+  <div class="step-body">
+    <div class="step-header">
+      <span class="step-num">STEP 4</span>
+      <span class="step-name">添加备注 — 可选自由文本</span>
+      <span class="step-time">0–60 秒（可跳过）</span>
+    </div>
+    <div class="step-grid">
+      <div class="step-cell">
+        <div class="cell-label ui">界面状态</div>
+        <div class="cell-text">屏幕底部有一个低调的输入框「Add note…」，颜色比活动区更浅，视觉优先级明显低于前两步。键盘默认不弹出。</div>
+      </div>
+      <div class="step-cell">
+        <div class="cell-label action">用户行为</div>
+        <div class="cell-text">绝大多数用户直接跳过。少数用户写一句话记录原因（"今天考砸了"/"第一次跑完5km"）。可添加照片（Premium功能）。</div>
+      </div>
+      <div class="step-cell">
+        <div class="cell-label feel">用户情绪</div>
+        <div class="cell-text">😐 无感。这一步的设计目标是「存在但不打扰」——不填没有任何负面反馈，填了有价值但不奖励。</div>
+      </div>
+      <div class="step-cell">
+        <div class="cell-label design">设计决策</div>
+        <div class="cell-text">刻意降低备注的视觉权重是正确的——如果备注成为必填，打卡完成率会断崖式下降。用户可以在情绪平稳时「升级」到文字记录，无需从第一天就写日记。</div>
+      </div>
+    </div>
+    <div class="step-ref"><b>减压星球参考：</b>解忧信箱可以作为「升级路径」——打卡完成后，偶尔（非每次）出现「今天想多说一句吗？」的轻引导，而不是每次打卡都硬插信箱入口。</div>
+  </div>
+</div>
+
+<!-- Step 5 -->
+<div class="flow-step emo-positive">
+  <div class="step-dot">✅</div>
+  <div class="step-body">
+    <div class="step-header">
+      <span class="step-num">STEP 5</span>
+      <span class="step-name">保存 + 即时反馈</span>
+      <span class="step-time">约 2 秒</span>
+    </div>
+    <div class="step-grid">
+      <div class="step-cell">
+        <div class="cell-label ui">界面状态</div>
+        <div class="cell-text">点击保存后，屏幕短暂出现打卡成功动画（情绪颜色的圆形扩散），随即跳回主日历页。日历上当天格子变为对应情绪颜色。</div>
+      </div>
+      <div class="step-cell">
+        <div class="cell-label action">用户行为</div>
+        <div class="cell-text">点击右上角「✓」或滑动完成。无二次确认弹窗。保存即完成，路径极短。</div>
+      </div>
+      <div class="step-cell">
+        <div class="cell-label feel">用户情绪</div>
+        <div class="cell-text">😌 轻度满足。日历上又多了一格颜色——视觉化进度产生「今天完成了」的微小成就感。连续多天后格子排列成彩色序列，产生「不舍得断」的心理。</div>
+      </div>
+      <div class="step-cell">
+        <div class="cell-label design">设计决策</div>
+        <div class="cell-text">日历视图是关键激励机制——用颜色序列代替数字streak，既能看到连续感，又不会像Duolingo火焰那样产生断签焦虑。视觉密度低但信息丰富。</div>
+      </div>
+    </div>
+    <div class="step-ref"><b>减压星球参考：</b>打卡完成后回到首页，打卡卡片上的当天格子立即变色，形成「今天有了」的可见证明。一个月后回看是一段彩色的情绪历史，留存价值极高。</div>
+  </div>
+</div>
+
+<!-- Step 6 -->
+<div class="flow-step emo-reward">
+  <div class="step-dot">📊</div>
+  <div class="step-body">
+    <div class="step-header">
+      <span class="step-num">STEP 6</span>
+      <span class="step-name">查看统计 — 情绪趋势 + 活动相关性</span>
+      <span class="step-time">可选，约30–120秒</span>
+    </div>
+    <div class="step-grid">
+      <div class="step-cell">
+        <div class="cell-label ui">界面状态</div>
+        <div class="cell-text">统计页：月历热力图、周平均情绪折线图、「活动与情绪相关性」列表（如「运动时你的情绪评分平均+1.2」）。数据只有打卡7天以上才解锁部分功能。</div>
+      </div>
+      <div class="step-cell">
+        <div class="cell-label action">用户行为</div>
+        <div class="cell-text">多数用户在积累了2–4周数据后开始频繁查看统计。发现相关性（"睡眠少→情绪差"）后会主动增加活动标签精度，形成数据飞轮。</div>
+      </div>
+      <div class="step-cell">
+        <div class="cell-label feel">用户情绪</div>
+        <div class="cell-text">🔍 自我发现的惊喜感。「原来我周五情绪最好」「运动和心情真的有关系」——数据带来的洞察感是Daylio用户留存的核心动力之一。</div>
+      </div>
+      <div class="step-cell">
+        <div class="cell-label design">设计决策</div>
+        <div class="cell-text">统计功能设置了「数据积累门槛」（7天/30天才解锁高级图表），这是刻意制造的延迟满足——用户为了看到更完整的数据会坚持打卡，形成习惯闭环。</div>
+      </div>
+    </div>
+    <div class="step-content-wrap">
+      <div class="step-content-main">
+        <div class="step-ref"><b>减压星球参考：</b>「打卡7天后解锁你的情绪周报」「打卡30天后看到你的情绪月历」——用数据积累作为持续打卡的激励，比单纯的streak数字更有价值感。</div>
+      </div>
+      <div class="step-content-side">
+        <a href="https://play.google.com/store/apps/details?id=net.daylio&hl=en&gl=US#screenshots" target="_blank" rel="noopener" style="display:block;text-decoration:none;color:inherit;">
+          <div style="background:#f0ede8;border:2px dashed #dddbd5;border-radius:12px;padding:50px 20px;text-align:center;color:#7c849e;font-size:14px;line-height:1.8;transition:all 0.2s;cursor:pointer;" onmouseover="this.style.background='#e8e5df';this.style.borderColor='#b8b5ae';" onmouseout="this.style.background='#f0ede8';this.style.borderColor='#dddbd5';">
+            <div style="font-size:32px;margin-bottom:12px;">📱</div>
+            <div style="font-weight:600;color:#5e667a;margin-bottom:8px;">情绪统计图表示意</div>
+            <div style="font-size:12px;margin-bottom:12px;">Daylio App 界面截图</div>
+            <div style="display:inline-block;margin-top:8px;padding:8px 16px;background:#6366f1;color:#fff;border-radius:8px;font-size:12px;font-weight:600;">查看应用截图（统计图表） →</div>
+          </div>
+        </a>
+        <div style="font-size:11px;color:#9ca3b8;margin-top:5px;text-align:center;">Mood Chart · 活动与情绪相关性</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /flow-timeline -->
+
+<!-- ② UX Map -->
+<div class="sec-title">② 用户体验地图</div>
+<div class="ux-map-wrap">
+<table class="ux-map">
+<thead>
+  <tr>
+    <th>阶段</th>
+    <th>用户行为</th>
+    <th>情绪体验</th>
+    <th>体验评分</th>
+    <th>设计亮点 / 痛点</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td><span class="stage-chip" style="background:#1e293b;color:#94a3b8;">触发</span></td>
+    <td>收到通知或主动打开App</td>
+    <td><div class="emotion-bar"><span class="emotion-icon">😐</span><span class="emotion-score">中性</span></div></td>
+    <td><div class="score-track"><div class="score-fill" style="width:60%;background:#94a3b8;"></div></div></td>
+    <td><div class="tag-row"><span class="tag tag-pos">友好文案无焦虑</span><span class="tag tag-pos">通知可自定义时间</span></div></td>
+  </tr>
+  <tr>
+    <td><span class="stage-chip" style="background:#e8f4ee;color:#1e6e42;border:1px solid #b0d4c0;">选情绪</span></td>
+    <td>单击5级emoji，全屏变色</td>
+    <td><div class="emotion-bar"><span class="emotion-icon">🌟</span><span class="emotion-score">轻快高效</span></div></td>
+    <td><div class="score-track"><div class="score-fill" style="width:92%;background:#4a9e72;"></div></div></td>
+    <td><div class="tag-row"><span class="tag tag-pos">3秒完成</span><span class="tag tag-pos">全屏颜色反馈</span><span class="tag tag-pos">零认知负担</span></div></td>
+  </tr>
+  <tr>
+    <td><span class="stage-chip" style="background:#1a2535;color:#60a5fa;">选活动</span></td>
+    <td>点选图标标签（可跳过）</td>
+    <td><div class="emotion-bar"><span class="emotion-icon">🤔</span><span class="emotion-score">轻度思考</span></div></td>
+    <td><div class="score-track"><div class="score-fill" style="width:72%;background:#60a5fa;"></div></div></td>
+    <td><div class="tag-row"><span class="tag tag-pos">图标减少阅读负担</span><span class="tag tag-pos">多选自由无压力</span><span class="tag tag-neg">标签过多时网格混乱</span></div></td>
+  </tr>
+  <tr>
+    <td><span class="stage-chip" style="background:#1c1c2e;color:#a78bfa;">写备注</span></td>
+    <td>可选文字输入（多数跳过）</td>
+    <td><div class="emotion-bar"><span class="emotion-icon">😐</span><span class="emotion-score">无感/中性</span></div></td>
+    <td><div class="score-track"><div class="score-fill" style="width:50%;background:#a78bfa;"></div></div></td>
+    <td><div class="tag-row"><span class="tag tag-pos">刻意降低视觉权重</span><span class="tag tag-neg">键盘不自动弹出略冷漠</span></div></td>
+  </tr>
+  <tr>
+    <td><span class="stage-chip" style="background:#e8f4ee;color:#1e6e42;border:1px solid #b0d4c0;">保存</span></td>
+    <td>点击✓，动画确认，跳回日历</td>
+    <td><div class="emotion-bar"><span class="emotion-icon">😌</span><span class="emotion-score">微成就感</span></div></td>
+    <td><div class="score-track"><div class="score-fill" style="width:82%;background:#4a9e72;"></div></div></td>
+    <td><div class="tag-row"><span class="tag tag-pos">日历格子变色即时可见</span><span class="tag tag-pos">无二次确认弹窗</span><span class="tag tag-pos">彩色序列产生不舍断签感</span></div></td>
+  </tr>
+  <tr>
+    <td><span class="stage-chip" style="background:#2d1654;color:#e879f9;">查统计</span></td>
+    <td>浏览情绪趋势图/活动相关性</td>
+    <td><div class="emotion-bar"><span class="emotion-icon">🔍</span><span class="emotion-score">自我发现惊喜</span></div></td>
+    <td><div class="score-track"><div class="score-fill" style="width:88%;background:#e879f9;"></div></div></td>
+    <td><div class="tag-row"><span class="tag tag-pos">「运动→情绪+1.2」相关洞察</span><span class="tag tag-pos">数据门槛制造延迟满足</span><span class="tag tag-neg">高级图表需付费</span></div></td>
+  </tr>
+</tbody>
+</table>
+</div>
+
+<!-- ③ 核心设计洞察 -->
+<div class="sec-title">③ 核心设计洞察</div>
+<div class="insight-grid">
+  <div class="insight-card ic-green">
+    <div class="ic-title" style="color:#2d7a52;">渐进披露 · 必选→可选→更可选</div>
+    <div class="ic-body">情绪必选，活动可选，备注更可选。越往后越轻松，但每多填一步就多一条数据线索。用户永远感到自由而非被考核，但数据密度随参与深度提升。</div>
+  </div>
+  <div class="insight-card ic-red">
+    <div class="ic-title" style="color:#f87171;">核心弱点 · 只捕捉状态，不引导反思</div>
+    <div class="ic-body">Daylio记录「我今天怎么样」，但不问「为什么」——打卡流程不包含任何提示用户思考的步骤。对于希望AI主动陪伴的产品（如减压星球），这是一个需要填补的空白。</div>
+  </div>
+  <div class="insight-card ic-purple">
+    <div class="ic-title" style="color:#c4b5fd;">颜色即反馈 · 全屏感知</div>
+    <div class="ic-body">选情绪的瞬间全屏变色，是Daylio最精妙的设计决策——情绪不只是一个标签，而是整个界面的感知状态。成本极低（CSS），但用户记忆深刻。</div>
+  </div>
+  <div class="insight-card ic-blue">
+    <div class="ic-title" style="color:#60a5fa;">数据门槛 · 延迟满足激励留存</div>
+    <div class="ic-body">「打卡7天解锁周报」「打卡30天看月历」——不是立刻给所有功能，而是让数据积累成为持续打卡的理由。用户为了看到更完整的自己而坚持记录，习惯在无感中形成。</div>
+  </div>
+</div>
+
+<!-- 核心结论 callout -->
+<div style="margin:32px 0;background:linear-gradient(135deg,#eeebfa,#e8f0fd);border:1px solid #a5b4f0;border-radius:14px;padding:20px 26px;display:flex;align-items:flex-start;gap:16px;">
+  <div style="font-size:28px;flex-shrink:0;margin-top:2px;">💡</div>
+  <div>
+    <div style="font-size:12px;font-weight:700;color:#5046a0;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.06em;">核心设计结论</div>
+    <div style="font-size:15px;line-height:1.8;color:#2d3142;">Daylio 最大的弱点是「只捕捉状态，不引导反思」——这正是<span style="color:#4338ca;font-weight:600;">减压星球 AI 伙伴能填补的空白</span>。打卡记录情绪之后，AI 主动介入问「为什么」，是 Daylio 没有、减压星球独有的差异化价值。</div>
+  </div>
+</div>
+
+<!-- ④ 对减压星球的具体建议 -->
+<div class="sec-title">④ 对减压星球情绪打卡的具体改版建议</div>
+<div style="background:#ffffff;border:1px solid #e2dfd8;border-radius:14px;padding:24px 28px;box-shadow:0 1px 4px rgba(0,0,0,0.05);">
+<ul class="apply-list">
+  <li>
+    <div class="apply-num">1</div>
+    <div class="apply-text"><b>打卡完成后加入即时统计反馈卡片。</b>「你这周有4天情绪都不错 😊」——让打卡不只是记录，每次都能看到自己的数据在增长。参考Daylio保存后跳回日历时的颜色格子逻辑。</div>
+  </li>
+  <li>
+    <div class="apply-num">2</div>
+    <div class="apply-text"><b>情绪选择后IP形象颜色/表情随之变化。</b>用户选「焦虑」→吉塔换成低饱和冷色系+担心表情；选「开心」→吉塔换暖色系+欢快动作。颜色即反馈，让IP成为情绪的镜子。</div>
+  </li>
+  <li>
+    <div class="apply-num">3</div>
+    <div class="apply-text"><b>在活动标签层加入青少年场景标签。</b>「上课 / 考试 / 运动 / 和朋友玩 / 家庭冲突 / 睡眠不好」——这些数据后续可与情绪做相关分析（「考试前你的情绪平均低2分」），大幅提升打卡的数据价值。</div>
+  </li>
+  <li>
+    <div class="apply-num">4</div>
+    <div class="apply-text"><b>设置数据积累门槛触发进阶功能。</b>「打卡7天后解锁你的情绪周报」「打卡30天后小星为你生成专属情绪故事」——用延迟满足制造长期留存动力，比单纯的连续打卡天数更有价值感。</div>
+  </li>
+  <li>
+    <div class="apply-num">5</div>
+    <div class="apply-text"><b>打卡后偶发性出现AI衔接入口，而非每次强插。</b>Daylio不引导反思是弱点，减压星球的AI是补强机会——但要轻柔。打卡完成后约30%的概率出现「今天有点低落，要和吉塔聊聊吗？」，而不是每次都硬接AI对话入口。</div>
+  </li>
+</ul>
+</div>
+
+<div style="margin-top:40px;padding:16px 20px;background:#ede9e3;border:1px solid #dddbd5;border-radius:10px;font-size:13px;color:#7c849e;line-height:1.7;">
+  数据来源：<a href="https://www.daylio.net/" style="color:#5e667a;" target="_blank">Daylio官网</a> ·
+  <a href="https://www.researchgate.net/publication/341827478_The_Effectiveness_Efficiency_and_Reliability-in-Use_of_Daylio_Mobile_App" style="color:#5e667a;" target="_blank">Daylio可用性研究论文 (ResearchGate)</a> ·
+  <a href="https://gallery.reteno.com/flows/app-screens-daylio-journal" style="color:#5e667a;" target="_blank">Daylio Onboarding Flow分析</a> ·
+  <a href="https://play.google.com/store/apps/details?id=net.daylio" style="color:#5e667a;" target="_blank">Google Play用户评价</a><br>
+  ⚠️ 本文档基于公开资料综合分析，非设计师第一手操作记录。建议结合实机体验验证细节。
+</div>
+
+</div><!-- /container -->
+</body>
+</html>

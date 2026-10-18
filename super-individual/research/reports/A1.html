@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>AI星球 · 产品结构树（实机版）</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'PingFang SC','Noto Sans SC',sans-serif; background:#f7f8fc; color:#2d3142; line-height:1.6; }
+h1 { text-align:center; padding:32px 0 8px; font-size:24px; color:#3b4cca; }
+.subtitle { text-align:center; color:#888; font-size:13px; margin-bottom:8px; }
+.evidence { text-align:center; color:#aaa; font-size:11px; margin-bottom:28px; }
+
+.source-note {
+  max-width:960px; margin:0 auto 28px; padding:12px 24px;
+  background:#dcfce7; border:1px solid #86efac; border-radius:10px;
+  font-size:12px; color:#166534; line-height:1.7;
+}
+.source-note b { color:#15803d; }
+
+/* 底部导航真实结构 */
+.nav-structure {
+  max-width:1000px; margin:0 auto 32px; padding:0 24px;
+}
+.nav-structure h2 {
+  font-size:14px; font-weight:700; color:#475569; margin-bottom:12px;
+  display:flex; align-items:center; gap:8px;
+}
+.nav-tabs {
+  display:grid; grid-template-columns:repeat(6,1fr); gap:10px;
+}
+.nav-tab {
+  background:#fff; border:2px solid #e2e8f0; border-radius:12px;
+  padding:12px 10px; font-size:13px; font-weight:700; color:#374151;
+  display:flex; flex-direction:column; align-items:center; gap:6px;
+  text-align:center; min-height:110px;
+}
+.nav-tab .tab-icon { font-size:32px; }
+.nav-tab .tab-name { font-size:13px; font-weight:700; }
+.nav-tab .tab-route { font-size:10px; color:#3b82f6; font-family:monospace; margin-top:auto; }
+.nav-tab .badge { background:#ef4444; color:#fff; font-size:10px; padding:2px 6px; border-radius:10px; }
+
+/* 树结构 */
+.tree { max-width:1200px; margin:0 auto; padding:0 24px 60px; }
+.section-title {
+  font-size:18px; font-weight:700; color:#1e293b; margin:32px 0 16px;
+  padding-bottom:8px; border-bottom:2px solid #e2e8f0;
+}
+.modules { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px; margin-bottom:32px; }
+
+.module {
+  background:#fff; border-radius:12px; padding:20px; box-shadow:0 1px 3px rgba(0,0,0,0.08);
+  border-left:4px solid;
+}
+.module-header {
+  display:flex; align-items:center; gap:10px; margin-bottom:14px;
+}
+.module-icon { font-size:28px; }
+.module-title { font-size:16px; font-weight:700; color:#1e293b; }
+.module-route {
+  font-size:10px; color:#94a3b8; font-family:monospace;
+  background:#f1f5f9; padding:2px 6px; border-radius:4px; margin-left:auto;
+}
+
+.feature-list { list-style:none; }
+.feature-item {
+  padding:8px 0; border-bottom:1px solid #f1f5f9; font-size:13px; color:#475569;
+  display:flex; align-items:center; gap:8px;
+}
+.feature-item:last-child { border-bottom:none; }
+.feature-icon { font-size:16px; flex-shrink:0; }
+.feature-desc { font-size:11px; color:#94a3b8; margin-left:auto; }
+
+.tag {
+  display:inline-block; font-size:10px; padding:2px 6px; border-radius:4px;
+  font-weight:700; margin-left:6px;
+}
+.tag-new { background:#dcfce7; color:#166534; }
+.tag-important { background:#fef3c7; color:#92400e; }
+.tag-weak { background:#fee2e2; color:#991b1b; }
+
+.color-home { border-color:#fbbf24; }
+.color-explore { border-color:#3b82f6; }
+.color-brain { border-color:#10b981; }
+.color-task { border-color:#8b5cf6; }
+.color-consult { border-color:#06b6d4; }
+.color-friend { border-color:#ec4899; }
+
+.ip-section {
+  max-width:1000px; margin:32px auto; padding:24px;
+  background:linear-gradient(135deg,#eff6ff,#dbeafe);
+  border-radius:16px; border:2px solid #93c5fd;
+}
+.ip-section h3 { font-size:16px; color:#1e40af; margin-bottom:16px; }
+.ip-cards { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+.ip-card {
+  background:#fff; border-radius:12px; padding:16px; text-align:center;
+  border:2px solid #e0e7ff;
+}
+.ip-card .ip-avatar { font-size:48px; margin-bottom:8px; }
+.ip-card .ip-name { font-size:14px; font-weight:700; color:#1e293b; margin-bottom:4px; }
+.ip-card .ip-role { font-size:11px; color:#64748b; margin-bottom:8px; }
+.ip-card .ip-desc { font-size:11px; color:#64748b; line-height:1.5; }
+</style>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="../../assets/archive-report.css?v=20261014e">
+</head>
+<body class="archive-product-tree">
+<div class="application-archive-note" role="note"><a href="../index.html#doc-A1">← 返回研究资料库</a><strong>Q3研究基础 · 原报告阅读副本</strong><p><b>现状诊断 · 2026.06.10</b></p><p>历史研究/设计提案；文中评分、预测、预算与排期属于当时的分析或假设，不作为本次已实现业绩。当前采用与状态以成果档案说明为准。</p><p>原文部分角色职责为当时描述；当前伙伴分工与导航方式以成果档案为准。</p><small>原稿：A1_产品结构树.html</small></div>
+
+<h1>AI星球 · 产品结构树</h1>
+<p class="subtitle">AI星球（减压星球）· com.ifltyek.ai.planet v1.0.2801</p>
+<p class="evidence">数据来源：实机截图（2026.06.10）+ APK反编译路由配置 · Huawei AGS5Z-W09 · 横屏2000×1134px</p>
+
+<div class="source-note">
+  <b>✅ 本版本基于真实截图重建</b><br>
+  截图文件夹：本地截图资料（内部路径已省略）<br>
+  包含：首页3屏、探索、脑之岛、任务、咨询、朋友圈、AI会话、解忧信箱、个人中心等23张实机截图<br>
+  <b>数据可靠性：</b>所有模块名称、功能入口、界面元素均来自真实截图，非推测内容
+</div>
+
+<!-- 底部导航真实结构 -->
+<div class="nav-structure" id="product-structure">
+  <h2>📱 底部导航栏（6个Tab · 实机截图确认）</h2>
+  <div class="nav-tabs">
+    <div class="nav-tab">
+      <div class="tab-icon">🏠</div>
+      <div class="tab-name">首页</div>
+      <div class="tab-route">/home</div>
+    </div>
+    <div class="nav-tab">
+      <div class="tab-icon">🪐</div>
+      <div class="tab-name">探索</div>
+      <div class="tab-route">/resourceTools</div>
+    </div>
+    <div class="nav-tab">
+      <div class="tab-icon">🏝️</div>
+      <div class="tab-name">脑之岛</div>
+      <div class="tab-route">/brainIsland</div>
+    </div>
+    <div class="nav-tab">
+      <div class="tab-icon">📬</div>
+      <div class="tab-name">任务</div>
+      <div class="badge">4</div>
+      <div class="tab-route">/assignment</div>
+    </div>
+    <div class="nav-tab">
+      <div class="tab-icon">💬</div>
+      <div class="tab-name">咨询</div>
+      <div class="tab-route">/consultAppointment</div>
+    </div>
+    <div class="nav-tab">
+      <div class="tab-icon">👥</div>
+      <div class="tab-name">朋友圈</div>
+      <div class="tab-route">/mentalFriendCircle</div>
+    </div>
+  </div>
+  <p style="font-size:11px;color:#64748b;margin-top:12px;">
+    截图证据：所有Tab界面底部可见完整6图标导航栏，任务Tab显示红点数字"4"
+  </p>
+</div>
+
+<!-- 三IP系统 -->
+<div class="ip-section">
+  <h3>🌟 三IP角色系统（产品核心差异化）</h3>
+  <div class="ip-cards">
+    <div class="ip-card">
+      <div class="ip-avatar">🤍</div>
+      <div class="ip-name">小星（白色小动物）</div>
+      <div class="ip-role">通用AI对话</div>
+      <div class="ip-desc">什么都能聊的AI伙伴，情绪打卡时出现"小星说"反馈</div>
+    </div>
+    <div class="ip-card">
+      <div class="ip-avatar">🐼</div>
+      <div class="ip-name">吉塔（熊猫）</div>
+      <div class="ip-role">心愈疗愈AI</div>
+      <div class="ip-desc">来自吉塔的问候，专注情绪陪伴和心理疗愈</div>
+    </div>
+    <div class="ip-card">
+      <div class="ip-avatar">🐳</div>
+      <div class="ip-name">罗素（蓝色鲸鱼）</div>
+      <div class="ip-role">逻辑/生涯AI</div>
+      <div class="ip-desc">生涯规划和逻辑推理专家</div>
+    </div>
+  </div>
+  <p style="font-size:11px;color:#475569;margin-top:12px;">
+    截图证据：首页"我的AI心理伙伴"区域显示三个动物IP形象，标注"7*24应答 倾诉陪伴 心理疗愈"
+  </p>
+</div>
+
+<div class="tree">
+
+<h2 class="section-title">Tab 1 · 首页</h2>
+<div class="modules">
+  <div class="module color-home">
+    <div class="module-header">
+      <span class="module-icon">🎯</span>
+      <span class="module-title">核心功能区</span>
+      <span class="module-route">/home</span>
+    </div>
+    <ul class="feature-list">
+      <li class="feature-item">
+        <span class="feature-icon">✅</span>
+        <span>打卡今日心情</span>
+        <span class="tag tag-important">核心入口</span>
+      </li>
+      <li class="feature-item">
+        <span class="feature-icon">🤖</span>
+        <span>我的AI心理伙伴（三IP区域）</span>
+      </li>
+      <li class="feature-item">
+        <span class="feature-icon">💭</span>
+        <span>我想聊聊（快捷话题）</span>
+        <span class="feature-desc">生涯规划/烦恼/友谊/学业等</span>
+      </li>
+      <li class="feature-item">
+        <span class="feature-icon">📬</span>
+        <span>解忧信箱</span>
+        <span class="feature-desc">右上角固定入口</span>
+      </li>
+      <li class="feature-item">
+        <span class="feature-icon">👤</span>
+        <span>个人中心</span>
+        <span class="feature-desc">头像+星星数量</span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="module color-home">
+    <div class="module-header">
+      <span class="module-icon">🎬</span>
+      <span class="module-title">心理剧场</span>
+      <span class="tag tag-important">重要</span>
+    </div>
+    <ul class="feature-list">
+      <li class="feature-item">
+        <span class="feature-icon">🏛️</span>
+        <span>科大讯飞×知心姐姐横幅</span>
+        <span class="feature-desc">联名合作banner</span>
+      </li>
+      <li class="feature-item">
+        <span class="feature-icon">🎥</span>
+        <span>奥运中的心态训练系列</span>
+        <span class="feature-desc">8个视频（1:00-2:02）</span>
+      </li>
+      <li class="feature-item">
+        <span class="feature-icon">🏃</span>
+        <span>运动对心理的影响系列</span>
+        <span class="feature-desc">8个视频（1:24-2:02）</span>
+      </li>
+      <li class="feature-item">
+        <span class="feature-icon">🎯</span>
+        <span>点击查看（进入心理剧场）</span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<h2 class="section-title">Tab 2 · 探索</h2>
+<div class="modules">
+  <div class="module color-explore">
+    <div class="module-header">
+      <span class="module-icon">🔍</span>
+      <span class="module-title">内容分类</span>
+      <span class="module-route">/resourceTools</span>
+    </div>
+    <ul class="feature-list">
+      <li class="feature-item">
+        <span class="feature-icon">📚</span>
+        <span>心理主题（6个标签）</span>
+      </li>
+      <li class="feature-item">
+        <span>学会学习 · 人际交往 · 升学择业</span>
+      </li>
+      <li class="feature-item">
+        <span>认识自我 · 情绪发展 · 社会适应</span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="module color-explore">
+    <div class="module-header">
+      <span class="module-icon">📊</span>
+      <span class="module-title">心理测评</span>
+    </div>
+    <ul class="feature-list">
+      <li class="feature-item">
+        <span class="feature-icon">🎯</span>
+        <span>我的注意力（10题｜18.6万次测评）</span>
+      </li>
+      <li class="feature-item">
+        <span class="feature-icon">⏰</span>
+        <span>你拖延吗？（10题｜13.9万次）</span>
+      </li>
+      <li class="feature-item">
+        <span class="feature-icon">🎓</span>
+        <span>认知灵活性问卷（20题｜8.6万次）</span>
+      </li>
+      <li class="feature-item">
+        <span class="feature-icon">📝</span>
+        <span>考试焦虑（8题｜8.4万次）</span>
+      </li>
+      <li class="feature-item">
+        <span class="feature-icon">💪</span>
+        <span>我能自控（16题｜7.8万次）</span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="module color-explore">
+    <div class="module-header">
+      <span class="module-icon">🎵</span>
+      <span class="module-title">减压工具</span>
+      <span class="tag tag-important">重要</span>
+    </div>
+    <ul class="feature-list">
+      <li class="feature-item">
+        <span class="feature-icon">🎬</span>
+        <span>电影推荐</span>
+        <span class="feature-desc">《快把我哥带走》等</span>
+      </li>
+      <li class="feature-item">
+        <span class="feature-icon">📖</span>
+        <span>书籍推荐</span>
+        <span class="feature-desc">《科学大师的…》《小王子》</span>
+      </li>
+      <li class="feature-item">
+        <span class="feature-icon">🧘</span>
+        <span>正念呼吸法（1:00｜11.5万次）</span>
+      </li>
+      <li class="feature-item">
+        <span class="feature-icon">😴</span>
+        <span>R90睡眠法</span>
+      </li>
+      <li class="feature-item">
+        <span class="feature-icon">📝</span>
+        <span>艾宾浩斯遗忘曲线（1:00｜10.5万次）</span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="module color-explore">
+    <div class="module-header">
+      <span class="module-icon">📚</span>
+      <span class="module-title">心理知识</span>
+    </div>
+    <ul class="feature-list">
+      <li class="feature-item">
+        <span class="feature-icon">🧠</span>
+        <span>心理学科普内容</span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<h2 class="section-title">Tab 3 · 脑之岛</h2>
+<div class="modules">
+  <div class="module color-brain">
+    <div class="module-header">
+      <span class="module-icon">🏝️</span>
+      <span class="module-title">游戏化训练地图</span>
+      <span class="module-route">/brainIsland</span>
+      <span class="tag tag-important">独立Tab</span>
+    </div>
+    <ul class="feature-list">
+      <li class="feature-item">
+        <span class="feature-icon">🗺️</span>
+        <span>3D岛屿地图界面</span>
+        <span class="feature-desc">多个训练点位可点击</span>
+      </li>
+      <li class="feature-item">
+        <span class="feature-icon">ℹ️</span>
+        <span>脑之岛介绍</span>
+        <span class="feature-desc">左上角入口</span>
+      </li>
+      <li class="feature-item">
+        <span class="feature-icon">📝</span>
+        <span>今日任务</span>
+        <span class="feature-desc">右上角入口</span>
+      </li>
+      <li class="feature-item">
+        <span class="feature-icon">🏆</span>
+        <span>荣誉（勋章墙）</span>
+        <span class="feature-desc">右上角入口，脑之岛专属</span>
+      </li>
+      <li class="feature-item">
+        <span class="feature-icon">🎮</span>
+        <span>认知训练课程</span>
+        <span class="feature-desc">地图上多个点位</span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<h2 class="section-title">Tab 4 · 任务</h2>
+<div class="modules">
+  <div class="module color-task">
+    <div class="module-header">
+      <span class="module-icon">📬</span>
+      <span class="module-title">任务系统</span>
+      <span class="module-route">/assignment</span>
+      <span class="badge">4</span>
+    </div>
+    <ul class="feature-list">
+      <li class="feature-item">
+        <span class="feature-icon">📋</span>
+        <span>任务列表</span>
+        <span class="feature-desc">显示未完成任务数</span>
+      </li>
+      <li class="feature-item">
+        <span class="feature-icon">📝</span>
+        <span>任务详情</span>
+      </li>
+      <li class="feature-item">
+        <span class="feature-icon">💬</span>
+        <span>任务弹窗提醒</span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<h2 class="section-title">Tab 5 · 咨询</h2>
+<div class="modules">
+  <div class="module color-consult">
+    <div class="module-header">
+      <span class="module-icon">💬</span>
+      <span class="module-title">预约心理咨询</span>
+      <span class="module-route">/consultAppointment</span>
+      <span class="tag tag-weak">弱功能</span>
+    </div>
+    <ul class="feature-list">
+      <li class="feature-item">
+        <span class="feature-icon">📅</span>
+        <span>选择咨询时间</span>
+      </li>
+      <li class="feature-item">
+        <span class="feature-icon">📄</span>
+        <span>知情同意书</span>
+      </li>
+      <li class="feature-item">
+        <span class="feature-icon">⚠️</span>
+        <span>仅部分学校购买此功能</span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<h2 class="section-title">Tab 6 · 朋友圈</h2>
+<div class="modules">
+  <div class="module color-friend">
+    <div class="module-header">
+      <span class="module-icon">👥</span>
+      <span class="module-title">心理朋友圈</span>
+      <span class="module-route">/mentalFriendCircle</span>
+    </div>
+    <ul class="feature-list">
+      <li class="feature-item">
+        <span class="feature-icon">💭</span>
+        <span>心情动态分享</span>
+      </li>
+      <li class="feature-item">
+        <span class="feature-icon">👍</span>
+        <span>互动功能</span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<h2 class="section-title">其他核心功能</h2>
+<div class="modules">
+  <div class="module" style="border-color:#f59e0b;">
+    <div class="module-header">
+      <span class="module-icon">💌</span>
+      <span class="module-title">解忧信箱</span>
+    </div>
+    <ul class="feature-list">
+      <li class="feature-item">
+        <span class="feature-icon">📮</span>
+        <span>信件列表</span>
+      </li>
+      <li class="feature-item">
+        <span class="feature-icon">✉️</span>
+        <span>信件详情</span>
+      </li>
+      <li class="feature-item">
+        <span class="feature-icon">✍️</span>
+        <span>写信功能</span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="module" style="border-color:#6366f1;">
+    <div class="module-header">
+      <span class="module-icon">👤</span>
+      <span class="module-title">个人中心</span>
+      <span class="module-route">/personCenter</span>
+    </div>
+    <ul class="feature-list">
+      <li class="feature-item">
+        <span class="feature-icon">🎨</span>
+        <span>头像换装</span>
+      </li>
+      <li class="feature-item">
+        <span class="feature-icon">⭐</span>
+        <span>星星商店</span>
+        <span class="feature-desc">星星碎片兑换</span>
+      </li>
+      <li class="feature-item">
+        <span class="feature-icon">⚙️</span>
+        <span>设置（2页）</span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="module" style="border-color:#ec4899;">
+    <div class="module-header">
+      <span class="module-icon">🤖</span>
+      <span class="module-title">AI会话</span>
+    </div>
+    <ul class="feature-list">
+      <li class="feature-item">
+        <span class="feature-icon">💬</span>
+        <span>与三IP对话</span>
+        <span class="feature-desc">小星/吉塔/罗素</span>
+      </li>
+      <li class="feature-item">
+        <span class="feature-icon">🎭</span>
+        <span>人物换装（会话界面内）</span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="module" style="border-color:#14b8a6;">
+    <div class="module-header">
+      <span class="module-icon">📊</span>
+      <span class="module-title">调研&资源Banner</span>
+    </div>
+    <ul class="feature-list">
+      <li class="feature-item">
+        <span class="feature-icon">🎵</span>
+        <span>音乐偏好调研</span>
+      </li>
+      <li class="feature-item">
+        <span class="feature-icon">💝</span>
+        <span>知心姐姐联名资源Banner</span>
+        <span class="feature-desc">联名课件内容入口</span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+</div><!-- /tree -->
+
+<div style="text-align:center;padding:16px 0 32px;font-size:12px;color:#9ca3af;">
+  AI星球产品分析系列文档 · 01_产品结构树（实机截图版）· 2026.06.10<br>
+  数据来源：23张实机截图（本地截图资料（内部路径已省略））+ APK路由配置验证
+</div>
+
+
+<div style="text-align:center;padding:24px 0 16px;font-size:11px;color:#94a3b8;">署名已省略</div>
+</body>
+</html>

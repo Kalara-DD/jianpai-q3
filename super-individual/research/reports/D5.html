@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>AI星球 · 生涯规划流程原型</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'PingFang SC','Noto Sans SC',sans-serif; background:#0c0e1a; color:#e2e8f0; line-height:1.75; }
+
+.hero {
+  min-height:80vh; display:flex; flex-direction:column;
+  justify-content:center; align-items:center; text-align:center;
+  background:radial-gradient(ellipse at 60% 40%,#1a3a6e 0%,#0c0e1a 65%),
+             radial-gradient(ellipse at 20% 80%,#1e3a5f 0%,transparent 50%);
+  padding:80px 40px; position:relative; overflow:hidden;
+}
+.hero-badge {
+  display:inline-flex; align-items:center; gap:8px;
+  background:rgba(59,130,246,0.15); border:1px solid rgba(59,130,246,0.3);
+  border-radius:100px; padding:6px 18px; font-size:12px; font-weight:700;
+  color:#93c5fd; margin-bottom:28px; letter-spacing:1px;
+}
+.hero h1 {
+  font-size:52px; font-weight:900; line-height:1.1; margin-bottom:24px;
+  background:linear-gradient(135deg,#ffffff 0%,#93c5fd 50%,#7dd3fc 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+}
+.hero .tagline { font-size:18px; color:#94a3b8; max-width:700px; line-height:1.6; margin-bottom:40px; }
+
+.sticky-nav {
+  position:sticky; top:0; z-index:100;
+  background:rgba(12,14,26,0.95); backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(255,255,255,0.06);
+  display:flex; justify-content:center; gap:0; overflow-x:auto;
+}
+.sticky-nav a {
+  display:block; padding:14px 18px; font-size:12px; font-weight:700;
+  color:#64748b; text-decoration:none; white-space:nowrap;
+  border-bottom:2px solid transparent; transition:all 0.2s; text-transform:uppercase;
+}
+.sticky-nav a:hover { color:#93c5fd; border-bottom-color:#3b82f6; }
+
+.section-wrap { padding:64px 40px; max-width:1100px; margin:0 auto; }
+.s-eyebrow { font-size:11px; font-weight:800; color:#3b82f6; text-transform:uppercase; letter-spacing:2px; margin-bottom:10px; }
+.s-title { font-size:32px; font-weight:900; color:#f1f5f9; margin-bottom:8px; }
+.s-sub { font-size:14px; color:#64748b; margin-bottom:36px; max-width:700px; }
+
+/* FLOW DIAGRAM */
+.flow-wrap { position:relative; }
+.phase-row {
+  display:grid; grid-template-columns:140px 1fr;
+  gap:0; margin-bottom:0;
+  border-left:3px solid rgba(255,255,255,0.06);
+  padding-left:0;
+}
+.phase-label {
+  display:flex; flex-direction:column; justify-content:flex-start;
+  padding:20px 20px 20px 0; 
+  border-right:2px solid rgba(255,255,255,0.08);
+}
+.phase-label .pl-icon { font-size:28px; margin-bottom:6px; }
+.phase-label .pl-name { font-size:13px; font-weight:800; color:#f1f5f9; }
+.phase-label .pl-sub { font-size:11px; color:#64748b; margin-top:2px; }
+
+.phase-steps { padding:20px 0 20px 24px; display:flex; flex-direction:column; gap:16px; }
+
+.step-card {
+  background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08);
+  border-radius:14px; padding:20px 24px; position:relative;
+  transition:border-color 0.2s;
+}
+.step-card:hover { border-color:rgba(59,130,246,0.4); }
+.step-card.highlight { border-color:rgba(59,130,246,0.35); background:rgba(59,130,246,0.07); }
+.step-card.russell { border-color:rgba(20,184,166,0.35); background:rgba(20,184,166,0.05); }
+
+.sc-top { display:flex; align-items:flex-start; gap:16px; margin-bottom:12px; }
+.sc-icon { font-size:28px; flex-shrink:0; margin-top:2px; }
+.sc-title { font-size:16px; font-weight:800; color:#f1f5f9; margin-bottom:3px; }
+.sc-desc { font-size:13px; color:#94a3b8; line-height:1.6; }
+
+.sc-actors { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+.actor-tag {
+  display:inline-flex; align-items:center; gap:5px;
+  border-radius:6px; padding:4px 10px; font-size:11px; font-weight:700;
+}
+.actor-student { background:rgba(59,130,246,0.15); color:#93c5fd; border:1px solid rgba(59,130,246,0.25); }
+.actor-russell { background:rgba(20,184,166,0.15); color:#5eead4; border:1px solid rgba(20,184,166,0.25); }
+.actor-teacher { background:rgba(168,85,247,0.15); color:#d8b4fe; border:1px solid rgba(168,85,247,0.25); }
+.actor-parent { background:rgba(251,146,60,0.15); color:#fdba74; border:1px solid rgba(251,146,60,0.25); }
+
+.sc-evidence {
+  background:rgba(0,0,0,0.2); border-radius:8px; padding:10px 14px; margin-top:10px;
+  font-size:11px; color:#64748b; border-left:3px solid rgba(59,130,246,0.4);
+}
+.sc-evidence code { background:rgba(59,130,246,0.15); color:#93c5fd; padding:1px 5px; border-radius:3px; font-size:10px; }
+
+.russell-bubble {
+  background:rgba(20,184,166,0.08); border:1px solid rgba(20,184,166,0.2);
+  border-radius:12px; padding:14px 16px; margin-top:12px;
+  display:flex; gap:10px; align-items:flex-start;
+}
+.rb-avatar { font-size:22px; flex-shrink:0; margin-top:1px; }
+.rb-name { font-size:11px; font-weight:800; color:#5eead4; margin-bottom:3px; }
+.rb-text { font-size:12px; color:#94a3b8; line-height:1.6; font-style:italic; }
+
+.phase-connector {
+  display:flex; align-items:center; justify-content:flex-start;
+  gap:12px; padding:8px 0 8px 140px;
+  font-size:12px; color:#3b82f6; font-weight:700;
+}
+
+/* SWIMLANE */
+.swimlane-wrap { background:rgba(255,255,255,0.02); border-radius:16px; overflow:hidden; border:1px solid rgba(255,255,255,0.06); }
+.sl-header { display:grid; grid-template-columns:100px repeat(4,1fr); background:#1e293b; }
+.sl-header div { padding:12px 14px; font-size:11px; font-weight:800; color:#94a3b8; text-transform:uppercase; letter-spacing:.5px; border-right:1px solid rgba(255,255,255,0.06); }
+.sl-row { display:grid; grid-template-columns:100px repeat(4,1fr); border-top:1px solid rgba(255,255,255,0.04); }
+.sl-row:hover { background:rgba(255,255,255,0.02); }
+.sl-label { padding:14px; font-size:12px; font-weight:800; color:#64748b; border-right:1px solid rgba(255,255,255,0.06); display:flex; align-items:center; }
+.sl-cell { padding:12px 14px; font-size:12px; color:#94a3b8; border-right:1px solid rgba(255,255,255,0.04); line-height:1.6; }
+.sl-cell.active { background:rgba(59,130,246,0.08); color:#e2e8f0; }
+.sl-cell.russell-active { background:rgba(20,184,166,0.08); color:#e2e8f0; }
+.sl-cell.highlight-cell { background:rgba(251,191,36,0.07); color:#fde68a; }
+
+/* PAIN POINTS */
+.pain-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+.pain-card {
+  background:rgba(239,68,68,0.06); border:1px solid rgba(239,68,68,0.2);
+  border-radius:12px; padding:20px;
+}
+.pain-card .pc-num { font-size:32px; font-weight:900; color:rgba(239,68,68,0.3); margin-bottom:8px; }
+.pain-card .pc-title { font-size:14px; font-weight:800; color:#fca5a5; margin-bottom:6px; }
+.pain-card .pc-body { font-size:12px; color:#94a3b8; line-height:1.6; }
+.fix-card {
+  background:rgba(20,184,166,0.06); border:1px solid rgba(20,184,166,0.2);
+  border-radius:12px; padding:20px;
+}
+.fix-card .pc-title { color:#5eead4; }
+
+/* CONCLUSION */
+.conclusion-wrap {
+  background:linear-gradient(135deg,#0c0e1a 0%,#0f2d4a 50%,#0c2a3d 100%);
+  padding:80px 40px; text-align:center;
+}
+.conclusion-title {
+  font-size:40px; font-weight:900; margin-bottom:20px;
+  background:linear-gradient(135deg,#fff,#93c5fd,#5eead4);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+}
+.conclusion-body { font-size:15px; color:#94a3b8; max-width:680px; margin:0 auto 40px; line-height:1.8; }
+.pillars { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; max-width:900px; margin:0 auto; }
+.pillar {
+  background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08);
+  border-radius:14px; padding:24px; text-align:center;
+}
+.pillar-icon { font-size:32px; margin-bottom:10px; }
+.pillar-title { font-size:14px; font-weight:800; color:#f1f5f9; margin-bottom:6px; }
+.pillar-body { font-size:12px; color:#64748b; line-height:1.6; }
+
+.tag { display:inline-block; border-radius:5px; padding:2px 9px; font-size:11px; font-weight:700; }
+.tag-blue { background:#1e3a8a; color:#93c5fd; }
+.tag-green { background:#064e3b; color:#5eead4; }
+.tag-amber { background:#78350f; color:#fbbf24; }
+.footnote { font-size:11px; color:#334155; font-style:italic; margin-top:16px; }
+</style>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="../../assets/archive-report.css?v=20261014e">
+<style id="archive-reading-layout">
+.archive-horizontal { max-width:100%; }
+.archive-horizontal:focus-visible { outline:3px solid #3358df; outline-offset:3px; }
+@media (max-width:880px) {
+ .archive-horizontal { overflow-x:auto; overscroll-behavior-x:contain; }
+ .archive-horizontal > table { min-width:650px; }
+ .sticky-nav { justify-content:flex-start; }
+ .sticky-nav a { flex:0 0 auto; }
+ 
+ .section-wrap { padding:40px 20px; }
+ .hero { padding:50px 20px; }
+ .hero h1 { font-size:36px; }
+ .pain-grid,.pillars { grid-template-columns:minmax(0,1fr); }
+ .section-wrap [style*="display:grid"] { grid-template-columns:minmax(0,1fr) !important; }
+ .swimlane-wrap { overflow-x:auto; }
+ .sl-header,.sl-row { min-width:750px; }
+
+}
+@media print { .archive-horizontal { overflow:visible; } }
+</style>
+</head>
+<body>
+<div class="application-archive-note" role="note"><a href="../index.html#doc-D5">← 返回研究资料库</a><strong>Q3研究基础 · 原报告阅读副本</strong><p><b>生涯流程提案 · 2026.06.11</b></p><p>历史研究/设计提案；文中评分、预测、预算与排期属于当时的分析或假设，不作为本次已实现业绩。当前采用与状态以成果档案说明为准。</p><p>对话、测评与结果页为设计示例；院校数据库、角色固定领域与数据连续性是历史设想，需另行评估。</p><small>原稿：D5_生涯规划流程原型.html</small></div>
+
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">🐳 AI星球 · 生涯规划流程原型 · Doc 13</div>
+  <h1>高中生生涯规划<br>完整路径设计</h1>
+  <p class="tagline">选科决策 → 生涯探索 → 志愿填报<br>罗素🐳全程陪伴的高价值用户核心旅程</p>
+</section>
+
+<nav class="sticky-nav">
+  <a href="#overview">① 路径总览</a>
+  <a href="#phase1">② 选科决策</a>
+  <a href="#phase2">③ 生涯探索</a>
+  <a href="#phase3">④ 志愿填报</a>
+  <a href="#swimlane">⑤ 泳道图</a>
+  <a href="#painpoints">⑥ 痛点与方案</a>
+</nav>
+
+<!-- ① 路径总览 -->
+<section id="overview" style="background:#0f172a; padding:64px 0;">
+<div class="section-wrap">
+  <div class="s-eyebrow">Journey Overview</div>
+  <div class="s-title">三阶段完整旅程</div>
+  <div class="s-sub">基于APK已知能力（ONLY_CAREER=2 / 探索Tab「升学择业」标签 / 首页快捷话题「生涯规划」）设计，不虚构未有功能</div>
+
+  <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-bottom:40px;">
+    <div style="background:rgba(59,130,246,0.08); border:1px solid rgba(59,130,246,0.25); border-radius:16px; padding:24px; text-align:center;">
+      <div style="font-size:40px; margin-bottom:12px;">📐</div>
+      <div style="font-size:16px; font-weight:800; color:#93c5fd; margin-bottom:6px;">阶段一：选科决策</div>
+      <div style="font-size:12px; color:#64748b; line-height:1.6;">高一上学期<br>6科→3+1+2组合<br>罗素提供逻辑分析框架</div>
+    </div>
+    <div style="background:rgba(20,184,166,0.08); border:1px solid rgba(20,184,166,0.25); border-radius:16px; padding:24px; text-align:center;">
+      <div style="font-size:40px; margin-bottom:12px;">🧭</div>
+      <div style="font-size:16px; font-weight:800; color:#5eead4; margin-bottom:6px;">阶段二：生涯探索</div>
+      <div style="font-size:12px; color:#64748b; line-height:1.6;">高一~高二全程<br>兴趣测评→职业地图→行业访谈<br>吉塔处理焦虑情绪</div>
+    </div>
+    <div style="background:rgba(251,191,36,0.08); border:1px solid rgba(251,191,36,0.25); border-radius:16px; padding:24px; text-align:center;">
+      <div style="font-size:40px; margin-bottom:12px;">🎯</div>
+      <div style="font-size:16px; font-weight:800; color:#fbbf24; margin-bottom:6px;">阶段三：志愿填报</div>
+      <div style="font-size:12px; color:#64748b; line-height:1.6;">高三全程<br>选校→选专业→梯度策略<br>罗素数据驱动决策支持</div>
+    </div>
+  </div>
+
+  <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:12px; padding:20px 24px;">
+    <div style="font-size:12px; font-weight:800; color:#3b82f6; text-transform:uppercase; letter-spacing:.5px; margin-bottom:12px;">APK代码证据（来源标注）</div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; font-size:12px; color:#94a3b8;">
+      <div>🔑 <code style="background:rgba(59,130,246,0.15);color:#93c5fd;padding:1px 5px;border-radius:3px;">appAuth: ONLY_CAREER=2</code> — 生涯模块可独立采购，证明高价值模块定位</div>
+      <div>🔑 探索Tab「升学择业」主题标签 — 截图证据：功能入口已存在</div>
+      <div>🔑 首页快捷话题「生涯规划」 — 截图证据：用户可直接从首页进入</div>
+      <div>🔑 <code style="background:rgba(59,130,246,0.15);color:#93c5fd;padding:1px 5px;border-radius:3px;">phaseCode / gradeCode</code> — 可区分高中年级，支持内容分层推送</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ② 阶段一：选科决策 -->
+<section id="phase1" style="background:#0c0e1a; padding:64px 0;">
+<div class="section-wrap">
+  <div class="s-eyebrow">Phase 1 · Subject Selection</div>
+  <div class="s-title">选科决策流程</div>
+  <div class="s-sub">新高考3+1+2模式下，选科是影响整个高中生涯的关键决策，也是焦虑的集中爆发点</div>
+
+  <div class="flow-wrap">
+
+    <div class="step-card highlight" style="margin-bottom:16px;">
+      <div class="sc-top">
+        <div class="sc-icon">🚪</div>
+        <div>
+          <div class="sc-title">入口触发：发现生涯功能</div>
+          <div class="sc-desc">高一学生通过首页「生涯规划」快捷话题、或探索Tab「升学择业」标签进入模块。罗素头像出现，主动问候。</div>
+        </div>
+      </div>
+      <div class="sc-actors">
+        <span class="actor-tag actor-student">👤 学生操作</span>
+        <span class="actor-tag actor-russell">🐳 罗素引导</span>
+      </div>
+      <div class="russell-bubble">
+        <div class="rb-avatar">🐳</div>
+        <div>
+          <div class="rb-name">罗素说</div>
+          <div class="rb-text">「你好！我是罗素，擅长用数据和逻辑帮你做清晰的分析。选科这件事，很多同学都很纠结——我们可以先做一个测评，看看你的兴趣和能力指向哪个方向，怎么样？」</div>
+        </div>
+      </div>
+      <div class="sc-evidence">APK来源：首页快捷话题「生涯规划」截图 + 探索Tab「升学择业」标签截图</div>
+    </div>
+
+    <div style="text-align:center; padding:4px 0; color:#3b82f6; font-size:13px; font-weight:700;">↓</div>
+
+    <div class="step-card" style="margin-bottom:16px;">
+      <div class="sc-top">
+        <div class="sc-icon">📊</div>
+        <div>
+          <div class="sc-title">生涯兴趣测评（霍兰德/MBTI变体）</div>
+          <div class="sc-desc">完成约20题的生涯兴趣测评，系统生成兴趣类型报告（R/I/A/S/E/C六维），同时记录学生高中阶段各科成绩偏好。</div>
+        </div>
+      </div>
+      <div class="sc-actors">
+        <span class="actor-tag actor-student">👤 完成测评</span>
+        <span class="actor-tag actor-russell">🐳 测评结果解读</span>
+      </div>
+      <div class="russell-bubble">
+        <div class="rb-avatar">🐳</div>
+        <div>
+          <div class="rb-name">罗素分析报告</div>
+          <div class="rb-text">「你的兴趣类型是 I（研究型）+ E（企业型）的组合，这类人通常对数据分析、商业逻辑很感兴趣。结合你在数学和政治上的偏好，3+1+2里的"物理+政治"或"历史+生物"都值得考虑。我来帮你做一个对比分析…」</div>
+        </div>
+      </div>
+      <div class="sc-evidence">设计推演：基于生涯模块appAuth=2推断测评功能；测评数据调用心理测评已有框架（aiScreen端点）</div>
+    </div>
+
+    <div style="text-align:center; padding:4px 0; color:#3b82f6; font-size:13px; font-weight:700;">↓</div>
+
+    <div class="step-card russell" style="margin-bottom:16px;">
+      <div class="sc-top">
+        <div class="sc-icon">⚖️</div>
+        <div>
+          <div class="sc-title">选科组合对比分析（罗素核心场景）</div>
+          <div class="sc-desc">罗素提供可视化的选科对比矩阵：每个组合对应的大学专业覆盖度、竞争烈度（赋分影响）、学科负担评分。学生可以逐一展开查看。</div>
+        </div>
+      </div>
+      <div class="sc-actors">
+        <span class="actor-tag actor-russell">🐳 罗素核心输出</span>
+        <span class="actor-tag actor-student">👤 浏览对比</span>
+        <span class="actor-tag actor-teacher">👩‍🏫 班主任可见</span>
+      </div>
+      <div style="background:rgba(20,184,166,0.08); border-radius:10px; padding:16px; margin-top:12px;">
+        <div style="font-size:12px; font-weight:800; color:#5eead4; margin-bottom:10px;">选科矩阵示例（设计原型）</div>
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:8px; font-size:11px;">
+          <div style="background:rgba(0,0,0,0.2); border-radius:8px; padding:10px; text-align:center;">
+            <div style="font-weight:800; color:#f1f5f9; margin-bottom:4px;">物理+化学+生物</div>
+            <div style="color:#64748b;">专业覆盖：82%</div>
+            <div style="color:#ef4444;">竞争烈度：高</div>
+          </div>
+          <div style="background:rgba(20,184,166,0.15); border-radius:8px; padding:10px; text-align:center; border:1px solid rgba(20,184,166,0.3);">
+            <div style="font-weight:800; color:#5eead4; margin-bottom:4px;">物理+政治+地理 ✦</div>
+            <div style="color:#64748b;">专业覆盖：74%</div>
+            <div style="color:#22c55e;">竞争烈度：中</div>
+          </div>
+          <div style="background:rgba(0,0,0,0.2); border-radius:8px; padding:10px; text-align:center;">
+            <div style="font-weight:800; color:#f1f5f9; margin-bottom:4px;">历史+政治+生物</div>
+            <div style="color:#64748b;">专业覆盖：56%</div>
+            <div style="color:#f59e0b;">竞争烈度：低</div>
+          </div>
+        </div>
+        <div style="font-size:10px; color:#334155; margin-top:8px;">✦ 罗素基于测评结果推荐；矩阵数据为设计演示，非真实高考数据</div>
+      </div>
+      <div class="sc-evidence">设计推演：基于ONLY_CAREER=2模块定义 + 罗素IP「逻辑/数据」人格定义</div>
+    </div>
+
+    <div style="text-align:center; padding:4px 0; color:#3b82f6; font-size:13px; font-weight:700;">↓</div>
+
+    <div class="step-card" style="margin-bottom:16px;">
+      <div class="sc-top">
+        <div class="sc-icon">💬</div>
+        <div>
+          <div class="sc-title">与罗素深度对话：消解选科焦虑</div>
+          <div class="sc-desc">学生可以向罗素提问，如「我喜欢物理但怕竞争太激烈怎么办？」「如果我选了文科会不会后悔？」。罗素用结构化逻辑回答，必要时邀请吉塔处理情绪层面。</div>
+        </div>
+      </div>
+      <div class="sc-actors">
+        <span class="actor-tag actor-student">👤 提问对话</span>
+        <span class="actor-tag actor-russell">🐳 逻辑分析</span>
+        <span class="actor-tag actor-tag actor-teacher" style="background:rgba(252,165,165,0.15);color:#fca5a5;border:1px solid rgba(252,165,165,0.25);">🐼 吉塔备援</span>
+      </div>
+      <div class="russell-bubble">
+        <div class="rb-avatar">🐳</div>
+        <div>
+          <div class="rb-name">罗素 · 三IP协作示例</div>
+          <div class="rb-text">「我来分析赋分机制：选物理的同学通常理科整体偏强，赋分后85分可能只排60%；但"物理+政治"的组合竞争烈度更低，同样成绩可能排到前40%——这是概率问题，不是对错问题。」<br><br>
+          <span style="color:#d8b4fe;">（吉塔悄悄出现）</span> 「听起来你有点担心选错路？这很正常。其实高考改革后，很多专业对选科组合的要求越来越灵活——你愿意把你最担心的事告诉我吗？」</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align:center; padding:4px 0; color:#3b82f6; font-size:13px; font-weight:700;">↓</div>
+
+    <div class="step-card highlight" style="margin-bottom:16px;">
+      <div class="sc-top">
+        <div class="sc-icon">✅</div>
+        <div>
+          <div class="sc-title">选科决策落地 + 档案建立</div>
+          <div class="sc-desc">学生确认选科组合，罗素生成「选科决策报告」存入个人生涯档案，并推送给家长端查阅（如家长端已关联）。系统开始根据选科结果推送相关内容。</div>
+        </div>
+      </div>
+      <div class="sc-actors">
+        <span class="actor-tag actor-student">👤 确认选科</span>
+        <span class="actor-tag actor-russell">🐳 生成报告</span>
+        <span class="actor-tag actor-parent">👪 家长端推送</span>
+      </div>
+      <div class="sc-evidence">设计推演：家长端微信小程序已知（APK Manifest），数据联动为设计目标</div>
+    </div>
+
+  </div>
+</div>
+</section>
+
+<!-- ③ 阶段二：生涯探索 -->
+<section id="phase2" style="background:#0f172a; padding:64px 0;">
+<div class="section-wrap">
+  <div class="s-eyebrow">Phase 2 · Career Exploration</div>
+  <div class="s-title">生涯探索流程</div>
+  <div class="s-sub">高一到高二，从「我能做什么」到「我想成为谁」——持续的自我认知积累过程</div>
+
+  <div style="display:flex; flex-direction:column; gap:16px;">
+
+    <div class="step-card">
+      <div class="sc-top">
+        <div class="sc-icon">🗺️</div>
+        <div>
+          <div class="sc-title">职业地图探索</div>
+          <div class="sc-desc">基于选科结果，罗素展示可选择的职业方向地图。学生可点击感兴趣的职业，查看「一天的生活」、所需技能、大学专业路径、当前就业趋势。</div>
+        </div>
+      </div>
+      <div class="sc-actors">
+        <span class="actor-tag actor-student">👤 自由探索</span>
+        <span class="actor-tag actor-russell">🐳 内容提供</span>
+      </div>
+      <div class="sc-evidence">设计推演：探索Tab「升学择业」标签已有入口；职业数据库为设计扩展方向</div>
+    </div>
+
+    <div class="step-card russell">
+      <div class="sc-top">
+        <div class="sc-icon">📝</div>
+        <div>
+          <div class="sc-title">每月生涯对话（持续积累）</div>
+          <div class="sc-desc">罗素定期主动发起生涯话题对话：「上次你说对数据分析感兴趣，这个月有没有找到更多了解的机会？」帮助学生建立持续的生涯反思习惯，对话记录积累为生涯档案。</div>
+        </div>
+      </div>
+      <div class="sc-actors">
+        <span class="actor-tag actor-russell">🐳 主动发起</span>
+        <span class="actor-tag actor-student">👤 定期记录</span>
+      </div>
+      <div class="russell-bubble">
+        <div class="rb-avatar">🐳</div>
+        <div>
+          <div class="rb-name">罗素 · 月度生涯复盘</div>
+          <div class="rb-text">「这是你本月的生涯探索小结：你浏览了「金融分析师」和「产品经理」两个职业，花了最多时间在产品经理的「一天的生活」上。你觉得吸引你的是哪个部分？」</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="sc-top">
+        <div class="sc-icon">🧪</div>
+        <div>
+          <div class="sc-title">生涯体验任务（脑之岛联动）</div>
+          <div class="sc-desc">罗素推送「生涯任务」：访谈一位从事你感兴趣职业的人、参加一次相关社团活动、完成一个小调研报告。完成任务可解锁脑之岛「生涯探索者」勋章。</div>
+        </div>
+      </div>
+      <div class="sc-actors">
+        <span class="actor-tag actor-student">👤 完成任务</span>
+        <span class="actor-tag actor-russell">🐳 任务推送</span>
+      </div>
+      <div class="sc-evidence">设计推演：任务Tab + 脑之岛勋章系统均为已有功能（APK路由验证）；跨模块联动为设计目标</div>
+    </div>
+
+    <div class="step-card">
+      <div class="sc-top">
+        <div class="sc-icon">📈</div>
+        <div>
+          <div class="sc-title">生涯档案中期报告（高二结束）</div>
+          <div class="sc-desc">高二下学期，罗素生成「个人生涯中期报告」：汇总所有测评结果、对话记录、职业探索足迹，提炼出「最强方向匹配」和「需要加强准备的领域」。作为高三志愿填报的前置输入。</div>
+        </div>
+      </div>
+      <div class="sc-actors">
+        <span class="actor-tag actor-russell">🐳 自动生成</span>
+        <span class="actor-tag actor-student">👤 查看报告</span>
+        <span class="actor-tag actor-teacher">👩‍🏫 老师可见</span>
+        <span class="actor-tag actor-parent">👪 家长可见</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+</section>
+
+<!-- ④ 阶段三：志愿填报 -->
+<section id="phase3" style="background:#0c0e1a; padding:64px 0;">
+<div class="section-wrap">
+  <div class="s-eyebrow">Phase 3 · College Application</div>
+  <div class="s-title">志愿填报决策流程</div>
+  <div class="s-sub">高三最高压力时段——罗素从「我该选哪所学校」到「最终提交志愿」全程支持</div>
+
+  <div style="display:flex; flex-direction:column; gap:16px;">
+
+    <div class="step-card highlight">
+      <div class="sc-top">
+        <div class="sc-icon">📋</div>
+        <div>
+          <div class="sc-title">成绩输入 + 位次分析</div>
+          <div class="sc-desc">学生输入高考估分或模拟考成绩，罗素计算全省位次区间，匹配历年各校在该位次的录取概率，生成「冲稳保」候选院校列表。</div>
+        </div>
+      </div>
+      <div class="sc-actors">
+        <span class="actor-tag actor-student">👤 输入成绩</span>
+        <span class="actor-tag actor-russell">🐳 概率计算</span>
+      </div>
+      <div class="russell-bubble">
+        <div class="rb-avatar">🐳</div>
+        <div>
+          <div class="rb-name">罗素 · 数据分析</div>
+          <div class="rb-text">「根据你的估分和选科组合，你在全省的位次大约在前15%-22%之间。我帮你筛选了30所院校，分成三档：「冲」（前10%）/ 「稳」（前20%）/ 「保」（前30%）。你想先看哪一档？」</div>
+        </div>
+      </div>
+      <div class="sc-evidence">设计推演：志愿数据库对接为设计目标；位次计算需外部数据支撑（标注：需第三方教育数据合作）</div>
+    </div>
+
+    <div style="text-align:center; padding:4px 0; color:#3b82f6; font-size:13px; font-weight:700;">↓</div>
+
+    <div class="step-card russell">
+      <div class="sc-top">
+        <div class="sc-icon">🏫</div>
+        <div>
+          <div class="sc-title">专业-院校匹配深度分析</div>
+          <div class="sc-desc">对候选院校，罗素叠加「专业适配度」维度：基于2年前生涯档案中积累的兴趣方向，在候选院校中进一步筛选专业排名、就业率、是否与生涯档案兴趣匹配。</div>
+        </div>
+      </div>
+      <div class="sc-actors">
+        <span class="actor-tag actor-russell">🐳 跨期数据联动</span>
+        <span class="actor-tag actor-student">👤 精筛方案</span>
+      </div>
+      <div style="background:rgba(20,184,166,0.07); border-radius:10px; padding:14px 16px; margin-top:12px; font-size:12px; color:#5eead4;">
+        🔗 <b>跨期数据联动价值</b>：两年前的选科报告 + 高一到高二的生涯探索记录，在这里「用上了」。学生能看到自己两年前的决定如何影响了今天的选择——这就是情感基础设施的核心价值。
+      </div>
+    </div>
+
+    <div style="text-align:center; padding:4px 0; color:#3b82f6; font-size:13px; font-weight:700;">↓</div>
+
+    <div class="step-card">
+      <div class="sc-top">
+        <div class="sc-icon">😰</div>
+        <div>
+          <div class="sc-title">高考后焦虑疏导（吉塔接管）</div>
+          <div class="sc-desc">高考结束到成绩公布期间，吉塔主动推送情绪关怀。成绩公布当天，如果成绩低于预期，吉塔先承接情绪，待学生情绪稳定后，再邀请罗素重新制定志愿策略。</div>
+        </div>
+      </div>
+      <div class="sc-actors">
+        <span class="actor-tag actor-tag" style="background:rgba(252,165,165,0.15);color:#fca5a5;border:1px solid rgba(252,165,165,0.25);">🐼 吉塔主导</span>
+        <span class="actor-tag actor-russell">🐳 策略备援</span>
+      </div>
+      <div class="russell-bubble">
+        <div class="rb-avatar">🐼</div>
+        <div>
+          <div class="rb-name">吉塔 · 成绩公布当天</div>
+          <div class="rb-text">「成绩出来了，你感觉怎么样？不管结果如何，这几年你一直很努力——我们不急着做决定，先给自己一点时间。等你准备好了，罗素会帮你重新看看所有的可能性。」</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align:center; padding:4px 0; color:#3b82f6; font-size:13px; font-weight:700;">↓</div>
+
+    <div class="step-card highlight">
+      <div class="sc-top">
+        <div class="sc-icon">📬</div>
+        <div>
+          <div class="sc-title">最终志愿方案确认 + 提交</div>
+          <div class="sc-desc">罗素生成「志愿填报最终方案」，包含完整的冲稳保排列顺序及理由。学生和家长共同查看、讨论、确认，最终由学生在省级志愿填报系统中手动提交（AI星球不代为操作系统外的填报）。</div>
+        </div>
+      </div>
+      <div class="sc-actors">
+        <span class="actor-tag actor-russell">🐳 生成方案</span>
+        <span class="actor-tag actor-student">👤 最终决策</span>
+        <span class="actor-tag actor-parent">👪 家长共议</span>
+      </div>
+      <div style="background:rgba(251,191,36,0.07); border:1px solid rgba(251,191,36,0.2); border-radius:8px; padding:12px 16px; margin-top:12px; font-size:12px; color:#fbbf24;">
+        ⚠️ 设计边界说明：AI星球提供辅助决策和情绪支持；最终志愿填报在教育局官方系统完成，本产品不介入系统外操作。
+      </div>
+    </div>
+
+  </div>
+</div>
+</section>
+
+<!-- ⑤ 泳道图 -->
+<section id="swimlane" style="background:#0f172a; padding:64px 0;">
+<div class="section-wrap">
+  <div class="s-eyebrow">Swimlane Diagram</div>
+  <div class="s-title">多角色协作泳道图</div>
+  <div class="s-sub">学生 / 罗素 / 吉塔 / 心理老师 / 家长端 五个角色在完整旅程中的分工</div>
+
+  <div class="swimlane-wrap" tabindex="0" role="region" aria-label="生涯流程泳道图，可横向滚动">
+    <div class="sl-header">
+      <div>阶段</div>
+      <div>👤 学生</div>
+      <div>🐳 罗素</div>
+      <div>🐼 吉塔</div>
+      <div>👩‍🏫 老师/家长</div>
+    </div>
+
+    <div class="sl-row">
+      <div class="sl-label">选科<br>决策</div>
+      <div class="sl-cell active">完成生涯测评<br>浏览选科矩阵<br>确认选科组合</div>
+      <div class="sl-cell russell-active">解读测评结果<br>生成选科对比<br>回答逻辑问题</div>
+      <div class="sl-cell">处理选科焦虑<br>（按需介入）</div>
+      <div class="sl-cell highlight-cell">接收选科报告<br>家长端推送通知</div>
+    </div>
+
+    <div class="sl-row">
+      <div class="sl-label">生涯<br>探索</div>
+      <div class="sl-cell active">探索职业地图<br>完成生涯任务<br>月度对话反思</div>
+      <div class="sl-cell russell-active">推送职业内容<br>月度主动发起<br>生成中期报告</div>
+      <div class="sl-cell">探索焦虑疏导<br>「我不知道要做什么」</div>
+      <div class="sl-cell">查看生涯档案<br>老师可推荐任务</div>
+    </div>
+
+    <div class="sl-row">
+      <div class="sl-label">志愿<br>填报</div>
+      <div class="sl-cell active">输入成绩估分<br>精筛院校专业<br>查看最终方案</div>
+      <div class="sl-cell russell-active">计算位次区间<br>冲稳保分析<br>跨期数据联动</div>
+      <div class="sl-cell highlight-cell" style="background:rgba(252,165,165,0.1); color:#fca5a5;">高考后情绪支持<br>成绩公布情绪疏导<br>（关键时刻）</div>
+      <div class="sl-cell">家长共同查阅<br>最终方案讨论</div>
+    </div>
+
+    <div class="sl-row">
+      <div class="sl-label">价值<br>沉淀</div>
+      <div class="sl-cell active">2-3年完整生涯<br>档案积累留存</div>
+      <div class="sl-cell russell-active">跨期数据整合<br>成长故事回顾</div>
+      <div class="sl-cell">情绪曲线归档<br>焦虑峰值记录</div>
+      <div class="sl-cell">学校整体数据<br>心理老师后台可见</div>
+    </div>
+
+  </div>
+
+  <div style="background:rgba(59,130,246,0.08); border:1px solid rgba(59,130,246,0.2); border-radius:12px; padding:20px 24px; margin-top:20px;">
+    <div style="font-size:12px; font-weight:800; color:#60a5fa; margin-bottom:10px;">三IP协作机制设计原则</div>
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:16px; font-size:12px; color:#94a3b8;">
+      <div><b style="color:#e2e8f0;">罗素🐳 主导生涯</b><br>数据分析、逻辑推演、方案生成——理性决策层面</div>
+      <div><b style="color:#e2e8f0;">吉塔🐼 守护情绪</b><br>焦虑高峰期按需介入，不主动打断逻辑流程，在情绪触发时顺滑切入</div>
+      <div><b style="color:#e2e8f0;">小星🤍 全局陪伴</b><br>非生涯专项对话时，小星承接通用AI需求，不抢罗素的专业场景</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ⑥ 痛点与解决方案 -->
+<section id="painpoints" style="background:#0c0e1a; padding:64px 0;">
+<div class="section-wrap">
+  <div class="s-eyebrow">Pain Points & Solutions</div>
+  <div class="s-title">核心痛点与设计响应</div>
+  <div class="s-sub">现有AI产品在高中生生涯规划场景的主要缺失，以及本设计的响应策略</div>
+
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:32px;">
+    <div>
+      <div style="font-size:13px; font-weight:800; color:#ef4444; margin-bottom:12px; text-transform:uppercase; letter-spacing:.5px;">当前痛点</div>
+      <div style="display:flex; flex-direction:column; gap:12px;">
+        <div class="pain-card">
+          <div class="pc-num">P1</div>
+          <div class="pc-title">生涯信息碎片化</div>
+          <div class="pc-body">选科、生涯探索、志愿填报三个阶段各自为政，没有跨期数据联动，每次都从零开始。</div>
+        </div>
+        <div class="pain-card">
+          <div class="pc-num">P2</div>
+          <div class="pc-title">AI只做信息查询，不做决策陪伴</div>
+          <div class="pc-body">现有AI工具能回答「985有哪些」，但无法帮学生建立「两年前的我选了什么，今天我站在哪里」的叙事感。</div>
+        </div>
+        <div class="pain-card">
+          <div class="pc-num">P3</div>
+          <div class="pc-title">情绪峰值时刻无人承接</div>
+          <div class="pc-body">高考后成绩低于预期，是高中生最脆弱的时刻。现有工具只提供信息，没有情绪支撑，这时候学生最需要的是「被听见」而不是数据。</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div style="font-size:13px; font-weight:800; color:#5eead4; margin-bottom:12px; text-transform:uppercase; letter-spacing:.5px;">设计响应</div>
+      <div style="display:flex; flex-direction:column; gap:12px;">
+        <div class="fix-card">
+          <div class="pc-num" style="color:rgba(20,184,166,0.3);">S1</div>
+          <div class="pc-title">跨期生涯档案 · 数据连续性</div>
+          <div class="pc-body">从高一选科报告到高三志愿方案，所有数据贯通存储。罗素在志愿填报时能引用「你2年前说对产品方向感兴趣」——这是情感基础设施，不是查询工具。</div>
+        </div>
+        <div class="fix-card">
+          <div class="pc-num" style="color:rgba(20,184,166,0.3);">S2</div>
+          <div class="pc-title">罗素：结构化陪伴，不只是问答</div>
+          <div class="pc-body">月度主动发起、里程碑报告、选科矩阵可视化——罗素不是等学生来问的工具，而是主动在关键节点介入的生涯伙伴。</div>
+        </div>
+        <div class="fix-card">
+          <div class="pc-num" style="color:rgba(20,184,166,0.3);">S3</div>
+          <div class="pc-title">吉塔 × 罗素接力 · 情绪-理性双轨</div>
+          <div class="pc-body">高考成绩出来那天：吉塔先承接情绪，学生说「可以继续了」，罗素介入重算方案。不用学生自己切换，IP自动感知并协作。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="background:rgba(255,255,255,0.03); border-radius:14px; padding:24px; border:1px solid rgba(255,255,255,0.06);">
+    <div style="font-size:13px; font-weight:800; color:#f1f5f9; margin-bottom:16px;">为什么生涯规划场景是 AI星球 最重要的高价值场景</div>
+    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; font-size:12px;">
+      <div style="text-align:center; padding:16px; background:rgba(255,255,255,0.03); border-radius:10px;">
+        <div style="font-size:24px; margin-bottom:6px;">🎓</div>
+        <div style="font-weight:800; color:#93c5fd; margin-bottom:4px;">高中生</div>
+        <div style="color:#64748b;">客单价最高的用户群，升学压力驱动付费意愿</div>
+      </div>
+      <div style="text-align:center; padding:16px; background:rgba(255,255,255,0.03); border-radius:10px;">
+        <div style="font-size:24px; margin-bottom:6px;">🔒</div>
+        <div style="font-weight:800; color:#5eead4; margin-bottom:4px;">数据锁定</div>
+        <div style="color:#64748b;">2-3年档案迁移成本极高，自然形成续费绑定</div>
+      </div>
+      <div style="text-align:center; padding:16px; background:rgba(255,255,255,0.03); border-radius:10px;">
+        <div style="font-size:24px; margin-bottom:6px;">💰</div>
+        <div style="font-weight:800; color:#fbbf24; margin-bottom:4px;">独立定价</div>
+        <div style="color:#64748b;">ONLY_CAREER=2 生涯模块独立销售，可叠加心育基础版</div>
+      </div>
+      <div style="text-align:center; padding:16px; background:rgba(255,255,255,0.03); border-radius:10px;">
+        <div style="font-size:24px; margin-bottom:6px;">👪</div>
+        <div style="font-weight:800; color:#d8b4fe; margin-bottom:4px;">家长付费</div>
+        <div style="color:#64748b;">志愿填报场景家长高度参与，是B2C个人付费的切入点</div>
+      </div>
+    </div>
+  </div>
+
+  <p class="footnote" style="margin-top:16px;">以上流程基于：APK代码证据（ONLY_CAREER=2 / phaseCode / 探索Tab截图）+ 三IP人格定义 + 设计推演。位次数据、院校数据库等功能为设计目标，需第三方教育数据合作，尚未在APK中发现实现证据。</p>
+</div>
+</section>
+
+<!-- 结论 -->
+<section id="conclusion">
+<div class="conclusion-wrap">
+  <div style="max-width:900px; margin:0 auto;">
+    <div style="font-size:11px; font-weight:800; color:#3b82f6; text-transform:uppercase; letter-spacing:2px; margin-bottom:16px;">Strategic Value · 战略价值</div>
+    <div class="conclusion-title">生涯规划：<br>从工具到伙伴的<br>最强切入点</div>
+    <div class="conclusion-body">
+      对于一个高中生来说，选科是人生第一次重大决策，志愿填报是第一次感受「命运」的重量。<br>
+      在这两个时刻，AI星球不只是信息工具——<b style="color:#93c5fd;">它是陪学生走过三年的那头蓝鲸</b>。<br>
+      当学生翻出高一时和罗素谈到「我想做和数据有关的事」，再对照高三的志愿方案——<br>
+      那一刻，产品就完成了从「功能」到「成长记忆」的蜕变。
+    </div>
+    <div class="pillars">
+      <div class="pillar">
+        <div class="pillar-icon">🗓️</div>
+        <div class="pillar-title">三年时间跨度</div>
+        <div class="pillar-body">高一选科 → 高二探索 → 高三志愿<br>完整的生命周期陪伴</div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-icon">🔄</div>
+        <div class="pillar-title">情感-理性双轨</div>
+        <div class="pillar-body">罗素负责数据决策<br>吉塔负责情绪支持<br>无缝协作，各司其职</div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-icon">💎</div>
+        <div class="pillar-title">不可迁移的数据资产</div>
+        <div class="pillar-body">三年心理档案 + 生涯档案<br>换平台等于失去成长记录<br>自然续费驱动</div>
+      </div>
+    </div>
+    <div style="margin-top:48px; font-size:11px; color:#1e293b; line-height:2; text-align:center;">
+      AI星球 · 生涯规划流程原型 · Doc 13 · 2026.06.11<br>
+      基于 APK v1.0.2801 代码证据 + 三IP人格设定 + 设计推演<br>
+      位次数据/院校数据库为设计目标，需外部数据合作；所有对话示例为设计原型，非产品实际输出
+    </div>
+  </div>
+</div>
+</section>
+
+
+<div style="text-align:center;padding:24px 0 16px;font-size:11px;color:#94a3b8;">署名已省略</div>
+</body>
+</html>

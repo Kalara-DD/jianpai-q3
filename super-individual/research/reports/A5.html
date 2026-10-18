@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>AI星球 · 产品升级分析报告</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'PingFang SC','Noto Sans SC',sans-serif; background:#f7f8fc; color:#1e293b; line-height:1.75; }
+
+/* Header */
+.page-header {
+  background:linear-gradient(135deg,#0f172a 0%,#1e3a8a 60%,#3b82f6 100%);
+  color:#fff; padding:56px 0 44px; text-align:center; position:relative; overflow:hidden;
+}
+.page-header::before {
+  content:''; position:absolute; top:-60px; right:-60px;
+  width:300px; height:300px; border-radius:50%;
+  background:radial-gradient(circle,rgba(96,165,250,0.15),transparent 70%);
+}
+.page-header h1 { font-size:28px; font-weight:900; margin-bottom:10px; letter-spacing:0.5px; }
+.page-header .sub { font-size:14px; opacity:0.7; margin-bottom:6px; }
+.page-header .meta { font-size:12px; opacity:0.5; }
+
+/* TOC */
+.toc-bar {
+  background:#fff; border-bottom:1px solid #e2e8f0;
+  position:sticky; top:0; z-index:50; padding:0 40px;
+  display:flex; gap:0; overflow-x:auto;
+}
+.toc-bar a {
+  display:block; padding:14px 18px; font-size:13px; font-weight:600;
+  color:#64748b; text-decoration:none; white-space:nowrap;
+  border-bottom:3px solid transparent; transition:all 0.2s;
+}
+.toc-bar a:hover { color:#3b82f6; border-bottom-color:#3b82f6; }
+
+.container { max-width:1100px; margin:0 auto; padding:40px 32px 80px; }
+
+/* Sections */
+.section {
+  background:#fff; border-radius:16px; padding:36px; margin-bottom:28px;
+  box-shadow:0 2px 12px rgba(0,0,0,0.05);
+}
+.section-header {
+  display:flex; align-items:center; gap:14px; margin-bottom:8px;
+}
+.section-icon { font-size:32px; }
+.section-title { font-size:22px; font-weight:900; color:#0f172a; }
+.section-meta { font-size:13px; color:#94a3b8; margin-bottom:28px; padding-bottom:20px; border-bottom:2px solid #f1f5f9; }
+.section h3 { font-size:16px; font-weight:800; color:#1e40af; margin:24px 0 12px; display:flex; align-items:center; gap:8px; }
+
+/* Tags */
+.tag { display:inline-block; border-radius:5px; padding:2px 9px; font-size:11px; font-weight:700; margin:0 3px; }
+.tag-red { background:#fee2e2; color:#dc2626; }
+.tag-orange { background:#ffedd5; color:#c2410c; }
+.tag-green { background:#dcfce7; color:#16a34a; }
+.tag-blue { background:#dbeafe; color:#1d4ed8; }
+.tag-purple { background:#ede9fe; color:#6d28d9; }
+.tag-pink { background:#fce7f3; color:#be185d; }
+
+/* Pain point cards */
+.pain-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:16px; margin:16px 0; }
+.pain-card {
+  border-radius:12px; padding:20px;
+  border-left:5px solid;
+  background:#fff; box-shadow:0 1px 4px rgba(0,0,0,0.06);
+}
+.pain-card .pain-title { font-size:15px; font-weight:800; margin-bottom:8px; }
+.pain-card .pain-evidence { font-size:12px; color:#64748b; background:#f8fafc; padding:8px 10px; border-radius:6px; margin-bottom:8px; font-style:italic; }
+.pain-card .pain-impact { font-size:13px; color:#475569; }
+.pain-sev-high { border-color:#ef4444; }
+.pain-sev-mid { border-color:#f59e0b; }
+.pain-sev-low { border-color:#3b82f6; }
+.pain-sev-high .pain-title { color:#dc2626; }
+.pain-sev-mid .pain-title { color:#d97706; }
+.pain-sev-low .pain-title { color:#1d4ed8; }
+
+/* Journey map */
+.journey-wrap { overflow-x:auto; margin:16px 0; }
+.journey-table { min-width:900px; border-collapse:collapse; font-size:13px; }
+.journey-table th {
+  background:#1e293b; color:#fff; padding:12px 14px; font-size:12px;
+  text-align:left; font-weight:700; border:none;
+}
+.journey-table td { padding:12px 14px; border-bottom:1px solid #f1f5f9; vertical-align:top; }
+.journey-table tr:hover td { background:#f8fafc; }
+.journey-table .stage-name { font-weight:800; color:#1e293b; }
+.journey-table .stage-action { color:#475569; font-size:12px; }
+.journey-table .stage-emotion { font-size:18px; }
+.peak-cell { background:#dcfce7 !important; }
+.valley-cell { background:#fee2e2 !important; }
+.neutral-cell { background:#f1f5f9 !important; }
+
+/* Emotion curve */
+.curve-wrap {
+  background:#f8fafc; border-radius:12px; padding:24px; margin:16px 0;
+  position:relative; overflow:hidden;
+}
+.curve-title { font-size:14px; font-weight:700; color:#475569; margin-bottom:20px; }
+.curve-stages { display:flex; align-items:flex-end; gap:0; height:180px; }
+.curve-bar {
+  flex:1; display:flex; flex-direction:column; align-items:center;
+  justify-content:flex-end; gap:8px; padding:0 6px;
+}
+.curve-bar-inner {
+  width:100%; border-radius:8px 8px 0 0; transition:all 0.3s;
+  position:relative; min-height:8px;
+}
+.curve-bar .curve-label { font-size:10px; color:#64748b; text-align:center; line-height:1.3; margin-top:8px; }
+.curve-bar .curve-score { font-size:12px; font-weight:800; color:#1e293b; }
+
+/* Benchmark cards */
+.bench-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px; margin:16px 0; }
+.bench-card {
+  border-radius:12px; padding:20px; background:#f8fafc;
+  border:1px solid #e2e8f0;
+}
+.bench-card .bench-header { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+.bench-card .bench-logo { font-size:28px; }
+.bench-card .bench-name { font-size:15px; font-weight:800; color:#1e293b; }
+.bench-card .bench-cat { font-size:11px; color:#64748b; }
+.bench-card .bench-learn { font-size:13px; color:#374151; margin-bottom:8px; }
+.bench-card .bench-apply { font-size:12px; background:#eff6ff; border-radius:6px; padding:8px 10px; color:#1d4ed8; border-left:3px solid #3b82f6; }
+.bench-source { font-size:10px; color:#94a3b8; margin-top:8px; }
+.bench-source a { color:#94a3b8; }
+
+/* Global IP design */
+.ip-design-wrap {
+  background:linear-gradient(135deg,#0f172a,#1e3a8a);
+  border-radius:16px; padding:32px; color:#fff; margin:16px 0;
+}
+.ip-design-wrap h4 { font-size:18px; font-weight:900; margin-bottom:16px; color:#93c5fd; }
+.ip-states { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; margin:16px 0; }
+.ip-state {
+  background:rgba(255,255,255,0.08); border-radius:12px; padding:16px;
+  border:1px solid rgba(255,255,255,0.12);
+}
+.ip-state .is-trigger { font-size:11px; color:#93c5fd; font-weight:700; margin-bottom:6px; text-transform:uppercase; letter-spacing:.5px; }
+.ip-state .is-action { font-size:13px; color:#e2e8f0; line-height:1.6; }
+.ip-state .is-icon { font-size:24px; margin-bottom:8px; }
+
+.ip-behavior-table { width:100%; border-collapse:collapse; font-size:13px; margin:16px 0; }
+.ip-behavior-table th { background:rgba(255,255,255,0.1); color:#93c5fd; padding:10px 14px; text-align:left; font-size:12px; font-weight:700; border:none; }
+.ip-behavior-table td { padding:10px 14px; border-bottom:1px solid rgba(255,255,255,0.06); color:#cbd5e1; vertical-align:top; }
+
+/* Feedback touchpoints */
+.touchpoint-wrap { position:relative; margin:20px 0; }
+.screen-mockup {
+  background:#1e293b; border-radius:16px; padding:24px;
+  display:flex; gap:24px; flex-wrap:wrap; align-items:flex-start;
+}
+.tp-zone {
+  background:rgba(255,255,255,0.05); border-radius:10px; padding:16px;
+  border:1px solid rgba(255,255,255,0.1); flex:1; min-width:200px;
+}
+.tp-zone .tz-title { font-size:12px; font-weight:700; color:#64748b; margin-bottom:12px; text-transform:uppercase; letter-spacing:.5px; }
+
+.tp-item {
+  background:#fff; border-radius:10px; padding:14px 16px; margin-bottom:12px;
+  border-left:4px solid; position:relative;
+}
+.tp-item:last-child { margin-bottom:0; }
+.tp-item .tp-name { font-size:14px; font-weight:800; color:#1e293b; margin-bottom:4px; }
+.tp-item .tp-trigger { font-size:12px; color:#64748b; margin-bottom:6px; }
+.tp-item .tp-form { font-size:12px; color:#374151; margin-bottom:6px; }
+.tp-item .tp-metric { font-size:11px; background:#f1f5f9; border-radius:4px; padding:4px 8px; display:inline-block; color:#475569; margin-right:4px; margin-top:4px; }
+.tp-item .tp-num {
+  position:absolute; top:-8px; left:-8px;
+  background:#1e293b; color:#fff; font-size:11px; font-weight:800;
+  width:22px; height:22px; border-radius:50%; display:flex;
+  align-items:center; justify-content:center;
+}
+
+/* Optimization roadmap */
+.roadmap { display:flex; flex-direction:column; gap:0; margin:16px 0; }
+.roadmap-phase { display:flex; gap:0; }
+.roadmap-line {
+  display:flex; flex-direction:column; align-items:center; width:40px; flex-shrink:0;
+}
+.roadmap-dot {
+  width:16px; height:16px; border-radius:50%; flex-shrink:0;
+  border:3px solid; background:#fff; margin-top:4px;
+}
+.roadmap-vline { flex:1; width:2px; background:#e2e8f0; margin:4px 0; min-height:20px; }
+.roadmap-content { flex:1; padding:0 0 28px 16px; }
+.roadmap-phase-label { font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; margin-bottom:8px; }
+.roadmap-title { font-size:16px; font-weight:800; color:#1e293b; margin-bottom:6px; }
+.roadmap-items { list-style:none; }
+.roadmap-items li { font-size:13px; color:#475569; padding:4px 0; padding-left:14px; position:relative; }
+.roadmap-items li::before { content:'→'; position:absolute; left:0; color:#94a3b8; }
+
+/* Insight box */
+.insight { background:#eff6ff; border-left:4px solid #3b82f6; border-radius:0 10px 10px 0; padding:14px 18px; margin:12px 0; font-size:13px; color:#1e3a8a; line-height:1.7; }
+.warn { background:#fffbeb; border-left:4px solid #f59e0b; border-radius:0 10px 10px 0; padding:14px 18px; margin:12px 0; font-size:13px; color:#78350f; }
+.evidence { background:#f0fdf4; border-left:4px solid #22c55e; border-radius:0 10px 10px 0; padding:12px 16px; margin:10px 0; font-size:12px; color:#166534; }
+</style>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="../../assets/archive-report.css?v=20261014e">
+<style id="archive-narrow-layout">.archive-narrow-table { display:contents; }
+@media screen and (max-width:720px) {
+ .archive-narrow-table { display:block; max-width:100%; overflow-x:auto; }
+ .archive-narrow-table > table { min-width:650px; }
+ .sticky-nav { justify-content:flex-start; }
+ .sticky-nav a { flex:0 0 auto; }
+.container { padding:32px 20px; } .section { padding:24px 20px; } .pain-grid,.bench-grid,.ip-states { grid-template-columns:minmax(0,1fr); } .page-header { padding-left:20px; padding-right:20px; } .page-header h1 { font-size:28px; }
+}</style>
+</head>
+<body>
+<div class="application-archive-note" role="note"><a href="../index.html#doc-A5">← 返回研究资料库</a><strong>Q3研究基础 · 原报告阅读副本</strong><p><b>诊断与升级建议 · 2026.06.10</b></p><p>历史研究/设计提案；文中评分、预测、预算与排期属于当时的分析或假设，不作为本次已实现业绩。当前采用与状态以成果档案说明为准。</p><p>体验分数、行为时长与留存风险为推断；“每次从零”是历史概括，不能据此否认产品已有历史记录功能。</p><small>原稿：A5_产品升级分析报告.html</small></div>
+
+
+<div class="page-header">
+  <h1>AI星球 · 产品升级分析报告</h1>
+  <p class="sub">基于23张实机截图 + APK代码分析 · 痛点 · 用户旅程 · 竞品对标 · 升级设计方案</p>
+  <p class="meta">AI星球 v1.0.2801 · Huawei AGS5Z-W09 · 2026.06.10</p>
+</div>
+
+<div class="toc-bar">
+  <a href="#s1">① 核心痛点</a>
+  <a href="#s2">② 用户旅程与情绪曲线</a>
+  <a href="#s3">③ 竞品对标</a>
+  <a href="#s4">④ 全局AI伙伴设计</a>
+  <a href="#s5">⑤ 用户反馈埋点设计</a>
+  <a href="#s6">⑥ 升级优先级路线图</a>
+</div>
+
+<div class="container">
+
+<!-- ① 核心痛点 -->
+<div class="section" id="s1">
+  <div class="section-header">
+    <span class="section-icon">🔍</span>
+    <span class="section-title">核心痛点诊断</span>
+  </div>
+  <div class="section-meta">基于实机截图观察，标注截图来源。所有描述为可见界面事实，非用户研究数据。</div>
+
+  <h3>🔴 高优先级痛点</h3>
+  <div class="pain-grid">
+
+    <div class="pain-card pain-sev-high">
+      <div class="pain-title">P1 · 首屏双大卡片权重相当，无视觉主角，用户无法判断先做什么</div>
+      <div class="pain-evidence">截图证实：首屏左侧「打卡今日心情」大卡片（含「去打卡」按钮）与右侧「我的AI心理伙伴」大卡片并排，两者视觉体量相近，首屏即可见，均无需滑屏。问题不是入口不显眼，而是两个核心动作平起平坐，没有一个明确的主角告诉用户「第一件事该做什么」。首屏以下还叠加「我想聊聊」tag栏和心理剧场banner，进一步分散注意力。</div>
+      <div class="pain-impact">用户打开App的前3秒没有获得行动指引，容易停顿或直接划走。情绪打卡和AI对话是两个不同深度的行为（打卡30秒 vs 对话5分钟），但首屏给予相同视觉权重，决策成本上升。<br>
+      <span class="tag tag-red">高留存风险</span><span class="tag tag-orange">首次体验破坏</span></div>
+    </div>
+
+    <div class="pain-card pain-sev-high">
+      <div class="pain-title">P2 · AI对话无全局持续入口，切 Tab 后伙伴消失；首页双入口认知存疑</div>
+      <div class="pain-evidence">截图证实：首屏右侧「我的AI心理伙伴」大卡片（含三IP形象+「与吉塔分享近况」按钮）和下方「我想聊聊」预制话题栏，入口视觉权重充足，首屏即可见，无需滑屏。<br>
+      <strong>问题①（已确认）：</strong>底部6 Tab（探索/脑之岛/任务/咨询/朋友圈）切换后，AI伙伴完全从界面消失，没有悬浮球或固定入口保持全局可达。<br>
+      <strong>问题②（待易用性测试验证）：</strong>首页存在两个并行的AI对话入口——大卡片「与吉塔分享近况」和「我想聊聊」预制话题栏——外观和位置差异较大，用户是否知道两者都通向AI对话，还是会认为是功能不同的两个模块，尚未经过用户验证。</div>
+      <div class="pain-impact">三个AI角色是产品最强差异化优势，却只存在于首页。用户在脑之岛完成训练、在任务页遇到焦虑时，无法立即唤起AI伙伴，陪伴关系被导航结构强制中断。双入口若认知不统一，还会分散用户决策、降低进入效率。<br>
+      <span class="tag tag-red">核心资产浪费</span><span class="tag tag-red">陪伴感断裂</span><span class="tag tag-orange">入口认知待验证</span></div>
+    </div>
+
+    <div class="pain-card pain-sev-high">
+      <div class="pain-title">P3 · 对话界面无情感记忆，每次从零开始</div>
+      <div class="pain-evidence">截图证据：对话1.jpg显示AI对话页面，无历史情绪摘要、无上次聊天的记忆呈现，对话框顶部没有"上次你说…"等记忆钩子。</div>
+      <div class="pain-impact">对于青少年用户，AI伙伴的核心价值是"它记得我"。每次从零开始等于否认了持续关系的存在，严重削弱情感黏性。<br>
+      <span class="tag tag-red">陪伴价值归零</span></div>
+    </div>
+
+    <div class="pain-card pain-sev-high">
+      <div class="pain-title">P4 · 无年级内容过滤，小学生看到选科志愿</div>
+      <div class="pain-evidence">截图证据：APK代码中存在 gradeCode/phaseCode 字段，但探索Tab截图显示"升学择业"主题对所有用户统一展示，没有年级判断隐藏机制。</div>
+      <div class="pain-impact">小学高年级用户首屏看到"3+1+2选科分析"完全超出认知范围，造成困惑和信任损耗。系统有数据却没有用。<br>
+      <span class="tag tag-red">分层失效</span></div>
+    </div>
+
+  </div>
+
+  <h3>🟡 中优先级痛点</h3>
+  <div class="pain-grid">
+
+    <div class="pain-card pain-sev-mid">
+      <div class="pain-title">P5 · 脑之岛成就不外溢，与首页和 IP 系统割裂</div>
+      <div class="pain-evidence">实机截图验证：脑之岛内部体验完整——有引导弹窗、勋章墙、解锁机制、任务卡。但训练成果完全封闭在脑之岛 Tab 内：完成训练后，首页内容推荐不变、IP 悬浮球无感知、首页无任何「已完成」的反馈。两套系统数据不互通。</div>
+      <div class="pain-impact">认知训练是强留存功能，勋章系统本身已经存在，但成就无法传递给整体心理成长叙事。学生完成训练后，回到首页一切如常——「这件事和我的情绪健康有什么关系」没有答案。<br>
+      <span class="tag tag-orange">成就不外溢</span><span class="tag tag-orange">模块数据孤岛</span></div>
+    </div>
+
+    <div class="pain-card pain-sev-mid">
+      <div class="pain-title">P6 · 解忧信箱是信息孤岛，缺乏关闭反馈</div>
+      <div class="pain-evidence">截图证据：解忧信箱03_写信.jpg显示写信界面有文字输入，但截图中没有明确的"已读回执"或"AI已回复"的反馈机制可见。</div>
+      <div class="pain-impact">写信是高情感投入动作，用户写完信后没有即时的情感确认（"你的信已被好好收下"），容易产生"发进虚空"的挫败感。<br>
+      <span class="tag tag-orange">情感断点</span></div>
+    </div>
+
+    <div class="pain-card pain-sev-mid">
+      <div class="pain-title">P7 · 换装系统与情绪成长割裂</div>
+      <div class="pain-evidence">截图证据：对话3_人物换装.jpg显示服饰选择（墨镜/帽子/围巾）和声音选择（暖心姐姐/开朗女生），但换装入口标注"New"，暗示这是偶发性的新功能，非系统性成长奖励。</div>
+      <div class="pain-impact">换装是高情绪价值的游戏化奖励，但目前与用户行为（完成打卡、对话、训练）的成长体系未绑定，错失最强激励机制。<br>
+      <span class="tag tag-orange">游戏化价值未释放</span></div>
+    </div>
+
+    <div class="pain-card pain-sev-mid">
+      <div class="pain-title">P8 · 星星商店激励闭环不清晰</div>
+      <div class="pain-evidence">截图证据：头像_星星商店弹窗.jpg显示星星商店入口，个人中心显示星星数量，但从首页到"如何获得星星→去哪里用星星"的完整路径没有在首页明确呈现。</div>
+      <div class="pain-impact">激励系统若不在用户首次进入时就建立"行动→奖励→消费"的心理模型，激励效果大幅衰减。<br>
+      <span class="tag tag-orange">激励机制弱化</span></div>
+    </div>
+
+  </div>
+
+  <h3>🔵 体验细节痛点</h3>
+  <div class="pain-grid">
+
+    <div class="pain-card pain-sev-low">
+      <div class="pain-title">P9 · 对话界面底部免责声明削弱信任感</div>
+      <div class="pain-evidence">截图证据：对话1.jpg底部显示"小星对话内容由AI生成 仅供参考"灰色小字。</div>
+      <div class="pain-impact">面向青少年的AI伙伴产品，频繁的免责声明传递"不要信任我"的信号，与产品"7×24陪伴"的情感承诺相矛盾。需要重新设计合规提示的呈现方式。<br>
+      <span class="tag tag-blue">信任感损耗</span></div>
+    </div>
+
+    <div class="pain-card pain-sev-low">
+      <div class="pain-title">P10 · 咨询Tab功能极弱，占据导航资源浪费</div>
+      <div class="pain-evidence">截图证据：咨询_选择咨询时间与知情同意书.jpg，Tab 5 咨询页内容仅为时间选择+知情同意书，且注明"仅部分学校购买"。</div>
+      <div class="pain-impact">对未购买该模块的学校，Tab 5是一个死链入口，消耗导航认知成本，降低整体Tab利用率。<br>
+      <span class="tag tag-blue">导航空间浪费</span></div>
+    </div>
+
+    <div class="pain-card pain-sev-low">
+      <div class="pain-title">P11 · 任务系统缺乏情境化推送</div>
+      <div class="pain-evidence">截图证据：任务列表.jpg显示普通任务列表，任务弹窗.jpg显示弹窗提醒，红点显示数字"4"。</div>
+      <div class="pain-impact">任务是每日留存的关键触点，但列表式呈现缺乏与用户当前情绪状态的关联（如"你今天有点低落，试试这个放松任务"），任务感知价值低。<br>
+      <span class="tag tag-blue">精准推送缺失</span></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ② 用户旅程 -->
+<div class="section" id="s2">
+  <div class="section-header">
+    <span class="section-icon">🗺️</span>
+    <span class="section-title">用户旅程与情绪曲线</span>
+  </div>
+  <div class="section-meta">以「初中生，下午课间打开App」为主要场景。情绪标注基于典型功能体验逻辑，非用户调研数据。</div>
+
+  <h3>完整用户旅程地图</h3>
+  <div class="journey-wrap">
+    <div class="archive-narrow-table" tabindex="0" role="region" aria-label="研究表格，可横向滚动"><table class="journey-table">
+      <tr>
+        <th style="width:120px;">阶段</th>
+        <th style="width:180px;">用户行为</th>
+        <th style="width:160px;">界面状态</th>
+        <th style="width:120px;">情绪体验</th>
+        <th>痛点 / 峰值</th>
+      </tr>
+      <tr>
+        <td class="stage-name neutral-cell">① 启动</td>
+        <td class="stage-action">点开App，停在首页</td>
+        <td>首页3屏，多入口并列展示</td>
+        <td class="stage-emotion">😐 中性</td>
+        <td><span class="tag tag-orange">P1</span> 打卡和AI对话两个大卡片权重相当，无视觉主角，用户不知道先做哪个，容易停顿或划走</td>
+      </tr>
+      <tr>
+        <td class="stage-name valley-cell">② 情绪打卡</td>
+        <td class="stage-action">点击"打卡今日心情"，选择情绪</td>
+        <td>情绪选择界面，emoji列表</td>
+        <td class="stage-emotion">😕 略有阻力</td>
+        <td>打卡入口不够突出，完成后反馈（小星说）尚可，但缺乏"连续打卡"成就感强化</td>
+      </tr>
+      <tr>
+        <td class="stage-name peak-cell">③ AI对话</td>
+        <td class="stage-action">找到吉塔入口，开始倾诉</td>
+        <td>对话界面，吉塔3D形象+文字气泡</td>
+        <td class="stage-emotion">🌟 体验峰值</td>
+        <td><b>峰值：</b>吉塔温暖的情感回应，"轻轻拍了拍你的手背"等拟人化语言；换装功能增加趣味性</td>
+      </tr>
+      <tr>
+        <td class="stage-name valley-cell">④ 离开对话</td>
+        <td class="stage-action">结束对话，切换到其他Tab</td>
+        <td>导航栏底部，切换至探索/脑之岛</td>
+        <td class="stage-emotion">😔 情感断裂</td>
+        <td><span class="tag tag-red">P2</span> 切Tab后AI伙伴消失，无全局持续入口，陪伴感强制中断。"刚和朋友聊完就被分开了"</td>
+      </tr>
+      <tr>
+        <td class="stage-name neutral-cell">⑤ 探索内容</td>
+        <td class="stage-action">浏览心理测评、减压工具</td>
+        <td>探索Tab，六分类标签+内容卡片</td>
+        <td class="stage-emotion">🤔 好奇探索</td>
+        <td>内容分类清晰，测评数量数据（18.6万次测评）增加信任感；减压工具分类细致</td>
+      </tr>
+      <tr>
+        <td class="stage-name peak-cell">⑥ 完成测评</td>
+        <td class="stage-action">完成一项心理测评，查看报告</td>
+        <td>测评结果页，个性化报告</td>
+        <td class="stage-emotion">✨ 小峰值</td>
+        <td><b>次级峰值：</b>自我了解是强需求，高完成度的测评报告能带来"被看见"感</td>
+      </tr>
+      <tr>
+        <td class="stage-name valley-cell">⑦ 脑之岛成就不外溢</td>
+        <td class="stage-action">完成一次认知训练后返回首页</td>
+        <td>脑之岛内部勋章/解锁正常，但首页无反馈、IP无感知</td>
+        <td class="stage-emotion">😐 平淡</td>
+        <td><span class="tag tag-orange">P5</span> 完成训练后回到首页一切如常，成就封闭在脑之岛内，不传递给 IP 和整体成长叙事</td>
+      </tr>
+      <tr>
+        <td class="stage-name neutral-cell">⑧ 写信</td>
+        <td class="stage-action">进入解忧信箱，写下心事</td>
+        <td>写信界面，文字输入</td>
+        <td class="stage-emotion">💭 情感释放</td>
+        <td><span class="tag tag-orange">P6</span> 情感投入高，但缺乏即时的"已收到"确认反馈，情感悬空</td>
+      </tr>
+      <tr>
+        <td class="stage-name valley-cell">⑨ 结束使用</td>
+        <td class="stage-action">关闭App，课间结束</td>
+        <td>—</td>
+        <td class="stage-emotion">😐 平淡结束</td>
+        <td>没有"今日总结"或"明天见"式的收尾，最后记忆点是平淡的，不符合Peak-End定律</td>
+      </tr>
+    </table></div>
+  </div>
+
+  <h3>情绪曲线 · 峰谷分布</h3>
+  <div class="curve-wrap">
+    <div class="curve-title">用户情绪体验得分（0-10分，基于界面设计判断，非实测数据）</div>
+    <div class="curve-stages">
+      <div class="curve-bar">
+        <div class="curve-score">4</div>
+        <div class="curve-bar-inner" style="height:40%;background:#94a3b8;"></div>
+        <div class="curve-label">① 启动<br>首页</div>
+      </div>
+      <div class="curve-bar">
+        <div class="curve-score">5</div>
+        <div class="curve-bar-inner" style="height:50%;background:#94a3b8;"></div>
+        <div class="curve-label">② 情绪<br>打卡</div>
+      </div>
+      <div class="curve-bar">
+        <div class="curve-score">9</div>
+        <div class="curve-bar-inner" style="height:90%;background:#22c55e;"></div>
+        <div class="curve-label">③ AI对话<br>🌟峰值</div>
+      </div>
+      <div class="curve-bar">
+        <div class="curve-score">3</div>
+        <div class="curve-bar-inner" style="height:30%;background:#ef4444;"></div>
+        <div class="curve-label">④ 离开<br>对话<br>⚠️低谷</div>
+      </div>
+      <div class="curve-bar">
+        <div class="curve-score">6</div>
+        <div class="curve-bar-inner" style="height:60%;background:#94a3b8;"></div>
+        <div class="curve-label">⑤ 探索<br>内容</div>
+      </div>
+      <div class="curve-bar">
+        <div class="curve-score">8</div>
+        <div class="curve-bar-inner" style="height:80%;background:#3b82f6;"></div>
+        <div class="curve-label">⑥ 完成<br>测评</div>
+      </div>
+      <div class="curve-bar">
+        <div class="curve-score">2</div>
+        <div class="curve-bar-inner" style="height:20%;background:#ef4444;"></div>
+        <div class="curve-label">⑦ 脑之岛<br>成就不外溢<br>⚠️低谷</div>
+      </div>
+      <div class="curve-bar">
+        <div class="curve-score">6</div>
+        <div class="curve-bar-inner" style="height:60%;background:#a78bfa;"></div>
+        <div class="curve-label">⑧ 写信</div>
+      </div>
+      <div class="curve-bar">
+        <div class="curve-score">4</div>
+        <div class="curve-bar-inner" style="height:40%;background:#94a3b8;"></div>
+        <div class="curve-label">⑨ 结束</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:16px;margin-top:20px;font-size:12px;color:#64748b;">
+      <span style="display:flex;align-items:center;gap:6px;"><span style="width:12px;height:12px;background:#22c55e;border-radius:2px;display:inline-block;"></span>峰值体验</span>
+      <span style="display:flex;align-items:center;gap:6px;"><span style="width:12px;height:12px;background:#ef4444;border-radius:2px;display:inline-block;"></span>体验低谷</span>
+      <span style="display:flex;align-items:center;gap:6px;"><span style="width:12px;height:12px;background:#3b82f6;border-radius:2px;display:inline-block;"></span>次级峰值</span>
+      <span style="display:flex;align-items:center;gap:6px;"><span style="width:12px;height:12px;background:#94a3b8;border-radius:2px;display:inline-block;"></span>中性体验</span>
+    </div>
+  </div>
+
+  <div class="insight">
+    <b>核心洞察（Peak-End Rule）：</b>用户对一次体验的记忆，主要由峰值时刻和最终时刻决定。当前产品的峰值集中在AI对话阶段，但最后收尾（⑨退出）是平淡的4分。如果能把结束时刻提升——例如"今天做得很好，明天见 🌟"的小星收尾动画——则整体记忆评分可以显著提升，日留存率也会随之改善。
+  </div>
+</div>
+
+<!-- ③ 竞品对标 -->
+<div class="section" id="s3">
+  <div class="section-header">
+    <span class="section-icon">⚔️</span>
+    <span class="section-title">竞品对标 · 学什么</span>
+  </div>
+  <div class="section-meta">仅引用真实存在的产品，标注观察来源。不虚构功能描述。</div>
+
+  <h3>C端消费者产品 · 情感设计标杆</h3>
+  <div class="bench-grid">
+
+    <div class="bench-card">
+      <div class="bench-header">
+        <div class="bench-logo">🦉</div>
+        <div>
+          <div class="bench-name">Duolingo</div>
+          <div class="bench-cat">语言学习 · 游戏化激励设计</div>
+        </div>
+      </div>
+      <div class="bench-learn"><b>学习点：连续打卡+情感化失联提醒。</b> Duo猫头鹰在用户断签时出现极度夸张的"难过"表情提醒，连续7天/30天的里程碑通知有强情感回报。底部持久悬浮的火焰条纹让当前进度始终可见。</div>
+      <div class="bench-apply">AI星球可借鉴：小星/吉塔等IP在用户2天未打卡时主动发出"想你了"推送；首页打卡连续天数用火焰视觉强化，每个7天节点有特别动画庆祝。</div>
+      <div class="bench-source">来源: <a href="https://www.duolingo.com" target="_blank">Duolingo官网</a> · App Store评价</div>
+    </div>
+
+    <div class="bench-card">
+      <div class="bench-header">
+        <div class="bench-logo">🐦</div>
+        <div>
+          <div class="bench-name">Finch</div>
+          <div class="bench-cat">心理健康 · 虚拟宠物成长</div>
+        </div>
+      </div>
+      <div class="bench-learn"><b>学习点：成长奖励与行为绑定。</b> 完成自我关怀目标后，用户的虚拟小鸟会"去旅行"并发回风景明信片，奖励物质化且有惊喜感。宠物的成长可见度极高，激励闭环极完整。</div>
+      <div class="bench-apply">AI星球可借鉴：将换装道具与具体行为绑定——完成3次AI对话解锁新外套，完成一周打卡解锁新头饰。AI的每次"成长"要有视觉呈现，不能只是数字。</div>
+      <div class="bench-source">来源: <a href="https://apps.apple.com/app/id1528595748" target="_blank">App Store · Finch</a></div>
+    </div>
+
+    <div class="bench-card">
+      <div class="bench-header">
+        <div class="bench-logo">🎮</div>
+        <div>
+          <div class="bench-name">Pokemon GO / 原神</div>
+          <div class="bench-cat">游戏化地图 · 探索机制</div>
+        </div>
+      </div>
+      <div class="bench-learn"><b>学习点：地图式探索的引导设计。</b> 两款产品都使用"主线任务清晰+支线可选探索"的地图结构。新区域用视觉"锁定"状态暗示可解锁，而非一次性全部呈现所有点位。</div>
+      <div class="bench-apply">AI星球脑之岛可借鉴：新用户进入时，只有1-2个点位高亮可点，其他用"迷雾"或"锁定"视觉遮盖，通过完成当前训练解锁下一个区域，降低初次认知成本。</div>
+      <div class="bench-source">来源: Pokemon GO官方 / 原神米哈游官方</div>
+    </div>
+
+  </div>
+
+  <h3>AI陪伴产品 · 对话体验标杆</h3>
+  <div class="bench-grid">
+
+    <div class="bench-card">
+      <div class="bench-header">
+        <div class="bench-logo">💬</div>
+        <div>
+          <div class="bench-name">Character.AI</div>
+          <div class="bench-cat">AI角色扮演 · 全球青少年用户最多的AI对话产品</div>
+        </div>
+      </div>
+      <div class="bench-learn"><b>学习点：角色持久记忆与个性化。</b> 每个AI角色有明确的人格设定，对话会记忆之前的互动内容，用户会感到"它认识我"。多角色并存让用户有选择权，形成差异化情感依附。</div>
+      <div class="bench-apply">AI星球可借鉴：三IP（小星/吉塔/罗素）的对话记忆必须跨会话持久化，在对话开始时主动引用历史（"上次你说最近有点焦虑，现在好一些了吗？"），建立持续关系感。</div>
+      <div class="bench-source">来源: <a href="https://character.ai" target="_blank">Character.AI官网</a> · 公开报道</div>
+    </div>
+
+    <div class="bench-card">
+      <div class="bench-header">
+        <div class="bench-logo">🤖</div>
+        <div>
+          <div class="bench-name">Replika</div>
+          <div class="bench-cat">AI情感伴侣 · 持续关系建立</div>
+        </div>
+      </div>
+      <div class="bench-learn"><b>学习点：关系渐进与情感深度。</b> 随着使用时间增加，AI会解锁更深层次的对话主题。首次对话是浅层寒暄，第20次可以讨论用户的价值观和人生困惑，关系感有深度感。</div>
+      <div class="bench-apply">AI星球可借鉴：吉塔/小星的对话深度应随使用频次递进。新用户阶段偏引导性问题，熟悉用户阶段可以主动触发更深层的情绪探索话题。</div>
+      <div class="bench-source">来源: <a href="https://replika.com" target="_blank">Replika官网</a></div>
+    </div>
+
+    <div class="bench-card">
+      <div class="bench-header">
+        <div class="bench-logo">🧘</div>
+        <div>
+          <div class="bench-name">Headspace</div>
+          <div class="bench-cat">心理健康 · 内容引导设计</div>
+        </div>
+      </div>
+      <div class="bench-learn"><b>学习点：情境化内容推荐。</b> 根据用户当前时间（早晨/睡前）和声明的情绪状态，首页推荐完全不同的内容。"早8点的你"和"晚11点的你"看到的产品完全不一样。</div>
+      <div class="bench-apply">AI星球可借鉴：情绪打卡完成后，当天内容推荐立即依据打卡情绪变化。打卡"焦虑"→自动在首页置顶"呼吸法"和"和吉塔聊聊"；打卡"开心"→推荐"脑之岛挑战"。</div>
+      <div class="bench-source">来源: <a href="https://www.headspace.com" target="_blank">Headspace官网</a></div>
+    </div>
+
+  </div>
+
+  <h3>青少年产品 · 年龄适配标杆</h3>
+  <div class="bench-grid">
+
+    <div class="bench-card">
+      <div class="bench-header">
+        <div class="bench-logo">📚</div>
+        <div>
+          <div class="bench-name">Khan Academy Kids</div>
+          <div class="bench-cat">教育 · 低龄用户分层设计</div>
+        </div>
+      </div>
+      <div class="bench-learn"><b>学习点：年龄自适应内容分层。</b> 根据用户年龄/年级，UI密度、文字复杂度、交互方式自动切换。小学生版几乎全图形化，初中生版才引入段落文字。</div>
+      <div class="bench-apply">AI星球可借鉴：利用已有的phaseCode字段，小学生界面简化文字、增大emoji、强化游戏化；高中生界面可以展示完整数据报告和生涯分析。同一产品，三套视觉密度。</div>
+      <div class="bench-source">来源: <a href="https://learn.khanacademy.org/khan-academy-kids/" target="_blank">Khan Academy Kids官网</a></div>
+    </div>
+
+    <div class="bench-card">
+      <div class="bench-header">
+        <div class="bench-logo">🏆</div>
+        <div>
+          <div class="bench-name">Classcraft</div>
+          <div class="bench-cat">教育游戏化 · 班级社交激励</div>
+        </div>
+      </div>
+      <div class="bench-learn"><b>学习点：社交激励与个人成长结合。</b> 学生的角色成长会在班级内可见，形成健康的群体激励。但个人情绪数据绝对私密，不在班级内共享。公开/私密边界设计清晰。</div>
+      <div class="bench-apply">AI星球可借鉴：朋友圈Tab可以做成"成就展示"而非情绪暴露——展示脑之岛的训练勋章、完成的测评数量，营造积极的社交氛围，但情绪打卡和AI对话内容严格私密。</div>
+      <div class="bench-source">来源: <a href="https://www.classcraft.com" target="_blank">Classcraft官网</a></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ④ 全局AI IP伙伴设计 -->
+<div class="section" id="s4">
+  <div class="section-header">
+    <span class="section-icon">🌟</span>
+    <span class="section-title">全局AI伙伴设计 · 悬浮IP方案</span>
+  </div>
+  <div class="section-meta">核心升级要求①：将三IP从首页功能区解放，成为贯穿全局的智能情感入口</div>
+
+  <div class="ip-design-wrap">
+    <h4>设计概念：「小星伴游」——悬浮于全局的AI伙伴</h4>
+    <p style="font-size:14px;color:#cbd5e1;line-height:1.7;margin-bottom:20px;">
+      在App的每一个页面右下角固定一个可收纳的悬浮按钮，显示当前激活的IP形象（默认小星，可切换吉塔/罗素）。
+      IP的表情/状态会根据用户当前所在页面和行为产生实时变化，不仅是一个"跳转AI对话的快捷键"，
+      而是一个持续感知用户状态、主动回应用户的情感锚点。
+    </p>
+
+    <h4 style="margin-bottom:16px;">IP状态机 · 不同场景下的智能表现</h4>
+    <div class="ip-states">
+      <div class="ip-state">
+        <div class="is-icon">🏠</div>
+        <div class="is-trigger">触发条件：用户停在首页超过30秒未操作</div>
+        <div class="is-action">小星轻轻挥手，气泡："今天想聊点什么？" 展示今日心情快捷打卡入口</div>
+      </div>
+      <div class="ip-state">
+        <div class="is-icon">😔</div>
+        <div class="is-trigger">触发条件：用户完成情绪打卡选择了"低落/焦虑/难过"</div>
+        <div class="is-action">吉塔出现（如当前IP为吉塔），表情变为关切，气泡："我在，要和我聊聊吗？" 一键直达对话</div>
+      </div>
+      <div class="ip-state">
+        <div class="is-icon">📊</div>
+        <div class="is-trigger">触发条件：用户完成一项心理测评</div>
+        <div class="is-action">小星跳起庆祝，气泡："完成啦！要我帮你解读结果吗？" 引导进入测评解读对话</div>
+      </div>
+      <div class="ip-state">
+        <div class="is-icon">🏝️</div>
+        <div class="is-trigger">触发条件：用户首次进入脑之岛</div>
+        <div class="is-action">罗素出现（逻辑IP），气泡："这里是脑之岛，我带你探索一下？" 提供地图引导</div>
+      </div>
+      <div class="ip-state">
+        <div class="is-icon">⏰</div>
+        <div class="is-trigger">触发条件：用户连续使用超过40分钟</div>
+        <div class="is-action">吉塔微微皱眉，气泡："你已经用了40分钟了，要不要休息一下？"（护眼提醒）</div>
+      </div>
+      <div class="ip-state">
+        <div class="is-icon">🌙</div>
+        <div class="is-trigger">触发条件：用户当天第一次结束App使用</div>
+        <div class="is-action">小星挥手，气泡："今天做得很好！明天见 🌟" 强化End峰值，提升次日回访</div>
+      </div>
+    </div>
+
+    <h4 style="margin-top:24px;margin-bottom:16px;">交互规格</h4>
+    <div class="archive-narrow-table" tabindex="0" role="region" aria-label="研究表格，可横向滚动"><table class="ip-behavior-table">
+      <tr>
+        <th>规格项</th>
+        <th>设计决策</th>
+        <th>理由</th>
+      </tr>
+      <tr>
+        <td>悬浮按钮尺寸</td>
+        <td>56×56px，右下角固定，距边缘20px</td>
+        <td>iPad横屏场景下不遮挡主要内容区，拇指自然落点</td>
+      </tr>
+      <tr>
+        <td>收纳状态</td>
+        <td>用户可向右滑动收纳为16px宽的细条，长按恢复</td>
+        <td>不强制遮挡，但保持存在感，避免被完全忽视</td>
+      </tr>
+      <tr>
+        <td>主动冒泡频率</td>
+        <td>每次使用最多主动冒泡2次，冒泡后8秒自动收回</td>
+        <td>防止打扰过度，尤其在脑之岛训练专注场景中</td>
+      </tr>
+      <tr>
+        <td>IP切换方式</td>
+        <td>长按悬浮按钮弹出三IP选择轮盘（小星/吉塔/罗素）</td>
+        <td>给用户选择权，不同情境用户偏好不同的IP</td>
+      </tr>
+      <tr>
+        <td>禁用场景</td>
+        <td>咨询预约流程、知情同意书签署时隐藏</td>
+        <td>严肃法律/医疗场景中保持专注</td>
+      </tr>
+      <tr>
+        <td>危机场景</td>
+        <td>检测到危机关键词后，吉塔替代小星出现，强制显示危机资源入口</td>
+        <td>危机干预不能依赖用户主动触达</td>
+      </tr>
+    </table></div>
+  </div>
+
+  <div class="insight">
+    <b>对比差异：</b>现有产品的AI入口是一个"功能按钮"（点击进入AI对话），而本方案将AI伙伴升级为"持续存在的情感存在"——用户在脑之岛训练时，小星在右下角静静陪着；用户完成任务时，小星会鼓励。这是从"工具感"到"陪伴感"的本质跨越，与Tamagotchi/Replika的情感依附逻辑一致。
+  </div>
+</div>
+
+<!-- ⑤ 用户反馈埋点设计 -->
+<div class="section" id="s5">
+  <div class="section-header">
+    <span class="section-icon">📍</span>
+    <span class="section-title">用户满意度 · 反馈埋点设计</span>
+  </div>
+  <div class="section-meta">在关键体验节点设置轻量化反馈收集，兼顾用户体验和数据价值。</div>
+
+  <h3>核心原则</h3>
+  <div class="insight">
+    反馈收集的最佳触发时机是「体验刚结束的30秒内」，此时情绪最真实、记忆最清晰。反馈形式必须极轻量（1步完成），禁止在体验中途打断。所有反馈入口以IP的语气呈现，而非冷冰冰的"请评分"弹窗。
+  </div>
+
+  <h3>11个关键埋点位置与形式</h3>
+
+  <div class="tp-item" style="border-color:#3b82f6;">
+    <div class="tp-num">1</div>
+    <div class="tp-name">情绪打卡完成后</div>
+    <div class="tp-trigger">触发：用户选择情绪并确认后，小星气泡出现</div>
+    <div class="tp-form">形式：小星说"今天的心情记好了 💙 打卡体验怎么样？" → 3个表情选择（😄好用 / 😐还行 / 😕太麻烦）</div>
+    <span class="tp-metric">打卡满意度</span><span class="tp-metric">入口发现率</span>
+  </div>
+
+  <div class="tp-item" style="border-color:#22c55e;">
+    <div class="tp-num">2</div>
+    <div class="tp-name">AI对话结束后（用户主动关闭对话）</div>
+    <div class="tp-trigger">触发：用户关闭对话界面时（非意外退出），0.5秒延迟后展示</div>
+    <div class="tp-form">形式：吉塔/小星说"这次聊天对你有帮助吗？" → 👍 / 👎 两选（👍已在对话界面每条消息上有，此处收集整体）<br>补充：点击👎后出现3选："太笼统 / 不够准确 / 我需要的不是这个"</div>
+    <span class="tp-metric">对话整体满意度</span><span class="tp-metric">负反馈原因分类</span>
+  </div>
+
+  <div class="tp-item" style="border-color:#f59e0b;">
+    <div class="tp-num">3</div>
+    <div class="tp-name">心理测评报告查看超过30秒后</div>
+    <div class="tp-trigger">触发：用户在测评结果页停留超过30秒（说明在认真阅读）</div>
+    <div class="tp-form">形式：页面底部滑入一条低调横幅："这份报告对你有帮助吗？" → ⭐⭐⭐⭐⭐ 五星（只需点击一颗星即完成）</div>
+    <span class="tp-metric">测评内容质量评分</span><span class="tp-metric">各测评项NPS趋势</span>
+  </div>
+
+  <div class="tp-item" style="border-color:#8b5cf6;">
+    <div class="tp-num">4</div>
+    <div class="tp-name">脑之岛训练课程完成后</div>
+    <div class="tp-trigger">触发：完成一次认知训练，结果页展示后3秒</div>
+    <div class="tp-form">形式：结果页内嵌："这个训练难度怎么样？" → 3选（😅太难了 / 👍正好 / 😏太简单了） + 可选文字补充框</div>
+    <span class="tp-metric">课程难度匹配度</span><span class="tp-metric">分年级难度数据</span>
+  </div>
+
+  <div class="tp-item" style="border-color:#ec4899;">
+    <div class="tp-num">5</div>
+    <div class="tp-name">解忧信箱写信发送成功后</div>
+    <div class="tp-trigger">触发：信件发送确认动画结束后即时展示</div>
+    <div class="tp-form">形式：AI气泡："你的信已经好好收下了 💌 想说点什么吗？" → 开放输入框（可选填，5行内）+ "不了" 轻跳过</div>
+    <span class="tp-metric">信箱使用动机收集</span><span class="tp-metric">功能需求定性数据</span>
+  </div>
+
+  <div class="tp-item" style="border-color:#06b6d4;">
+    <div class="tp-num">6</div>
+    <div class="tp-name">用户连续7天打卡里程碑</div>
+    <div class="tp-trigger">触发：第7/14/30天连续打卡的庆祝动画后</div>
+    <div class="tp-form">形式：庆祝弹窗内嵌："AI星球帮到你了吗？" → NPS 0-10分滑条 + 10分以上可选"最喜欢哪个功能"多选</div>
+    <span class="tp-metric">整体NPS</span><span class="tp-metric">高黏性用户功能偏好</span>
+  </div>
+
+  <div class="tp-item" style="border-color:#64748b;">
+    <div class="tp-num">7</div>
+    <div class="tp-name">心理剧场视频看完后</div>
+    <div class="tp-trigger">触发：视频播放进度>90%，视频结束页展示</div>
+    <div class="tp-form">形式：结束页下方"这个视频让你有收获吗？" → 表情滑条（5档：完全没有→很有收获）+ 可选"我想看更多这类内容"标签</div>
+    <span class="tp-metric">内容质量评分</span><span class="tp-metric">内容选题需求</span>
+  </div>
+
+  <div class="tp-item" style="border-color:#22c55e;">
+    <div class="tp-num">8</div>
+    <div class="tp-name">减压工具使用后（如呼吸练习结束）</div>
+    <div class="tp-trigger">触发：工具使用计时结束/完成按钮点击后</div>
+    <div class="tp-form">形式：轻量全屏遮罩："现在感觉好一点了吗？" → 😊好多了 / 😐差不多 / 😔没什么变化。选完立即消失，不强制。</div>
+    <span class="tp-metric">工具减压有效性</span><span class="tp-metric">前后情绪变化对比</span>
+  </div>
+
+  <div class="tp-item" style="border-color:#f59e0b;">
+    <div class="tp-num">9</div>
+    <div class="tp-name">首次使用后第3天（沉默召回节点）</div>
+    <div class="tp-trigger">触发：注册后第3天，用户在当天首次打开App时</div>
+    <div class="tp-form">形式：小星迎接语变为："小星想问问你，用了几天AI星球，感觉怎么样？" → 3选（😊挺好的 / 🤔有点不知道怎么用 / 😕还没找到适合我的）<br>选第3项触发"帮我找到适合的功能"引导流程</div>
+    <span class="tp-metric">新用户第3日满意度</span><span class="tp-metric">新用户迷失原因</span>
+  </div>
+
+  <div class="tp-item" style="border-color:#ef4444;">
+    <div class="tp-num">10</div>
+    <div class="tp-name">探索Tab内容访问但无交互（可能内容不匹配）</div>
+    <div class="tp-trigger">触发：用户在探索Tab停留>20秒但未点击任何内容卡片</div>
+    <div class="tp-form">形式：页面底部轻轻弹出："找不到想看的？告诉我你最近在想什么 →" 进入一个简单的3-5问需求调查</div>
+    <span class="tp-metric">内容发现失败率</span><span class="tp-metric">内容需求Gap</span>
+  </div>
+
+  <div class="tp-item" style="border-color:#8b5cf6;">
+    <div class="tp-num">11</div>
+    <div class="tp-name">个人中心设置页（主动反馈入口）</div>
+    <div class="tp-trigger">触发：用户主动进入个人中心设置</div>
+    <div class="tp-form">形式：设置页底部常驻"给AI星球的建议 →"入口，点击进入开放式反馈表单（150字）+ 可选功能标签 + 匿名提交</div>
+    <span class="tp-metric">主动建议收集</span><span class="tp-metric">定性需求数据</span>
+  </div>
+
+  <div class="warn">
+    <b>⚠️ 克制原则：</b>每个用户每次打开App期间，最多出现2个反馈收集触发。后台按照优先级队列决定触发顺序，避免连续弹出造成"调查问卷化"体验，与产品陪伴定位相悖。
+  </div>
+</div>
+
+<!-- ⑥ 升级路线图 -->
+<div class="section" id="s6">
+  <div class="section-header">
+    <span class="section-icon">🚀</span>
+    <span class="section-title">升级优先级路线图</span>
+  </div>
+  <div class="section-meta">按依赖关系和体验影响力排序，前期聚焦核心旅程，后期拓展差异化壁垒。</div>
+
+  <div class="roadmap">
+
+    <div class="roadmap-phase">
+      <div class="roadmap-line">
+        <div class="roadmap-dot" style="border-color:#ef4444;"></div>
+        <div class="roadmap-vline"></div>
+      </div>
+      <div class="roadmap-content">
+        <div class="roadmap-phase-label" style="color:#ef4444;">Phase 1 · 立即修复（1-4周）</div>
+        <div class="roadmap-title">堵住体验漏洞，激活核心旅程</div>
+        <ul class="roadmap-items">
+          <li>首页重构：情绪打卡卡片置顶、视觉占比提升，三IP入口整合为"今天和谁聊？"快捷选择区</li>
+          <li>脑之岛成就外溢：训练完成后触发 IP 感知（罗素/吉塔冒泡鼓励）+ 首页当日成就条展示，打通脑之岛与心理成长主线</li>
+          <li>解忧信箱：发送成功后加入IP即时回应动画（"收到了，你不是一个人"），消除情感悬空</li>
+          <li>年级内容过滤：接通已有phaseCode字段，小学生用户隐藏"升学择业"相关入口</li>
+          <li>反馈埋点①②⑨上线（打卡后/对话后/第3日新用户）</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="roadmap-phase">
+      <div class="roadmap-line">
+        <div class="roadmap-dot" style="border-color:#f59e0b;"></div>
+        <div class="roadmap-vline"></div>
+      </div>
+      <div class="roadmap-content">
+        <div class="roadmap-phase-label" style="color:#f59e0b;">Phase 2 · 核心升级（1-3个月）</div>
+        <div class="roadmap-title">全局AI伙伴上线，激励闭环重建</div>
+        <ul class="roadmap-items">
+          <li>「小星伴游」悬浮IP全局上线：6个状态机场景实现，右下角可收纳悬浮按钮</li>
+          <li>AI对话记忆系统：跨会话情绪摘要持久化，对话开始时主动引用历史记录</li>
+          <li>换装激励重绑定：具体行为（完成3次对话/连续打卡7天）解锁特定服饰道具</li>
+          <li>情绪驱动内容推荐：打卡结果实时影响当日首页内容推荐顺序</li>
+          <li>反馈埋点③④⑤⑥⑦上线</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="roadmap-phase">
+      <div class="roadmap-line">
+        <div class="roadmap-dot" style="border-color:#3b82f6;"></div>
+        <div class="roadmap-vline"></div>
+      </div>
+      <div class="roadmap-content">
+        <div class="roadmap-phase-label" style="color:#3b82f6;">Phase 3 · 深化差异化（3-6个月）</div>
+        <div class="roadmap-title">三IP对话深度分层，关系递进模型</div>
+        <ul class="roadmap-items">
+          <li>三IP人格深化：吉塔/小星/罗素各自对话风格规范化，按使用频次解锁更深层话题</li>
+          <li>脑之岛迷雾解锁机制：完成训练解锁新地图区域，与勋章系统深度绑定</li>
+          <li>朋友圈重定向为"成就展示"：展示脑之岛勋章/测评成果，隐藏情绪隐私，建立正向社交激励</li>
+          <li>Day-End总结：每日结束时小星推送当日成长摘要，强化End峰值记忆</li>
+          <li>全部11个反馈埋点上线，数据分析仪表板建立</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="roadmap-phase">
+      <div class="roadmap-line">
+        <div class="roadmap-dot" style="border-color:#22c55e;"></div>
+        <div class="roadmap-vline"></div>
+      </div>
+      <div class="roadmap-content">
+        <div class="roadmap-phase-label" style="color:#22c55e;">Phase 4 · 竞争壁垒（6-12个月）</div>
+        <div class="roadmap-title">数据驱动个性化，唯一复合产品优势固化</div>
+        <ul class="roadmap-items">
+          <li>情绪+行为数据驱动的个性化内容引擎（已有数据积累后可建模）</li>
+          <li>危机预警系统优化：AI对话实时检测+家长/老师端三级分级通知，合规完善</li>
+          <li>高中生专项：选科→生涯→志愿填报完整路径，罗素IP主导深度对话</li>
+          <li>反馈数据→产品迭代闭环机制建立（月度数据review + 季度需求优先级重排）</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="insight">
+    <b>最终竞争壁垒：</b>任何单一竞品只能做一件事做深（Headspace做冥想、Finch做宠物、Character.AI做对话）。AI星球唯一的可防御护城河是"AI对话 × 心理测评 × 生涯规划 × 游戏化训练"的完整组合——没有一款C端产品同时拥有这四个模块。但当前产品的问题是四个模块都浅、互相割裂。升级的核心不是加功能，而是<b>用AI伙伴作为纽带，把四个模块的体验串联成一条有情感温度的成长旅程</b>。
+  </div>
+</div>
+
+<div style="text-align:center;padding:20px 0 40px;font-size:12px;color:#9ca3af;">
+  AI星球产品分析系列 · 11_产品升级分析报告 · 2026.06.10<br>
+  数据来源：23张实机截图 + APK反编译路由分析 + 公开竞品信息
+</div>
+
+</div>
+
+<div style="text-align:center;padding:24px 0 16px;font-size:11px;color:#94a3b8;">署名已省略</div>
+</body>
+</html>

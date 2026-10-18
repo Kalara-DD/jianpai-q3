@@ -1,0 +1,1576 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI星球 · 学生端首页重设计 · Pad横屏 D2 v3</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'PingFang SC','Noto Sans SC',sans-serif; background:#f0f2f7; color:#1f2937; }
+
+/* HERO */
+.hero { min-height:40vh; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; background:linear-gradient(160deg,#667eea 0%,#764ba2 100%); padding:52px 40px; position:relative; overflow:hidden; }
+.hero-deco { position:absolute; inset:0; pointer-events:none; background-image:radial-gradient(1px 1px at 10% 15%,rgba(255,255,255,0.3) 0%,transparent 100%),radial-gradient(1px 1px at 30% 40%,rgba(255,255,255,0.2) 0%,transparent 100%),radial-gradient(1px 1px at 55% 8%,rgba(255,255,255,0.35) 0%,transparent 100%),radial-gradient(2px 2px at 70% 50%,rgba(255,255,255,0.25) 0%,transparent 100%),radial-gradient(1px 1px at 85% 22%,rgba(255,255,255,0.3) 0%,transparent 100%); }
+.hero-badge { display:inline-flex; align-items:center; gap:8px; background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.3); border-radius:100px; padding:6px 18px; font-size:12px; font-weight:700; color:#fff; margin-bottom:20px; letter-spacing:1px; position:relative; }
+.hero h1 { font-size:40px; font-weight:900; line-height:1.1; margin-bottom:12px; color:#fff; position:relative; }
+.hero-sub { font-size:13px; color:rgba(255,255,255,0.75); max-width:660px; line-height:1.9; margin-bottom:26px; position:relative; }
+.device-badge { display:inline-flex; align-items:center; gap:6px; background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.2); border-radius:8px; padding:5px 14px; font-size:11px; color:rgba(255,255,255,0.7); margin-bottom:22px; position:relative; }
+.version-switcher { display:flex; background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.2); border-radius:12px; overflow:hidden; position:relative; }
+.v-btn { padding:10px 24px; font-size:13px; font-weight:700; cursor:pointer; border:none; background:transparent; color:rgba(255,255,255,0.6); transition:all 0.25s; }
+.v-btn.active { background:rgba(255,255,255,0.25); color:#fff; }
+.v-btn:hover:not(.active) { color:rgba(255,255,255,0.8); background:rgba(255,255,255,0.1); }
+
+/* SECTION SWITCH */
+.screen-section { display:none; }
+.screen-section.visible { display:block; }
+
+/* PAD FRAME */
+.pad-stage { padding:40px 40px 56px; display:flex; justify-content:center; }
+.pad-outer { position:relative; width:min(1040px,100%); }
+.pad-label { text-align:center; font-size:11px; font-weight:700; color:#94a3b8; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:14px; }
+.pad-frame { width:100%; aspect-ratio:16/9; background:#f5f6f8; border-radius:20px; border:2px solid rgba(0,0,0,0.08); box-shadow:0 0 0 8px rgba(0,0,0,0.04),0 40px 100px rgba(0,0,0,0.2); overflow:hidden; position:relative; display:flex; flex-direction:column; }
+.pad-status { display:flex; justify-content:space-between; align-items:center; padding:7px 20px; font-size:11px; color:#94a3b8; font-weight:600; flex-shrink:0; background:rgba(255,255,255,0.9); border-bottom:1px solid #eee; }
+.pad-content { flex:1; overflow:hidden; position:relative; }
+
+/* SHARED PAD LAYOUT */
+.con-pad { height:100%; display:flex; background:#f5f6f8; }
+.con-sidebar { width:64px; height:100%; flex-shrink:0; background:#fff; border-right:1px solid #eee; display:flex; flex-direction:column; align-items:center; padding:12px 0; box-shadow:2px 0 8px rgba(0,0,0,0.04); }
+.sidebar-logo { font-size:22px; margin-bottom:16px; }
+.sidebar-nav-item { width:44px; height:44px; border-radius:12px; margin-bottom:6px; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; transition:all 0.2s; gap:2px; }
+.sidebar-nav-item.active { background:linear-gradient(135deg,rgba(99,102,241,0.12),rgba(99,102,241,0.08)); }
+.sidebar-nav-item:hover:not(.active) { background:#f3f4f6; }
+.sidebar-icon { font-size:17px; }
+.sidebar-label { font-size:7px; font-weight:700; color:#9ca3af; }
+.sidebar-nav-item.active .sidebar-label { color:#6366f1; }
+
+/* MAIN SPLIT */
+.con-main { flex:1; height:100%; display:flex; overflow:hidden; }
+.con-feed { flex:1; height:100%; overflow-y:auto; padding:14px 16px; }
+.con-feed::-webkit-scrollbar { width:3px; }
+.con-feed::-webkit-scrollbar-thumb { background:rgba(99,102,241,0.2); border-radius:2px; }
+
+/* FEED ELEMENTS */
+.feed-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+.feed-greeting { font-size:15px; font-weight:800; color:#1e293b; }
+.streak-pill { background:#fff; border:1px solid #fbbf24; border-radius:20px; padding:3px 10px; font-size:11px; font-weight:700; color:#d97706; display:flex; align-items:center; gap:4px; box-shadow:0 1px 4px rgba(0,0,0,0.06); }
+
+/* NEIGHBOR CHECK-IN */
+.checkin-card { background:#fff; border:1px solid #f0f4ff; border-radius:14px; padding:14px 16px; margin-bottom:12px; box-shadow:0 2px 8px rgba(0,0,0,0.04); transition:all 0.4s cubic-bezier(0.34,1.1,0.64,1); }
+.checkin-card.collapsed { padding:9px 14px; }
+.checkin-card.collapsed .checkin-full { display:none; }
+.checkin-chip-row { display:none; align-items:center; gap:8px; }
+.checkin-card.collapsed .checkin-chip-row { display:flex; }
+.checkin-reopen { margin-left:auto; font-size:10px; color:#94a3b8; cursor:pointer; background:#f3f4f6; border-radius:12px; padding:2px 8px; }
+.checkin-title { font-size:13px; font-weight:800; color:#1e293b; margin-bottom:2px; }
+.checkin-sub { font-size:11px; color:#9ca3af; margin-bottom:12px; }
+.neighbor-row { display:flex; gap:6px; margin-bottom:12px; }
+.n-chip { flex:1; display:flex; flex-direction:column; align-items:center; gap:2px; padding:8px 4px; border-radius:12px; cursor:pointer; border:2px solid #e5e7eb; background:#f9fafb; transition:all 0.22s cubic-bezier(0.34,1.56,0.64,1); }
+.n-chip.selected { border-color:#368fff; background:linear-gradient(135deg,#eff6ff,#dbeafe); transform:scale(1.06); }
+.n-chip:active { transform:scale(1.08); }
+.n-emoji { font-size:16px; }
+.n-name { font-size:8px; font-weight:600; color:#6b7280; }
+.n-chip.selected .n-name { color:#368fff; }
+.ip-response { display:flex; gap:10px; align-items:flex-start; padding:10px 0 0; border-top:1px solid #f3f4f6; }
+.ip-av { font-size:20px; flex-shrink:0; }
+.ip-btext { font-size:12px; color:#374151; line-height:1.65; background:#f0f7ff; border-radius:0 10px 10px 10px; padding:9px 12px; border-left:3px solid #368fff; }
+
+/* AI TASK BANNER */
+.task-banner { background:linear-gradient(135deg,#eff6ff,#f5f3ff); border:1px solid #c7d2fe; border-radius:14px; padding:11px 14px; margin-bottom:12px; }
+.task-banner-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+.task-banner-label { font-size:11px; font-weight:700; color:#4f46e5; }
+.task-badge { background:#4f46e5; color:#fff; border-radius:6px; padding:2px 7px; font-size:9px; font-weight:700; }
+.task-row { display:flex; align-items:center; gap:8px; padding:4px 0; }
+.task-row + .task-row { border-top:1px solid rgba(99,102,241,0.1); }
+.task-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+
+/* RECS */
+.section-label { font-size:10px; font-weight:800; color:#9ca3af; letter-spacing:1px; text-transform:uppercase; margin-bottom:8px; }
+.recs-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px; }
+.rec-card { background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:10px 12px; display:flex; gap:10px; align-items:center; cursor:pointer; transition:all 0.2s; box-shadow:0 1px 3px rgba(0,0,0,0.04); }
+.rec-card:hover { box-shadow:0 4px 12px rgba(0,0,0,0.08); transform:translateY(-1px); }
+.rec-icon { width:34px; height:34px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+.rec-title { font-size:11px; font-weight:700; color:#374151; }
+.rec-sub { font-size:9px; color:#9ca3af; margin-top:2px; }
+
+/* THEATER BANNER */
+.theater-banner { background:linear-gradient(135deg,#667eea 0%,#764ba2 100%); border-radius:14px; padding:0; margin-bottom:12px; cursor:pointer; overflow:hidden; position:relative; height:88px; box-shadow:0 4px 14px rgba(118,75,162,0.2); }
+.theater-banner:active { transform:scale(0.98); }
+.theater-content { position:relative; z-index:2; padding:14px 18px; height:100%; display:flex; align-items:center; gap:14px; }
+.theater-dec { position:absolute; right:-8px; bottom:-16px; font-size:88px; opacity:0.12; }
+.theater-badge { background:rgba(255,255,255,0.22); border:1px solid rgba(255,255,255,0.3); border-radius:16px; padding:2px 9px; font-size:9px; font-weight:700; color:#fff; display:inline-block; margin-bottom:4px; }
+.theater-title { font-size:14px; font-weight:900; color:#fff; }
+.theater-cta { background:#fff; color:#764ba2; padding:6px 14px; border-radius:20px; font-size:11px; font-weight:700; white-space:nowrap; flex-shrink:0; box-shadow:0 2px 8px rgba(0,0,0,0.12); }
+
+/* COMMUNITY */
+.community-strip { background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:10px 13px; box-shadow:0 1px 3px rgba(0,0,0,0.04); }
+.community-item { display:flex; align-items:center; gap:8px; padding:4px 0; }
+.community-item + .community-item { border-top:1px solid #f3f4f6; }
+
+/* STAR PANEL (light) */
+.con-star-panel { width:280px; flex-shrink:0; height:100%; border-left:1px solid #eee; display:flex; flex-direction:column; background:#fff; }
+.star-panel-header { padding:12px 14px; border-bottom:1px solid #f3f4f6; flex-shrink:0; display:flex; justify-content:space-between; align-items:center; }
+.star-panel-title { font-size:11px; font-weight:800; color:#374151; }
+.star-panel-sub { font-size:9px; color:#9ca3af; }
+.star-map-area { flex:1; position:relative; overflow:hidden; background:linear-gradient(160deg,#e8eaf6 0%,#f3e8ff 50%,#e0f2fe 100%); }
+.zone-node { position:absolute; display:flex; flex-direction:column; align-items:center; cursor:pointer; }
+.zone-orb { border-radius:50%; display:flex; align-items:center; justify-content:center; position:relative; transition:transform 0.3s; box-shadow:0 2px 10px rgba(0,0,0,0.1); }
+.zone-orb:hover { transform:scale(1.12); }
+.zone-pulse-ring { position:absolute; inset:-5px; border:2px solid; border-radius:50%; opacity:0; }
+.zone-lit .zone-pulse-ring { animation:pr 2s ease-in-out infinite; opacity:1; }
+.zone-name-s { font-size:7px; font-weight:700; margin-top:3px; text-align:center; }
+.zone-sub-s { font-size:6px; color:#9ca3af; }
+.ip-char { position:absolute; animation:fi 4s ease-in-out infinite; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.15)); }
+.residents-strip { padding:9px 12px; border-top:1px solid #f3f4f6; flex-shrink:0; }
+.residents-label { font-size:8px; font-weight:800; color:#9ca3af; letter-spacing:1px; text-transform:uppercase; margin-bottom:6px; }
+.residents-row { display:flex; gap:5px; }
+.resident-chip { flex:1; text-align:center; border-radius:8px; padding:5px 3px; font-size:8px; cursor:pointer; border:1px solid transparent; }
+
+/* IP FLOAT */
+.ip-float { position:absolute; right:14px; bottom:14px; z-index:50; display:flex; flex-direction:column; align-items:center; gap:3px; cursor:pointer; }
+.ip-float-orb { width:50px; height:50px; border-radius:50%; background:linear-gradient(135deg,#a855f7,#6366f1); display:flex; align-items:center; justify-content:center; font-size:26px; box-shadow:0 6px 20px rgba(168,85,247,0.4); border:3px solid #ede9fe; animation:orbFloat 3s ease-in-out infinite,orbPulse 2.5s ease-in-out infinite; }
+.ip-float-label { background:rgba(255,255,255,0.92); backdrop-filter:blur(8px); border:1px solid #e9d5ff; border-radius:8px; padding:2px 7px; font-size:9px; font-weight:700; color:#7c3aed; box-shadow:0 2px 6px rgba(0,0,0,0.07); }
+.ip-switcher-dots { position:absolute; right:17px; bottom:76px; z-index:50; display:flex; flex-direction:column; gap:4px; align-items:center; }
+.ip-dot-s { width:9px; height:9px; border-radius:50%; cursor:pointer; transition:all 0.2s; border:1.5px solid transparent; }
+.ip-dot-s.active { transform:scale(1.3); border-color:#fff; box-shadow:0 1px 4px rgba(0,0,0,0.2); }
+
+/* IP BUBBLE */
+.ip-bubble { position:absolute; right:76px; bottom:60px; z-index:60; background:#fff; border-radius:16px 16px 4px 16px; padding:12px 14px; max-width:196px; box-shadow:0 8px 24px rgba(0,0,0,0.12); border:1px solid #f0f4ff; }
+.bubble-close { position:absolute; top:6px; right:8px; font-size:13px; color:#d1d5db; cursor:pointer; }
+.bubble-text { font-size:11px; color:#374151; line-height:1.65; }
+.bubble-text b { color:#764ba2; }
+.bubble-actions { display:flex; gap:5px; margin-top:8px; flex-wrap:wrap; }
+.bubble-btn { background:#f0f4ff; border:1px solid #c4b5fd; border-radius:14px; padding:3px 9px; font-size:10px; font-weight:700; color:#6d28d9; cursor:pointer; transition:all 0.15s; }
+
+/* CHAT DRAWER */
+.chat-drawer { position:absolute; right:0; bottom:0; top:0; width:272px; z-index:100; background:#fff; border-left:1px solid #e5e7eb; transform:translateX(105%); transition:transform 0.35s cubic-bezier(0.34,1.1,0.64,1); display:flex; flex-direction:column; overflow:hidden; box-shadow:-8px 0 24px rgba(0,0,0,0.08); }
+.chat-drawer.open { transform:translateX(0); }
+.drawer-header { display:flex; align-items:center; gap:10px; padding:14px 16px 12px; border-bottom:1px solid #f3f4f6; flex-shrink:0; }
+.drawer-ip-av { width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,#a855f7,#6366f1); display:flex; align-items:center; justify-content:center; font-size:22px; border:2px solid #ede9fe; flex-shrink:0; }
+.drawer-ip-name { font-size:13px; font-weight:800; color:#1e293b; }
+.drawer-ip-sub { font-size:10px; color:#9ca3af; margin-top:1px; }
+.drawer-close { margin-left:auto; font-size:20px; color:#d1d5db; cursor:pointer; width:28px; height:28px; display:flex; align-items:center; justify-content:center; border-radius:50%; background:#f9fafb; }
+.drawer-msgs { flex:1; padding:12px 14px; overflow-y:auto; }
+.drawer-msgs::-webkit-scrollbar { width:2px; }
+.msg { margin-bottom:10px; }
+.msg-ip { display:flex; align-items:flex-start; gap:7px; }
+.msg-av-s { width:24px; height:24px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:14px; background:linear-gradient(135deg,#a855f7,#6366f1); }
+.msg-bubble-ip { background:#f5f3ff; border-radius:0 10px 10px 10px; padding:9px 11px; font-size:11px; color:#374151; line-height:1.65; max-width:184px; }
+.msg-user { display:flex; justify-content:flex-end; }
+.msg-bubble-user { background:#368fff; color:#fff; border-radius:10px 10px 0 10px; padding:9px 11px; font-size:11px; line-height:1.65; max-width:184px; }
+.drawer-intents { padding:8px 13px 10px; border-top:1px solid #f3f4f6; flex-shrink:0; }
+.intents-label { font-size:9px; color:#9ca3af; font-weight:700; text-transform:uppercase; letter-spacing:.5px; margin-bottom:6px; }
+.intents-row { display:flex; gap:5px; flex-wrap:wrap; }
+.intent-btn { background:#f5f3ff; border:1px solid #c4b5fd; border-radius:14px; padding:4px 9px; font-size:10px; font-weight:700; color:#6d28d9; cursor:pointer; transition:all 0.15s; white-space:nowrap; }
+.intent-btn:active { background:#ede9fe; transform:scale(0.96); }
+.drawer-input { padding:8px 12px 12px; border-top:1px solid #f3f4f6; display:flex; gap:7px; align-items:center; flex-shrink:0; }
+.drawer-input-box { flex:1; background:#f9fafb; border:1.5px solid #e5e7eb; border-radius:20px; padding:7px 12px; font-size:11px; font-family:inherit; outline:none; color:#374151; transition:border 0.15s; }
+.drawer-input-box:focus { border-color:#a855f7; }
+.drawer-send { width:30px; height:30px; border-radius:50%; background:#a855f7; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 8px rgba(168,85,247,0.35); }
+.drawer-mic { width:30px; height:30px; border-radius:50%; background:#f5f3ff; border:1.5px solid #c4b5fd; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:14px; }
+
+/* ANNO */
+.anno-section { padding:0 40px 60px; max-width:1120px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:22px; }
+.anno-card { background:#fff; border:1px solid #e5e7eb; border-radius:16px; padding:22px; box-shadow:0 2px 8px rgba(0,0,0,0.04); }
+.anno-card-title { font-size:13px; font-weight:800; color:#1e293b; margin-bottom:6px; }
+.anno-card-sub { font-size:12px; color:#6b7280; line-height:1.8; margin-bottom:14px; }
+.anno-item { display:flex; gap:11px; margin-bottom:12px; }
+.anno-num { flex-shrink:0; width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; margin-top:2px; }
+.a-teal { background:rgba(20,184,166,0.15); color:#0d9488; }
+.a-gold { background:rgba(251,191,36,0.15); color:#d97706; }
+.a-purple { background:rgba(99,102,241,0.15); color:#4f46e5; }
+.anno-item-title { font-size:11px; font-weight:700; color:#374151; margin-bottom:2px; }
+.anno-item-text { font-size:10px; color:#6b7280; line-height:1.8; }
+.effort-bar { margin-top:14px; }
+.effort-label { font-size:9px; font-weight:800; color:#9ca3af; margin-bottom:7px; text-transform:uppercase; letter-spacing:1px; }
+.effort-tags { display:flex; flex-wrap:wrap; gap:5px; }
+.tag { display:inline-block; border-radius:5px; padding:2px 8px; font-size:10px; font-weight:700; }
+.t-green { background:rgba(34,197,94,0.1); color:#059669; border:1px solid rgba(34,197,94,0.2); }
+.t-yellow { background:rgba(251,191,36,0.1); color:#d97706; border:1px solid rgba(251,191,36,0.2); }
+.t-red { background:rgba(239,68,68,0.08); color:#dc2626; border:1px solid rgba(239,68,68,0.2); }
+
+/* COMPARE TABLE */
+.compare-wrap { padding:60px 40px; max-width:1120px; margin:0 auto; }
+.compare-table { width:100%; border-collapse:collapse; background:#fff; border-radius:16px; overflow:hidden; border:1px solid #e5e7eb; box-shadow:0 2px 12px rgba(0,0,0,0.06); }
+.compare-table th { background:#f8fafc; color:#6b7280; padding:13px 18px; text-align:left; font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.5px; }
+.compare-table td { padding:13px 18px; border-bottom:1px solid #f3f4f6; font-size:12px; color:#6b7280; vertical-align:top; }
+.compare-table td:first-child { color:#374151; font-weight:700; }
+.compare-table tr:last-child td { border-bottom:none; }
+.compare-table tr:hover td { background:#f9fafb; }
+.nav-strip { margin-top:28px; background:linear-gradient(135deg,#eff6ff,#f5f3ff); border:1px solid #c7d2fe; border-radius:14px; padding:20px 24px; }
+.nav-strip-title { font-size:13px; font-weight:800; color:#4f46e5; margin-bottom:10px; }
+.nav-strip-sub { font-size:12px; color:#6b7280; line-height:1.9; margin-bottom:12px; }
+
+@keyframes p { 0%,100%{transform:scale(1);}50%{transform:scale(1.05);} }
+@keyframes pr { 0%{transform:scale(1);opacity:0.5;}100%{transform:scale(1.55);opacity:0;} }
+@keyframes fi { 0%,100%{transform:translateY(0);}50%{transform:translateY(-7px);} }
+@keyframes orbFloat { 0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);} }
+@keyframes orbPulse { 0%,100%{box-shadow:0 6px 20px rgba(168,85,247,0.4),0 0 0 0 rgba(168,85,247,0.25);}50%{box-shadow:0 6px 20px rgba(168,85,247,0.4),0 0 0 10px rgba(168,85,247,0);} }
+@keyframes blink { 0%,100%{opacity:1}50%{opacity:0.4} }
+
+/* GRADE SWITCHER */
+.grade-bar { display:flex; align-items:center; gap:6px; padding:7px 14px 0; background:#fff; border-bottom:1px solid #f0f0f0; flex-shrink:0; }
+.grade-bar-label { font-size:9px; font-weight:800; color:#9ca3af; letter-spacing:.5px; white-space:nowrap; }
+.grade-tabs { display:flex; gap:4px; }
+.grade-tab { padding:4px 11px; border-radius:20px; font-size:10px; font-weight:700; cursor:pointer; border:1.5px solid #e5e7eb; background:#f9fafb; color:#9ca3af; transition:all 0.18s; white-space:nowrap; }
+.grade-tab.active { border-color:currentColor; }
+.grade-tab.gt-primary.active { background:#fef9c3; border-color:#fbbf24; color:#b45309; }
+.grade-tab.gt-middle.active { background:#eff6ff; border-color:#60a5fa; color:#1d4ed8; }
+.grade-tab.gt-high.active { background:#f5f3ff; border-color:#a78bfa; color:#6d28d9; }
+.grade-note { font-size:9px; color:#9ca3af; margin-left:auto; white-space:nowrap; }
+
+/* GRADE CONTENT BLOCKS */
+.g-primary,.g-middle,.g-high { display:none; }
+.g-primary.gshow,.g-middle.gshow,.g-high.gshow { display:block; }
+.g-primary-flex,.g-middle-flex,.g-high-flex { display:none; }
+.g-primary-flex.gshow,.g-middle-flex.gshow,.g-high-flex.gshow { display:flex; }
+
+/* FUNCTIONAL VERSION GRADE BLOCKS */
+.gf-primary,.gf-middle,.gf-high { display:none; }
+.gf-primary.gshow,.gf-middle.gshow,.gf-high.gshow { display:block; }
+
+/* PRIMARY checkin (simple emoji faces) */
+.emoji-checkin { display:flex; gap:8px; margin-bottom:10px; }
+.emoji-face { flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; padding:8px 4px; border-radius:12px; cursor:pointer; border:2px solid #e5e7eb; background:#f9fafb; transition:all 0.2s; }
+.emoji-face.selected { border-color:#fbbf24; background:#fefce8; transform:scale(1.06); }
+.emoji-face-icon { font-size:20px; }
+.emoji-face-name { font-size:8px; font-weight:600; color:#6b7280; }
+.emoji-face.selected .emoji-face-name { color:#b45309; }
+
+/* GAOKAO COUNTDOWN (high school) */
+.gaokao-badge { display:flex; align-items:center; gap:8px; background:linear-gradient(135deg,#f5f3ff,#ede9fe); border:1px solid #c4b5fd; border-radius:12px; padding:8px 12px; margin-bottom:10px; }
+.gaokao-days { font-size:22px; font-weight:900; color:#6d28d9; line-height:1; }
+.gaokao-label { font-size:10px; color:#7c3aed; font-weight:700; }
+.gaokao-sub { font-size:9px; color:#a78bfa; }
+.gaokao-dismiss { margin-left:auto; font-size:9px; color:#c4b5fd; cursor:pointer; }
+</style>
+
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="../../assets/archive-report.css?v=20261014e">
+<style id="archive-narrow-layout">.archive-narrow-table { display:contents; }
+@media screen and (max-width:720px) {
+ .archive-narrow-table { display:block; max-width:100%; overflow-x:auto; }
+ .archive-narrow-table > table { min-width:650px; }
+ .sticky-nav { justify-content:flex-start; }
+ .sticky-nav a { flex:0 0 auto; }
+.hero { padding:40px 20px; } .hero h1 { font-size:32px; } .v-btn { padding:10px 15px; } .pad-stage { padding:32px 20px; } .pad-outer { max-width:100%; overflow-x:auto; padding:10px; } .pad-frame { width:1040px; } .anno-section { padding:0 20px 40px; grid-template-columns:minmax(0,1fr) !important; } .compare-wrap { padding:40px 20px; }
+}</style>
+</head>
+<body>
+<div class="application-archive-note" role="note"><a href="../index.html#doc-D2">← 返回研究资料库</a><strong>Q3研究基础 · 原报告阅读副本</strong><p><b>首页原型候选 · 2026.06 批次</b></p><p>历史研究/设计提案；文中评分、预测、预算与排期属于当时的分析或假设，不作为本次已实现业绩。当前采用与状态以成果档案说明为准。</p><p>日期、倒计时、用户资料与互动均为原型示例；固定伙伴领域、奖励解锁和推荐机制不代表当前已采纳规则。</p><small>原稿：D2_学生端首页重设计原型.html</small></div>
+
+
+<section class="hero">
+  <div class="hero-deco"></div>
+  <div class="hero-badge">✦ DOC D2 v3 · 学生端首页 + 星球地图 · Pad横屏</div>
+  <h1>学生端首页重设计 × 减压星球</h1>
+  <div class="device-badge">📱 华为 AGS5Z-W09 · 平板横屏 · 2000×1134px</div>
+  <p class="hero-sub">
+    在D2原版基础上升级：导航6→3标签 · 首页整合情绪签到+星球地图+AI推送<br>
+    任务AI推送化（无独立Tab）· 探索AI推荐化 · 朋友圈降为动态条
+  </p>
+  <div class="version-switcher">
+    <button class="v-btn active" onclick="switchVersion('functional',this)">🔧 功能版 · 无地图</button>
+    <button class="v-btn" onclick="switchVersion('conservative',this)">📍 保守版 · 当下可做</button>
+    <button class="v-btn" onclick="switchVersion('bold',this)">🚀 挑战版 · 未来方向</button>
+    <button class="v-btn" onclick="switchVersion('compare',this)">⚖️ 对比 · 决策参考</button>
+  </div>
+</section>
+
+<!-- ══ CONSERVATIVE ══ -->
+<section class="screen-section" id="sec-conservative">
+<div class="pad-stage">
+  <div class="pad-outer" tabindex="0" role="region" aria-label="历史 Pad 原型，可横向滚动">
+    <div class="pad-label">保守版 · 三列：侧边导航 64px · 主信息流 · 星球面板 280px</div>
+    <div class="pad-frame">
+      <div class="pad-status"><span>AI星球</span><span>09:41 &nbsp;周一 2026.06.16</span><span>🔋 ▓▓▓▓ &nbsp;WiFi</span></div>
+      <div class="grade-bar">
+        <div class="grade-bar-label">年级视图</div>
+        <div class="grade-tabs">
+          <div class="grade-tab gt-primary" onclick="switchGrade('primary',this)">🌱 小学</div>
+          <div class="grade-tab gt-middle active" onclick="switchGrade('middle',this)">🌀 初中</div>
+          <div class="grade-tab gt-high" onclick="switchGrade('high',this)">🎯 高中</div>
+        </div>
+        <div class="grade-note" id="gradeNote">初中视图 · phaseCode=middle · 情绪邻居 + 吉塔主导</div>
+      </div>
+      <div class="pad-content">
+        <div class="con-pad">
+          <div class="con-sidebar">
+            <div class="sidebar-logo">🪐</div>
+            <div class="sidebar-nav-item active"><span class="sidebar-icon">🏠</span><span class="sidebar-label" style="color:#6366f1;">首页</span></div>
+            <div class="sidebar-nav-item"><span class="sidebar-icon">🧠</span><span class="sidebar-label">脑之岛</span></div>
+            <div class="sidebar-nav-item"><span class="sidebar-icon">💬</span><span class="sidebar-label">咨询</span></div>
+          </div>
+          <div class="con-main">
+            <!-- FEED -->
+            <div class="con-feed">
+              <div class="feed-header">
+                <div class="feed-greeting" id="gradeGreeting">早上好，小明同学 👋</div>
+                <div style="display:flex;gap:8px;align-items:center;">
+                  <div class="streak-pill">🔥 连续7天</div>
+                  <div style="font-size:10px;color:#9ca3af;">周一 · 6月16日</div>
+                </div>
+              </div>
+
+              <!-- ── 高考倒计时（仅高中） ── -->
+              <div class="gaokao-badge g-high" id="gaokaoBlock">
+                <div style="display:flex;flex-direction:column;">
+                  <div class="gaokao-label">距高考</div>
+                  <div style="display:flex;align-items:baseline;gap:3px;"><div class="gaokao-days">234</div><div class="gaokao-sub">天</div></div>
+                </div>
+                <div style="flex:1;font-size:10px;color:#7c3aed;line-height:1.6;">2027年6月7日<br><span style="color:#a78bfa;">高二 · 理科倾向 · 目标院校待定</span></div>
+                <div class="gaokao-dismiss" onclick="this.parentElement.style.display='none'">关闭 ×</div>
+              </div>
+
+              <!-- ── 情绪签到：初中/高中版（邻居选择） ── -->
+              <div class="checkin-card g-middle g-high" id="checkinCard">
+                <div class="checkin-chip-row" id="checkinChipRow">
+                  <span id="chipEmoji" style="font-size:20px;">🍐</span>
+                  <span style="font-size:12px;font-weight:700;color:#374151;" id="chipText">今天：鸭梨</span>
+                  <span style="font-size:11px;color:#10b981;">✓ 已签到</span>
+                  <span class="checkin-reopen" onclick="reopenCheckin()">更改</span>
+                </div>
+                <div id="checkinFull">
+                  <div class="checkin-title">今天你最像哪个邻居？</div>
+                  <div class="checkin-sub">选了他/她，吉塔就知道今天怎么接你 · 可多选</div>
+                  <div class="neighbor-row">
+                    <div class="n-chip selected" onclick="selectNeighbor(this,'鸭梨','🍐','pressure')"><span class="n-emoji">🍐</span><span class="n-name">鸭梨</span></div>
+                    <div class="n-chip" onclick="selectNeighbor(this,'阿眠','🦉','sleep')"><span class="n-emoji">🦉</span><span class="n-name">阿眠</span></div>
+                    <div class="n-chip" onclick="selectNeighbor(this,'小刺','🦔','social')"><span class="n-emoji">🦔</span><span class="n-name">小刺</span></div>
+                    <div class="n-chip" onclick="selectNeighbor(this,'拖拖','🦥','procrastinate')"><span class="n-emoji">🦥</span><span class="n-name">拖拖</span></div>
+                    <div class="n-chip" onclick="selectNeighbor(this,'小炎','🦁','anger')"><span class="n-emoji">🦁</span><span class="n-name">小炎</span></div>
+                    <div class="n-chip" onclick="selectNeighbor(this,'皮皮','🐰','appearance')"><span class="n-emoji">🐰</span><span class="n-name">皮皮</span></div>
+                  </div>
+                  <div class="ip-response">
+                    <span class="ip-av">🐼</span>
+                    <div class="ip-btext" id="ipResponseText">压力很大？不用解释。你现在是还在那个状态里，还是已经有点平了？</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ── 情绪签到：小学版（表情脸） ── -->
+              <div class="checkin-card g-primary" id="checkinCardPrimary">
+                <div class="checkin-chip-row" id="primaryChipRow" style="display:none;">
+                  <span id="primaryChipEmoji" style="font-size:20px;">😊</span>
+                  <span style="font-size:12px;font-weight:700;color:#374151;" id="primaryChipText">今天：开心</span>
+                  <span style="font-size:11px;color:#10b981;">✓ 已签到</span>
+                  <span class="checkin-reopen" onclick="reopenPrimaryCheckin()">更改</span>
+                </div>
+                <div id="primaryCheckinFull">
+                  <div class="checkin-title" style="font-size:12px;">今天你是什么心情？</div>
+                  <div class="checkin-sub">告诉小星，她想知道～</div>
+                  <div class="emoji-checkin">
+                    <div class="emoji-face selected" onclick="selectFace(this,'开心','😊')"><div class="emoji-face-icon">😊</div><div class="emoji-face-name">开心</div></div>
+                    <div class="emoji-face" onclick="selectFace(this,'还好','😐')"><div class="emoji-face-icon">😐</div><div class="emoji-face-name">还好</div></div>
+                    <div class="emoji-face" onclick="selectFace(this,'有点累','😓')"><div class="emoji-face-icon">😓</div><div class="emoji-face-name">有点累</div></div>
+                    <div class="emoji-face" onclick="selectFace(this,'不开心','😔')"><div class="emoji-face-icon">😔</div><div class="emoji-face-name">不开心</div></div>
+                    <div class="emoji-face" onclick="selectFace(this,'生气了','😤')"><div class="emoji-face-icon">😤</div><div class="emoji-face-name">生气了</div></div>
+                  </div>
+                  <div class="ip-response">
+                    <span class="ip-av">🤍</span>
+                    <div class="ip-btext" id="primaryResponseText">开心就要说出来！今天有什么好事？给小星讲讲～</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 心理剧场 Banner（所有年级） -->
+              <div class="theater-banner" onclick="alert('进入6月心理剧场：《面对压力，我可以》')">
+                <div class="theater-dec">🎭</div>
+                <div class="theater-content">
+                  <div style="flex:1;">
+                    <div class="theater-badge">🎬 6月新剧</div>
+                    <div class="theater-title">心理剧场：面对压力</div>
+                    <div style="font-size:10px;color:rgba(255,255,255,0.75);margin-top:3px;">互动剧情 · 约15分钟 · 鸭梨主演</div>
+                  </div>
+                  <div class="theater-cta">立即体验 →</div>
+                </div>
+              </div>
+
+              <!-- ── 任务推送：小学版 ── -->
+              <div class="task-banner g-primary">
+                <div class="task-banner-top">
+                  <span class="task-banner-label">🤍 小星今日探险</span>
+                  <span class="task-badge" style="background:#fbbf24;">2 个任务</span>
+                </div>
+                <div class="task-row">
+                  <div class="task-dot" style="background:#a78bfa;"></div>
+                  <span style="font-size:10px;color:#374151;">🧩 专注小游戏 · 5分钟</span>
+                  <span style="font-size:9px;color:#9ca3af;margin-left:auto;">今日探险</span>
+                </div>
+                <div class="task-row">
+                  <div class="task-dot" style="background:#10b981;"></div>
+                  <span style="font-size:10px;color:#374151;">🎨 情绪涂色本 · 随意画</span>
+                  <span style="font-size:9px;color:#9ca3af;margin-left:auto;">轻松活动</span>
+                </div>
+              </div>
+
+              <!-- ── 任务推送：初中版 ── -->
+              <div class="task-banner g-middle">
+                <div class="task-banner-top">
+                  <span class="task-banner-label">吉塔今日安排</span>
+                  <span class="task-badge">2 待完成</span>
+                </div>
+                <div class="task-row">
+                  <div class="task-dot" style="background:#fbbf24;"></div>
+                  <span style="font-size:10px;color:#374151;">📊 情绪压力测评 · 预计5分钟</span>
+                  <span style="font-size:9px;color:#9ca3af;margin-left:auto;">情绪对应</span>
+                </div>
+                <div class="task-row">
+                  <div class="task-dot" style="background:#10b981;"></div>
+                  <span style="font-size:10px;color:#374151;">🎵 4-7-8呼吸法 · 3分钟</span>
+                  <span style="font-size:9px;color:#9ca3af;margin-left:auto;">今日推荐</span>
+                </div>
+              </div>
+
+              <!-- ── 任务推送：高中版 ── -->
+              <div class="task-banner g-high" style="border-color:#c4b5fd;background:linear-gradient(135deg,#f5f3ff,#ede9fe);">
+                <div class="task-banner-top">
+                  <span class="task-banner-label" style="color:#6d28d9;">罗素今日规划</span>
+                  <span class="task-badge" style="background:#7c3aed;">3 待完成</span>
+                </div>
+                <div class="task-row">
+                  <div class="task-dot" style="background:#7c3aed;"></div>
+                  <span style="font-size:10px;color:#374151;">📊 学业压力专项测评 · 8分钟</span>
+                  <span style="font-size:9px;color:#9ca3af;margin-left:auto;">高优先</span>
+                </div>
+                <div class="task-row">
+                  <div class="task-dot" style="background:#f59e0b;"></div>
+                  <span style="font-size:10px;color:#374151;">🧭 选科兴趣初测 · 10分钟</span>
+                  <span style="font-size:9px;color:#9ca3af;margin-left:auto;">罗素推荐</span>
+                </div>
+                <div class="task-row">
+                  <div class="task-dot" style="background:#10b981;"></div>
+                  <span style="font-size:10px;color:#374151;">🎵 4-7-8呼吸法 · 3分钟</span>
+                  <span style="font-size:9px;color:#9ca3af;margin-left:auto;">缓解考前焦虑</span>
+                </div>
+              </div>
+
+              <!-- ── AI推荐：小学版 ── -->
+              <div class="g-primary">
+                <div class="section-label">小星为你准备了</div>
+                <div class="recs-grid">
+                  <div class="rec-card">
+                    <div class="rec-icon" style="background:#fef9c3;">🎮</div>
+                    <div><div class="rec-title">记忆翻牌游戏</div><div class="rec-sub">脑力小训练 · 好玩</div></div>
+                  </div>
+                  <div class="rec-card">
+                    <div class="rec-icon" style="background:#ede9fe;">🎵</div>
+                    <div><div class="rec-title">放松音乐盒</div><div class="rec-sub">小星选的歌 · 3分钟</div></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ── AI推荐：初中版 ── -->
+              <div class="g-middle">
+                <div class="section-label">吉塔为你推荐</div>
+                <div class="recs-grid">
+                  <div class="rec-card" onclick="openDrawer()">
+                    <div class="rec-icon" style="background:#eff6ff;">🎵</div>
+                    <div><div class="rec-title">5分钟正念呼吸</div><div class="rec-sub">情绪放松 · 今天适合你</div></div>
+                  </div>
+                  <div class="rec-card">
+                    <div class="rec-icon" style="background:#fefce8;">📝</div>
+                    <div><div class="rec-title">鸭梨日记：今天的事</div><div class="rec-sub">心育日记 · 3分钟</div></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ── AI推荐：高中版 ── -->
+              <div class="g-high">
+                <div class="section-label">罗素 + 吉塔为你推荐</div>
+                <div class="recs-grid">
+                  <div class="rec-card" onclick="openDrawer()">
+                    <div class="rec-icon" style="background:#f5f3ff;">🐳</div>
+                    <div><div class="rec-title">选科分析：文理倾向</div><div class="rec-sub">罗素 · 10分钟理清思路</div></div>
+                  </div>
+                  <div class="rec-card">
+                    <div class="rec-icon" style="background:#eff6ff;">🎵</div>
+                    <div><div class="rec-title">考前减压呼吸法</div><div class="rec-sub">吉塔 · 5分钟正念</div></div>
+                  </div>
+                  <div class="rec-card">
+                    <div class="rec-icon" style="background:#fefce8;">📈</div>
+                    <div><div class="rec-title">本月情绪报告</div><div class="rec-sub">你的31天数据 · 查看趋势</div></div>
+                  </div>
+                  <div class="rec-card">
+                    <div class="rec-icon" style="background:#f0fdf4;">📝</div>
+                    <div><div class="rec-title">鸭梨日记</div><div class="rec-sub">心育日记 · 3分钟</div></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 同学动态 -->
+              <div class="section-label">同学动态</div>
+              <div class="community-strip">
+                <div class="community-item">
+                  <span style="font-size:14px;">🦔</span>
+                  <span style="font-size:11px;color:#6b7280;">小刺 解锁了迷雾森林新居民「阿眠」</span>
+                  <span style="font-size:10px;color:#9ca3af;margin-left:auto;">1小时前</span>
+                </div>
+                <div class="community-item">
+                  <span style="font-size:14px;">🦥</span>
+                  <span style="font-size:11px;color:#6b7280;">拖拖 完成了本月脑之岛挑战</span>
+                  <span style="font-size:10px;color:#9ca3af;margin-left:auto;">3小时前</span>
+                </div>
+              </div>
+              <div style="height:20px;"></div>
+            </div><!-- /feed -->
+
+            <!-- STAR MAP PANEL -->
+            <div class="con-star-panel">
+              <div class="star-panel-header">
+                <div><div class="star-panel-title">🌌 我的减压星球</div><div class="star-panel-sub">今日足迹 2/5 · 点击进入</div></div>
+              </div>
+              <div class="star-map-area">
+                <!-- 情绪海 (lit) -->
+                <div class="zone-node zone-lit" style="bottom:33%;left:8%;" onclick="alert('进入：情绪海 → 找吉塔聊聊')">
+                  <div class="zone-orb" style="width:44px;height:44px;background:rgba(20,184,166,0.2);color:#0d9488;font-size:20px;animation:p 2s ease-in-out infinite;">
+                    🌊<div class="zone-pulse-ring" style="border-color:rgba(20,184,166,0.5);"></div>
+                  </div>
+                  <div class="zone-name-s" style="color:#0d9488;">情绪海</div>
+                  <div class="zone-sub-s">已到访</div>
+                </div>
+                <!-- 深海图书馆 (lit) -->
+                <div class="zone-node zone-lit" style="top:14%;right:7%;" onclick="alert('进入：深海图书馆 → 找罗素')">
+                  <div class="zone-orb" style="width:38px;height:38px;background:rgba(56,189,248,0.18);color:#0284c7;font-size:17px;animation:p 2.5s ease-in-out infinite 0.5s;">
+                    📚<div class="zone-pulse-ring" style="border-color:rgba(56,189,248,0.5);"></div>
+                  </div>
+                  <div class="zone-name-s" style="color:#0284c7;">深海图书馆</div>
+                  <div class="zone-sub-s">已到访</div>
+                </div>
+                <!-- 脑之岛 (center) -->
+                <div class="zone-node" style="top:50%;left:50%;transform:translate(-50%,-55%);" onclick="alert('进入：脑之岛 → 认知训练')">
+                  <div class="zone-orb" style="width:48px;height:48px;background:rgba(99,102,241,0.15);border:1.5px solid rgba(99,102,241,0.3);color:#4f46e5;font-size:22px;">🧠</div>
+                  <div class="zone-name-s" style="color:#4f46e5;">脑之岛</div>
+                </div>
+                <!-- 云朵广场 (dim) -->
+                <div class="zone-node" style="top:16%;left:10%;opacity:0.35;">
+                  <div class="zone-orb" style="width:34px;height:34px;background:rgba(251,191,36,0.12);font-size:15px;">☁️</div>
+                  <div class="zone-name-s" style="color:#d97706;">云朵广场</div>
+                </div>
+                <!-- 迷雾森林 (dim) -->
+                <div class="zone-node" style="bottom:26%;right:9%;opacity:0.35;">
+                  <div class="zone-orb" style="width:34px;height:34px;background:rgba(34,197,94,0.12);font-size:15px;">🌿</div>
+                  <div class="zone-name-s" style="color:#059669;">迷雾森林</div>
+                </div>
+                <!-- IPs -->
+                <div class="ip-char" style="bottom:42%;left:16%;font-size:18px;">🐼</div>
+                <div class="ip-char" style="top:22%;right:15%;font-size:16px;animation-delay:1.5s;">🐳</div>
+              </div>
+              <div class="residents-strip">
+                <div class="residents-label">迷雾森林居民</div>
+                <div class="residents-row">
+                  <div class="resident-chip" style="background:#eff6ff;border-color:#bfdbfe;color:#6b7280;">
+                    <div style="font-size:14px;margin-bottom:2px;">🦉</div>阿眠<div style="font-size:7px;color:#2563eb;margin-top:1px;">已解锁</div>
+                  </div>
+                  <div class="resident-chip" style="background:#f0f9ff;border-color:#bae6fd;color:#6b7280;">
+                    <div style="font-size:14px;margin-bottom:2px;">🦔</div>小刺<div style="font-size:7px;color:#0284c7;margin-top:1px;">已解锁</div>
+                  </div>
+                  <div class="resident-chip" style="background:#f9fafb;border:1px dashed #e5e7eb;color:#d1d5db;">
+                    <div style="font-size:14px;margin-bottom:2px;opacity:.3;">✦</div>待解锁<div style="font-size:7px;color:#d1d5db;margin-top:1px;">7月</div>
+                  </div>
+                </div>
+              </div>
+            </div><!-- /star panel -->
+          </div><!-- /main -->
+
+          <!-- IP Float -->
+          <div class="ip-float" id="ipFloat" onclick="openDrawer()">
+            <div class="ip-float-orb" id="ipOrb">🐼</div>
+            <div class="ip-float-label" id="ipLabel">吉塔</div>
+          </div>
+          <div class="ip-switcher-dots">
+            <div class="ip-dot-s active" style="background:#a855f7;" onclick="switchIP(0)" title="吉塔"></div>
+            <div class="ip-dot-s" style="background:#60a5fa;" onclick="switchIP(1)" title="小星"></div>
+            <div class="ip-dot-s" style="background:#34d399;" onclick="switchIP(2)" title="罗素"></div>
+          </div>
+          <!-- Bubble -->
+          <div class="ip-bubble" id="ipBubble">
+            <div class="bubble-close" onclick="closeBubble()">×</div>
+            <div class="bubble-text" id="bubbleText"><b>鸭梨选中了</b>——压力大的时候先别憋着，说出来就轻一点。想聊聊吗？</div>
+            <div class="bubble-actions">
+              <div class="bubble-btn" onclick="openDrawer()">聊一聊</div>
+              <div class="bubble-btn" onclick="closeBubble()">稍后</div>
+            </div>
+          </div>
+          <!-- Chat Drawer -->
+          <div class="chat-drawer" id="chatDrawer">
+            <div class="drawer-header">
+              <div class="drawer-ip-av" id="drawerAv">🐼</div>
+              <div><div class="drawer-ip-name" id="drawerName">吉塔</div><div class="drawer-ip-sub" id="drawerSub">你的情绪守护者 · 随时在线</div></div>
+              <div class="drawer-close" onclick="closeDrawer()">✕</div>
+            </div>
+            <div class="drawer-msgs" id="drawerMsgs">
+              <div class="msg"><div class="msg-ip"><div class="msg-av-s">🐼</div><div class="msg-bubble-ip">早上好小明，你今天选了鸭梨——压力不用撑着，说出来就好了。有什么想聊的？</div></div></div>
+            </div>
+            <div class="drawer-intents">
+              <div class="intents-label">快速意图</div>
+              <div class="intents-row">
+                <div class="intent-btn" onclick="sendIntent('我今天很焦虑')">😰 我焦虑</div>
+                <div class="intent-btn" onclick="sendIntent('帮我放松一下')">🎵 放松</div>
+                <div class="intent-btn" onclick="sendIntent('找罗素聊选科')">🐳 选科</div>
+                <div class="intent-btn" onclick="sendIntent('帮我做测评')">📊 测评</div>
+              </div>
+            </div>
+            <div class="drawer-input">
+              <div class="drawer-mic">🎙️</div>
+              <input class="drawer-input-box" id="chatInput" placeholder="说话或打字…" onkeydown="if(event.key==='Enter')sendMsg()"/>
+              <button class="drawer-send" onclick="sendMsg()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              </button>
+            </div>
+          </div>
+        </div><!-- /con-pad -->
+      </div>
+    </div><!-- /pad-frame -->
+  </div>
+</div>
+
+<div class="anno-section">
+  <div class="anno-card">
+    <div style="display:inline-block;background:rgba(20,184,166,0.1);border:1px solid rgba(20,184,166,0.25);color:#0d9488;border-radius:100px;padding:3px 12px;font-size:10px;font-weight:800;margin-bottom:10px;">📍 保守版</div>
+    <div class="anno-card-title">D2原版升级：Pad三列 + 星球面板 + AI推送化</div>
+    <div class="anno-card-sub">保留D2所有原有模块（情绪签到、心理剧场、IP悬浮），增加：Pad横屏三列布局、右侧星球地图面板、AI任务推送卡片替代任务Tab。</div>
+    <div class="anno-item"><div class="anno-num a-teal">1</div><div><div class="anno-item-title">导航简化 6→3</div><div class="anno-item-text">首页 / 脑之岛 / 咨询。探索变AI推荐卡片，任务变吉塔推送，朋友圈变同学动态条。</div></div></div>
+    <div class="anno-item"><div class="anno-num a-teal">2</div><div><div class="anno-item-title">签到 × 星球联动</div><div class="anno-item-text">选了鸭梨 → 情绪海亮起；今天有生涯课 → 深海图书馆亮起。星球是当日状态的可视化。</div></div></div>
+    <div class="anno-item"><div class="anno-num a-purple">3</div><div><div class="anno-item-title">IP全局悬浮保留</div><div class="anno-item-text">右下角吉塔悬浮球 + 三IP切换点，对话抽屉从右侧滑出。所有D2原交互逻辑保留。</div></div></div>
+    <div class="effort-bar"><div class="effort-label">落地评估</div><div class="effort-tags"><span class="tag t-yellow">1.5–2个月</span><span class="tag t-green">✓ D2原组件复用</span><span class="tag t-yellow">需星球插画资产</span></div></div>
+  </div>
+  <div class="anno-card" style="background:#fffbeb;border-color:#fde68a;">
+    <div style="display:inline-block;background:rgba(251,191,36,0.15);border:1px solid rgba(251,191,36,0.3);color:#d97706;border-radius:100px;padding:3px 12px;font-size:10px;font-weight:800;margin-bottom:10px;">🚀 路线图预览</div>
+    <div class="anno-card-title">从面板到全屏：三阶段演化</div>
+    <div class="anno-card-sub">保守版的右侧星球面板是挑战版的雏形，验证用户点击行为后逐步扩大地图比例。</div>
+    <div class="anno-item"><div class="anno-num a-gold">1</div><div><div class="anno-item-title">现在 · 地图占1/4</div><div class="anno-item-text">右侧辅助面板，验证点击行为与情感连接。</div></div></div>
+    <div class="anno-item"><div class="anno-num a-gold">2</div><div><div class="anno-item-title">6个月后 · 地图占1/2</div><div class="anno-item-text">左右均衡，地图开始承担部分导航职责。</div></div></div>
+    <div class="anno-item"><div class="anno-num a-gold">3</div><div><div class="anno-item-title">挑战版 · 地图占3/4</div><div class="anno-item-text">信息流收进底部抽屉，星球即首页，导航从功能列表变成世界探索。</div></div></div>
+    <div class="effort-bar"><div class="effort-label">时间线</div><div class="effort-tags"><span class="tag t-green">保守版现在做</span><span class="tag t-yellow">半年后扩展</span><span class="tag t-red">挑战版6个月+</span></div></div>
+  </div>
+</div>
+</section>
+
+<!-- ══ BOLD ══ -->
+<section class="screen-section" id="sec-bold">
+<style>
+.bold-sidebar { width:56px; height:100%; flex-shrink:0; background:#fff; border-right:1px solid #eee; display:flex; flex-direction:column; align-items:center; padding:12px 0; }
+.bold-map-main { flex:1; height:100%; position:relative; overflow:hidden; background:linear-gradient(160deg,#e8eaf6 0%,#f3e8ff 40%,#e0f2fe 80%,#fef3c7 100%); }
+.bold-tray { position:absolute; bottom:0; left:0; right:0; background:rgba(255,255,255,0.96); backdrop-filter:blur(12px); border-top:1.5px solid rgba(99,102,241,0.12); border-radius:16px 16px 0 0; transition:height 0.35s cubic-bezier(0.34,1.1,0.64,1); z-index:40; overflow:hidden; }
+.tray-handle { width:36px; height:4px; background:#e5e7eb; border-radius:2px; margin:8px auto 4px; cursor:pointer; }
+.tray-peek { padding:4px 14px 8px; display:flex; align-items:center; gap:10px; }
+.bold-zone-node { position:absolute; display:flex; flex-direction:column; align-items:center; cursor:pointer; }
+.bold-zone-orb { border-radius:50%; display:flex; align-items:center; justify-content:center; position:relative; transition:transform 0.3s; box-shadow:0 4px 16px rgba(0,0,0,0.1); }
+.bold-zone-orb:hover { transform:scale(1.1); }
+.bold-zone-label { font-size:9px; font-weight:800; margin-top:4px; text-align:center; }
+.bold-zone-sub { font-size:7px; color:#9ca3af; }
+.bold-ip-char { position:absolute; animation:fi 4s ease-in-out infinite; filter:drop-shadow(0 2px 6px rgba(0,0,0,0.15)); }
+</style>
+<div class="pad-stage">
+  <div class="pad-outer" tabindex="0" role="region" aria-label="历史 Pad 原型，可横向滚动">
+    <div class="pad-label">挑战版 · 两列：侧边导航 56px · 星球地图全屏 · 底部信息抽屉</div>
+    <div class="pad-frame">
+      <div class="pad-status"><span>AI星球</span><span>09:41 &nbsp;周一 2026.06.16</span><span>🔋 ▓▓▓▓ &nbsp;WiFi</span></div>
+      <div class="pad-content">
+        <div class="con-pad">
+          <div class="bold-sidebar">
+            <div class="sidebar-logo">🪐</div>
+            <div class="sidebar-nav-item active"><span class="sidebar-icon">🌌</span><span class="sidebar-label" style="color:#6366f1;">星球</span></div>
+            <div class="sidebar-nav-item"><span class="sidebar-icon">💬</span><span class="sidebar-label">咨询</span></div>
+          </div>
+          <div class="bold-map-main">
+            <svg style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;" xmlns="http://www.w3.org/2000/svg">
+              <line x1="22%" y1="50%" x2="50%" y2="50%" stroke="#6366f1" stroke-width="1.5" stroke-dasharray="4,7" opacity="0.12"/>
+              <line x1="50%" y1="50%" x2="78%" y2="22%" stroke="#6366f1" stroke-width="1.5" stroke-dasharray="4,7" opacity="0.12"/>
+              <line x1="50%" y1="50%" x2="14%" y2="25%" stroke="#6366f1" stroke-width="1.5" stroke-dasharray="4,7" opacity="0.12"/>
+              <line x1="50%" y1="50%" x2="80%" y2="62%" stroke="#6366f1" stroke-width="1.5" stroke-dasharray="4,7" opacity="0.12"/>
+              <line x1="50%" y1="50%" x2="36%" y2="76%" stroke="#6366f1" stroke-width="1.5" stroke-dasharray="4,7" opacity="0.12"/>
+            </svg>
+            <!-- 脑之岛 CENTER -->
+            <div class="bold-zone-node" style="top:50%;left:50%;transform:translate(-50%,-58%);" onclick="alert('进入脑之岛 → 认知训练地图（脑之岛是星球上的一个区域，不是独立Tab）')">
+              <div class="bold-zone-orb" style="width:72px;height:72px;background:rgba(99,102,241,0.15);border:2px solid rgba(99,102,241,0.4);font-size:32px;">🧠<div class="zone-pulse-ring" style="border-color:rgba(99,102,241,0.3);inset:-8px;animation:pr 2.5s ease-in-out infinite;opacity:1;"></div></div>
+              <div class="bold-zone-label" style="color:#4f46e5;">脑之岛</div><div class="bold-zone-sub">认知训练 · 中心岛</div>
+            </div>
+            <!-- 情绪海 (lit, west) -->
+            <div class="bold-zone-node zone-lit" style="top:48%;left:12%;transform:translateY(-50%);" onclick="alert('进入情绪海 → 找吉塔聊聊')">
+              <div class="bold-zone-orb" style="width:60px;height:60px;background:rgba(20,184,166,0.2);font-size:26px;animation:p 2s ease-in-out infinite;">🌊<div class="zone-pulse-ring" style="border-color:rgba(20,184,166,0.5);opacity:1;"></div></div>
+              <div class="bold-zone-label" style="color:#0d9488;">情绪海</div><div class="bold-zone-sub">已到访 · 吉塔在这</div>
+            </div>
+            <!-- 深海图书馆 (lit, northeast) -->
+            <div class="bold-zone-node zone-lit" style="top:15%;right:10%;" onclick="alert('进入深海图书馆 → 找罗素')">
+              <div class="bold-zone-orb" style="width:54px;height:54px;background:rgba(56,189,248,0.18);font-size:24px;animation:p 2.5s ease-in-out infinite 0.5s;">📚<div class="zone-pulse-ring" style="border-color:rgba(56,189,248,0.5);opacity:1;"></div></div>
+              <div class="bold-zone-label" style="color:#0284c7;">深海图书馆</div><div class="bold-zone-sub">已到访 · 罗素在这</div>
+            </div>
+            <!-- 云朵广场 (dim, northwest) -->
+            <div class="bold-zone-node" style="top:10%;left:10%;opacity:0.38;" onclick="alert('云朵广场 → 未探索')">
+              <div class="bold-zone-orb" style="width:46px;height:46px;background:rgba(251,191,36,0.12);font-size:22px;">☁️</div>
+              <div class="bold-zone-label" style="color:#d97706;">云朵广场</div><div class="bold-zone-sub">未探索</div>
+            </div>
+            <!-- 迷雾森林 (dim, southeast) -->
+            <div class="bold-zone-node" style="bottom:22%;right:12%;opacity:0.4;" onclick="alert('迷雾森林 → 解锁居民')">
+              <div class="bold-zone-orb" style="width:46px;height:46px;background:rgba(34,197,94,0.12);font-size:22px;">🌿</div>
+              <div class="bold-zone-label" style="color:#059669;">迷雾森林</div><div class="bold-zone-sub">探索中</div>
+            </div>
+            <!-- 囧囧学堂 (south) -->
+            <div class="bold-zone-node" style="bottom:16%;left:33%;" onclick="alert('囧囧学堂 → 心理剧场')">
+              <div class="bold-zone-orb" style="width:46px;height:46px;background:rgba(251,191,36,0.15);font-size:20px;">🏫</div>
+              <div class="bold-zone-label" style="color:#b45309;">囧囧学堂</div><div class="bold-zone-sub">心理剧场</div>
+            </div>
+            <!-- IPs -->
+            <div class="bold-ip-char" style="top:44%;left:18%;font-size:28px;">🐼</div>
+            <div class="bold-ip-char" style="top:22%;right:22%;font-size:24px;animation-delay:1.5s;">🐳</div>
+            <div class="bold-ip-char" style="bottom:35%;left:26%;font-size:20px;animation-delay:0.8s;">🤍</div>
+            <div class="bold-ip-char" style="top:30%;left:42%;font-size:18px;animation-delay:2s;">🍐</div>
+            <!-- Today badge -->
+            <div style="position:absolute;top:10px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,0.88);backdrop-filter:blur(8px);border:1px solid rgba(99,102,241,0.15);border-radius:20px;padding:5px 16px;display:flex;align-items:center;gap:8px;z-index:30;">
+              <span style="font-size:16px;">🍐</span><span style="font-size:11px;font-weight:700;color:#374151;">今日：鸭梨模式</span><span style="font-size:9px;color:#9ca3af;">2/5区域</span>
+            </div>
+            <!-- Streak -->
+            <div style="position:absolute;top:10px;right:12px;background:rgba(255,255,255,0.88);backdrop-filter:blur(8px);border:1px solid #fde68a;border-radius:20px;padding:4px 10px;display:flex;align-items:center;gap:4px;z-index:30;">
+              <span style="font-size:12px;">🔥</span><span style="font-size:10px;font-weight:700;color:#d97706;">7天</span>
+            </div>
+            <!-- IP Float -->
+            <div class="ip-float" onclick="openDrawerBold()" style="bottom:82px;">
+              <div class="ip-float-orb">🐼</div>
+              <div class="ip-float-label">吉塔</div>
+            </div>
+            <!-- Bottom Tray -->
+            <div class="bold-tray" id="boldTray" style="height:68px;">
+              <div class="tray-handle" onclick="toggleBoldTray()"></div>
+              <div class="tray-peek">
+                <span style="font-size:10px;font-weight:800;color:#374151;">今日速览</span>
+                <span style="font-size:10px;color:#9ca3af;margin-left:4px;">鸭梨 · 已签到 · 2个任务待完成</span>
+                <div style="margin-left:auto;display:flex;gap:6px;">
+                  <div style="background:#eff6ff;border:1px solid #c7d2fe;border-radius:10px;padding:2px 9px;font-size:9px;font-weight:700;color:#4f46e5;cursor:pointer;" onclick="openDrawerBold()">问吉塔</div>
+                  <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;padding:2px 9px;font-size:9px;font-weight:700;color:#6b7280;cursor:pointer;" onclick="toggleBoldTray()">↑ 展开</div>
+                </div>
+              </div>
+              <div id="boldTrayContent" style="display:none;padding:0 14px 10px;">
+                <div style="display:flex;gap:8px;">
+                  <div style="flex:1;background:#f9fafb;border-radius:10px;padding:8px 10px;border:1px solid #f0f4ff;">
+                    <div style="font-size:9px;font-weight:800;color:#9ca3af;margin-bottom:4px;">吉塔今日安排</div>
+                    <div style="font-size:10px;color:#374151;">📊 学业压力测评 · 5分钟</div>
+                    <div style="font-size:10px;color:#374151;margin-top:3px;">🎵 4-7-8呼吸法 · 3分钟</div>
+                  </div>
+                  <div style="flex:1;background:#f9fafb;border-radius:10px;padding:8px 10px;border:1px solid #f0f4ff;">
+                    <div style="font-size:9px;font-weight:800;color:#9ca3af;margin-bottom:4px;">同学动态</div>
+                    <div style="font-size:10px;color:#6b7280;">🦔 小刺 解锁了新居民</div>
+                    <div style="font-size:10px;color:#6b7280;margin-top:3px;">🦥 拖拖 完成月度挑战</div>
+                  </div>
+                  <div style="flex:1;background:linear-gradient(135deg,#667eea,#764ba2);border-radius:10px;padding:8px 10px;cursor:pointer;" onclick="alert('进入心理剧场')">
+                    <div style="font-size:9px;font-weight:800;color:rgba(255,255,255,0.7);margin-bottom:4px;">🎬 6月新剧</div>
+                    <div style="font-size:11px;font-weight:800;color:#fff;">面对压力<br><span style="font-size:9px;font-weight:400;opacity:0.8;">鸭梨主演 · 15分钟</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Chat Drawer Bold -->
+            <div class="chat-drawer" id="chatDrawerBold">
+              <div class="drawer-header">
+                <div class="drawer-ip-av">🐼</div>
+                <div><div class="drawer-ip-name">吉塔</div><div class="drawer-ip-sub">你的情绪守护者 · 随时在线</div></div>
+                <div class="drawer-close" onclick="closeDrawerBold()">✕</div>
+              </div>
+              <div class="drawer-msgs">
+                <div class="msg"><div class="msg-ip"><div class="msg-av-s">🐼</div><div class="msg-bubble-ip">早上好小明，你今天选了鸭梨——压力不用撑着，说出来就好了。</div></div></div>
+              </div>
+              <div class="drawer-intents">
+                <div class="intents-label">快速意图</div>
+                <div class="intents-row">
+                  <div class="intent-btn">😰 我焦虑</div>
+                  <div class="intent-btn">🎵 放松</div>
+                  <div class="intent-btn">🐳 选科</div>
+                  <div class="intent-btn">📊 测评</div>
+                </div>
+              </div>
+              <div class="drawer-input">
+                <div class="drawer-mic">🎙️</div>
+                <input class="drawer-input-box" placeholder="说话或打字…"/>
+                <button class="drawer-send"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+              </div>
+            </div>
+          </div><!-- /bold-map-main -->
+        </div><!-- /con-pad -->
+      </div>
+    </div><!-- /pad-frame -->
+  </div>
+</div>
+
+<div class="anno-section" style="grid-template-columns:1fr 1fr 1fr;">
+  <div class="anno-card" style="background:#fffbeb;border-color:#fde68a;">
+    <div style="display:inline-block;background:rgba(251,191,36,0.15);border:1px solid rgba(251,191,36,0.3);color:#d97706;border-radius:100px;padding:3px 12px;font-size:10px;font-weight:800;margin-bottom:10px;">🚀 挑战版</div>
+    <div class="anno-card-title">星球即首页：导航从菜单变成世界探索</div>
+    <div class="anno-card-sub">星球地图占据全部主视角，脑之岛成为地图上的一个区域而非独立标签，底部抽屉收纳任务/动态/推荐。</div>
+    <div class="anno-item"><div class="anno-num a-gold">1</div><div><div class="anno-item-title">导航简化到 2 项</div><div class="anno-item-text">🌌 星球（首页）· 💬 咨询。探索/任务/脑之岛均在星球地图上完成，朋友圈变为底部抽屉里的动态条。</div></div></div>
+    <div class="anno-item"><div class="anno-num a-gold">2</div><div><div class="anno-item-title">信息三层分离</div><div class="anno-item-text">主屏：情感归属感（星球世界观）· 底部抽屉：任务/推荐/动态（今天要做什么）· 右侧抽屉：IP对话（想说话）。三层互不干扰。</div></div></div>
+    <div class="anno-item"><div class="anno-num a-gold">3</div><div><div class="anno-item-title">解决两个地图冲突</div><div class="anno-item-text">脑之岛是星球地图上的一个Zone，点击进入后才是训练地图。首页（情感世界）和脑之岛内部（训练关卡）是上下层，视觉语言完全不同。</div></div></div>
+    <div class="effort-bar"><div class="effort-label">落地评估</div><div class="effort-tags"><span class="tag t-red">9–12个月</span><span class="tag t-red">需星球插画体系</span><span class="tag t-yellow">需行为数据验证</span></div></div>
+  </div>
+  <div class="anno-card">
+    <div style="display:inline-block;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.25);color:#4f46e5;border-radius:100px;padding:3px 12px;font-size:10px;font-weight:800;margin-bottom:10px;">💡 Q&A</div>
+    <div class="anno-card-title">「两个地图会不会让app太戏化？」</div>
+    <div class="anno-card-sub">挑战版的设计决策刚好解决了这个问题，而不是加重它。</div>
+    <div class="anno-item"><div class="anno-num a-purple">A</div><div><div class="anno-item-title">保守版：两个地图并列（有混淆风险）</div><div class="anno-item-text">首页星球Panel + 脑之岛Tab训练地图 → 两套地图逻辑并列，用户需要理解两种「地图」的不同含义。</div></div></div>
+    <div class="anno-item"><div class="anno-num a-purple">B</div><div><div class="anno-item-title">挑战版：一个地图两个层级（清晰）</div><div class="anno-item-text">首页星球地图 = 情感世界（手绘柔和风，找IP/探索区域）· 脑之岛内部 = 训练关卡（游戏化结构）。两套视觉语言完全不同，天然分工不冲突。</div></div></div>
+    <div class="anno-item"><div class="anno-num a-purple">C</div><div><div class="anno-item-title">戏化度靠插画风格控制</div><div class="anno-item-text">减压星球用治愈柔和插画（非游戏风），脑之岛用功能化进度视觉。两者风格拉开距离，不会让整个app「戏化过度」。</div></div></div>
+  </div>
+  <div class="anno-card" style="background:#f0fdf4;border-color:#bbf7d0;">
+    <div style="display:inline-block;background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.25);color:#059669;border-radius:100px;padding:3px 12px;font-size:10px;font-weight:800;margin-bottom:10px;">🗺️ 两图融合设计决策</div>
+    <div class="anno-card-title">减压星球 × 脑之岛：如何从三个维度融合成一套体验</div>
+    <div class="anno-card-sub">两个地图的答案不是选一个删一个——减压星球做导航层，脑之岛做内容层，靠转场和视觉风格切换区分两个场景。</div>
+    <div class="anno-item">
+      <div class="anno-num" style="background:rgba(34,197,94,0.15);color:#059669;">产</div>
+      <div>
+        <div class="anno-item-title">产品维度：层级化，不并列</div>
+        <div class="anno-item-text">减压星球 = 第一层（情感导航，找IP，探索区域）。脑之岛 = 第二层（点进 Zone 才进入训练关卡）。脑之岛不消失，但不再是独立 Tab——它是星球上的一座岛，有自己的内部地图和关卡体系。E2 提案四的叙事层方案可同步落地：完成训练→迷雾散开→解锁迷雾森林居民，两套系统形成闭环。</div>
+      </div>
+    </div>
+    <div class="anno-item">
+      <div class="anno-num" style="background:rgba(34,197,94,0.15);color:#059669;">视</div>
+      <div>
+        <div class="anno-item-title">视觉维度：风格拉开，穿越感转场</div>
+        <div class="anno-item-text">减压星球首页：手绘柔和治愈风，低对比，动画轻柔，情感优先。脑之岛内部：功能化 UI，高对比，进度条/徽章/关卡编号，目标感优先。进入脑之岛时需要明确的「穿越感」转场（从星球地图飞入某个区域），画风切换本身告诉用户：换了一个场景。B1 诊断的4个蓝色色值混用问题在这里反而可以利用——两层用不同色温（星球暖紫/绿，脑之岛冷蓝/靛），颜色本身做场景切换的信号。</div>
+      </div>
+    </div>
+    <div class="anno-item">
+      <div class="anno-num" style="background:rgba(34,197,94,0.15);color:#059669;">交</div>
+      <div>
+        <div class="anno-item-title">交互维度：强化脑之岛成就外溢</div>
+        <div class="anno-item-text">A5 诊断 P5：脑之岛内部体验完整（有引导、勋章墙、解锁机制），但成就封闭在 Tab 内——完成训练后首页无反馈、IP 无感知，模块数据孤岛。挑战版是修复这个问题的机会：从星球地图点击进入脑之岛时，罗素主动出现引导；完成训练→迷雾散开，与星球外层的邻居解锁形成「做了这件事 → 世界变了」的正向反馈，脑之岛成就第一次真正传递给整体成长叙事。两层地图各自解决自己的核心任务，交互逻辑互不干扰。</div>
+      </div>
+    </div>
+    <div class="effort-bar">
+      <div class="effort-label">关键前提</div>
+      <div class="effort-tags">
+        <span class="tag t-red">插画团队定两套风格语言</span>
+        <span class="tag t-yellow">转场动效设计</span>
+        <span class="tag t-yellow">罗素引导脚本</span>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ══ COMPARE ══ -->
+<section class="screen-section" id="sec-compare">
+<div class="compare-wrap">
+  <div style="margin-bottom:32px;">
+    <div style="font-size:11px;font-weight:800;color:#9ca3af;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">⚖️ 对比决策参考</div>
+    <div style="font-size:26px;font-weight:900;color:#1e293b;margin-bottom:8px;">三版对比：功能版 vs 保守版 vs 挑战版</div>
+    <div style="font-size:13px;color:#6b7280;line-height:1.8;">三个方向适用于不同资源和时机。功能版是最快交付的基线，保守版加入世界观验证，挑战版是星球地图全量落地。</div>
+  </div>
+  <div class="archive-narrow-table" tabindex="0" role="region" aria-label="研究表格，可横向滚动"><table class="compare-table">
+    <thead><tr>
+      <th style="width:18%;">维度</th>
+      <th style="width:27%;background:#f5f3ff;">🔧 功能版</th>
+      <th style="width:27%;background:#f0f7ff;">📍 保守版</th>
+      <th style="width:27%;background:#fffbeb;">🚀 挑战版</th>
+    </tr></thead>
+    <tbody>
+      <tr>
+        <td>首页结构</td>
+        <td style="color:#374151;">两列：侧边导航 64px · 主信息流全宽（无地图）</td>
+        <td style="color:#374151;">三列：侧边导航 64px · 主信息流 · 星球面板 280px</td>
+        <td style="color:#374151;">两列：侧边导航 56px · 星球地图全屏 + 底部抽屉</td>
+      </tr>
+      <tr>
+        <td>侧边导航</td>
+        <td style="color:#374151;">3 Tab：首页 / 脑之岛 / 咨询</td>
+        <td style="color:#374151;">3 Tab：首页 / 脑之岛 / 咨询</td>
+        <td style="color:#374151;">2 Tab：星球 / 咨询</td>
+      </tr>
+      <tr>
+        <td>脑之岛位置</td>
+        <td style="color:#374151;">独立Tab，有自己的训练地图</td>
+        <td style="color:#374151;">独立Tab，有自己的训练地图</td>
+        <td style="color:#374151;">星球地图上的一个Zone，点击进入内部</td>
+      </tr>
+      <tr>
+        <td>情绪签到</td>
+        <td style="color:#374151;">首页信息流顶部卡片，选邻居后折叠</td>
+        <td style="color:#374151;">首页信息流顶部卡片，选邻居后折叠</td>
+        <td style="color:#374151;">选邻居后显示在顶部状态徽章，不占版面</td>
+      </tr>
+      <tr>
+        <td>任务推送</td>
+        <td style="color:#374151;">吉塔今日安排卡片（信息流中）</td>
+        <td style="color:#374151;">吉塔今日安排卡片（信息流中）</td>
+        <td style="color:#374151;">底部抽屉展开后可见</td>
+      </tr>
+      <tr>
+        <td>心理剧场</td>
+        <td style="color:#374151;">信息流 Banner（置顶可见）</td>
+        <td style="color:#374151;">信息流 Banner（置顶可见）</td>
+        <td style="color:#374151;">底部抽屉展开后 + 囧囧学堂Zone入口</td>
+      </tr>
+      <tr>
+        <td>同学动态</td>
+        <td style="color:#374151;">信息流底部条目</td>
+        <td style="color:#374151;">信息流底部条目</td>
+        <td style="color:#374151;">底部抽屉展开后可见</td>
+      </tr>
+      <tr>
+        <td>IP系统</td>
+        <td style="color:#374151;">右下角悬浮球 + 三IP切换点 + 右侧抽屉</td>
+        <td style="color:#374151;">右下角悬浮球 + 三IP切换点 + 右侧抽屉</td>
+        <td style="color:#374151;">同上，位置微调（不被底部抽屉遮挡）</td>
+      </tr>
+      <tr>
+        <td>星球地图</td>
+        <td style="color:#374151;font-weight:700;color:#9ca3af;">无</td>
+        <td style="color:#374151;">280px 右侧辅助面板，区域较小</td>
+        <td style="color:#374151;">全屏主界面，区域大，动画更丰富</td>
+      </tr>
+      <tr>
+        <td>年级自适应</td>
+        <td style="color:#374151;">✓ 小学 / 初中 / 高中三套内容</td>
+        <td style="color:#374151;">✓ 小学 / 初中 / 高中三套内容</td>
+        <td style="color:#374151;">初中视图为主，年级切换待扩展</td>
+      </tr>
+      <tr>
+        <td>设计工作量<div style="font-size:9px;color:#9ca3af;margin-top:2px;">含B1规范重构</div></td>
+        <td style="color:#374151;">
+          <span style="background:rgba(251,191,36,0.15);color:#d97706;border-radius:4px;padding:1px 7px;font-size:10px;font-weight:700;">1–1.5个月</span>
+          <div style="font-size:10px;color:#9ca3af;margin-top:4px;">组件复用 + Token整理<br>若不重构规范：2–3周</div>
+        </td>
+        <td style="color:#374151;">
+          <span style="background:rgba(239,68,68,0.1);color:#dc2626;border-radius:4px;padding:1px 7px;font-size:10px;font-weight:700;">2.5–3个月</span>
+          <div style="font-size:10px;color:#9ca3af;margin-top:4px;">规范重构 + 星球插画资产<br>若不重构规范：1.5–2个月</div>
+        </td>
+        <td style="color:#374151;">
+          <span style="background:rgba(239,68,68,0.1);color:#dc2626;border-radius:4px;padding:1px 7px;font-size:10px;font-weight:700;">9–12个月</span>
+          <div style="font-size:10px;color:#9ca3af;margin-top:4px;">规范重构 + 插画体系 + 全量重构<br>若不重构规范：6个月+</div>
+        </td>
+      </tr>
+      <tr>
+        <td>核心风险</td>
+        <td style="color:#374151;">缺乏世界观情感锚点；B1诊断的4个蓝色色值混用、12种+字号若不清理会在新组件里延续</td>
+        <td style="color:#374151;">两个地图并列（首页面板+脑之岛Tab）视觉语言混淆；交互状态定义严重不足（B1问题8）需同步补齐</td>
+        <td style="color:#374151;">星球插画体系 + 设计规范重构同时推进，风险叠加；未验证用户行为即大规模重构风险极高</td>
+      </tr>
+      <tr>
+        <td>何时选择</td>
+        <td style="color:#374151;">学校未购买星球世界观模块（ONLY_MENTAL基础包）；或A/B测试对照组</td>
+        <td style="color:#374151;">当下可立即启动，验证星球地图的点击和情感连接行为</td>
+        <td style="color:#374151;">保守版数据验证后，星球地图有足够用户行为支撑时</td>
+      </tr>
+    </tbody>
+  </table></div>
+
+  <div class="nav-strip">
+    <div class="nav-strip-title">推荐路径</div>
+    <div class="nav-strip-sub">
+      <b>第一步（现在）</b>：上线保守版，星球地图作为右侧辅助面板。观察：学生点击区域的频率、情绪签到→星球联动的感知、IP对话的触发率。<br>
+      <b>第二步（6个月后）</b>：若数据显示星球地图点击率高（&gt;30%日活点击），扩大地图比例至50%，测试导航重心向星球迁移。<br>
+      <b>第三步（12个月后）</b>：挑战版正式立项，星球插画体系完整落地，星球即首页。
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <span class="tag t-green">保守版现在做</span>
+      <span class="tag t-yellow">半年后看数据</span>
+      <span class="tag t-red">挑战版12个月+</span>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ══ FUNCTIONAL ══ -->
+<section class="screen-section visible" id="sec-functional">
+<div class="pad-stage">
+  <div class="pad-outer" tabindex="0" role="region" aria-label="历史 Pad 原型，可横向滚动">
+    <div class="pad-label">功能版 · 两列：侧边导航 64px · 主信息流全宽（无星球地图面板）</div>
+    <div class="pad-frame">
+      <div class="pad-status"><span>AI星球</span><span>09:41 &nbsp;周一 2026.06.16</span><span>🔋 ▓▓▓▓ &nbsp;WiFi</span></div>
+      <div class="grade-bar">
+        <div class="grade-bar-label">年级视图</div>
+        <div class="grade-tabs">
+          <div class="grade-tab gt-primary" onclick="switchGradeF('primary',this)">🌱 小学</div>
+          <div class="grade-tab gt-middle active" onclick="switchGradeF('middle',this)">🌀 初中</div>
+          <div class="grade-tab gt-high" onclick="switchGradeF('high',this)">🎯 高中</div>
+        </div>
+        <div class="grade-note" id="gradeNoteF">初中视图 · phaseCode=middle · 情绪邻居 + 吉塔主导</div>
+      </div>
+      <div class="pad-content">
+        <div class="con-pad">
+          <div class="con-sidebar">
+            <div class="sidebar-logo">🪐</div>
+            <div class="sidebar-nav-item active"><span class="sidebar-icon">🏠</span><span class="sidebar-label" style="color:#6366f1;">首页</span></div>
+            <div class="sidebar-nav-item"><span class="sidebar-icon">🧠</span><span class="sidebar-label">脑之岛</span></div>
+            <div class="sidebar-nav-item"><span class="sidebar-icon">💬</span><span class="sidebar-label">咨询</span></div>
+          </div>
+          <!-- 全宽信息流，无右侧面板 -->
+          <div class="con-feed" style="max-width:680px;margin:0 auto;">
+            <div class="feed-header">
+              <div class="feed-greeting" id="gradeGreetingF">早上好，小明同学 👋</div>
+              <div style="display:flex;gap:8px;align-items:center;">
+                <div class="streak-pill">🔥 连续7天</div>
+                <div style="font-size:10px;color:#9ca3af;">周一 · 6月16日</div>
+              </div>
+            </div>
+
+            <!-- 高考倒计时（仅高中） -->
+            <div class="gaokao-badge gf-high" id="gaokaoBlockF">
+              <div style="display:flex;flex-direction:column;">
+                <div class="gaokao-label">距高考</div>
+                <div style="display:flex;align-items:baseline;gap:3px;"><div class="gaokao-days">234</div><div class="gaokao-sub">天</div></div>
+              </div>
+              <div style="flex:1;font-size:10px;color:#7c3aed;line-height:1.6;">2027年6月7日<br><span style="color:#a78bfa;">高二 · 理科倾向 · 目标院校待定</span></div>
+              <div class="gaokao-dismiss" onclick="this.parentElement.style.display='none'">关闭 ×</div>
+            </div>
+
+            <!-- 情绪签到：小学版 -->
+            <div class="checkin-card gf-primary" id="checkinCardPF">
+              <div class="checkin-chip-row" id="primaryChipRowF" style="display:none;">
+                <span id="primaryChipEmojiF" style="font-size:20px;">😊</span>
+                <span style="font-size:12px;font-weight:700;color:#374151;" id="primaryChipTextF">今天：开心</span>
+                <span style="font-size:11px;color:#10b981;">✓ 已签到</span>
+                <span class="checkin-reopen" onclick="reopenPrimaryCheckinF()">更改</span>
+              </div>
+              <div id="primaryCheckinFullF">
+                <div class="checkin-title" style="font-size:12px;">今天你是什么心情？</div>
+                <div class="checkin-sub">告诉小星，她想知道～</div>
+                <div class="emoji-checkin">
+                  <div class="emoji-face selected" onclick="selectFaceF(this,'开心','😊')"><div class="emoji-face-icon">😊</div><div class="emoji-face-name">开心</div></div>
+                  <div class="emoji-face" onclick="selectFaceF(this,'还好','😐')"><div class="emoji-face-icon">😐</div><div class="emoji-face-name">还好</div></div>
+                  <div class="emoji-face" onclick="selectFaceF(this,'有点累','😓')"><div class="emoji-face-icon">😓</div><div class="emoji-face-name">有点累</div></div>
+                  <div class="emoji-face" onclick="selectFaceF(this,'不开心','😔')"><div class="emoji-face-icon">😔</div><div class="emoji-face-name">不开心</div></div>
+                  <div class="emoji-face" onclick="selectFaceF(this,'生气了','😤')"><div class="emoji-face-icon">😤</div><div class="emoji-face-name">生气了</div></div>
+                </div>
+                <div class="ip-response">
+                  <span class="ip-av">🤍</span>
+                  <div class="ip-btext" id="primaryResponseTextF">开心就要说出来！今天有什么好事？给小星讲讲～</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 情绪签到：初中/高中版 -->
+            <div class="checkin-card gf-middle gf-high" id="checkinCardF">
+              <div class="checkin-chip-row" id="checkinChipRowF">
+                <span id="chipEmojiF" style="font-size:20px;">🍐</span>
+                <span style="font-size:12px;font-weight:700;color:#374151;" id="chipTextF">今天：鸭梨</span>
+                <span style="font-size:11px;color:#10b981;">✓ 已签到</span>
+                <span class="checkin-reopen" onclick="reopenCheckinF()">更改</span>
+              </div>
+              <div id="checkinFullF">
+                <div class="checkin-title">今天你最像哪个邻居？</div>
+                <div class="checkin-sub">选了他/她，吉塔就知道今天怎么接你 · 可多选</div>
+                <div class="neighbor-row">
+                  <div class="n-chip selected" onclick="selectNeighborF(this,'鸭梨','🍐','pressure')"><span class="n-emoji">🍐</span><span class="n-name">鸭梨</span></div>
+                  <div class="n-chip" onclick="selectNeighborF(this,'阿眠','🦉','sleep')"><span class="n-emoji">🦉</span><span class="n-name">阿眠</span></div>
+                  <div class="n-chip" onclick="selectNeighborF(this,'小刺','🦔','social')"><span class="n-emoji">🦔</span><span class="n-name">小刺</span></div>
+                  <div class="n-chip" onclick="selectNeighborF(this,'拖拖','🦥','procrastinate')"><span class="n-emoji">🦥</span><span class="n-name">拖拖</span></div>
+                  <div class="n-chip" onclick="selectNeighborF(this,'小炎','🦁','anger')"><span class="n-emoji">🦁</span><span class="n-name">小炎</span></div>
+                  <div class="n-chip" onclick="selectNeighborF(this,'皮皮','🐰','appearance')"><span class="n-emoji">🐰</span><span class="n-name">皮皮</span></div>
+                </div>
+                <div class="ip-response">
+                  <span class="ip-av" id="ipAvF">🐼</span>
+                  <div class="ip-btext" id="ipResponseTextF">压力很大？不用解释。你现在是还在那个状态里，还是已经有点平了？</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 心理剧场 Banner -->
+            <div class="theater-banner" onclick="alert('进入6月心理剧场：《面对压力，我可以》')">
+              <div class="theater-dec">🎭</div>
+              <div class="theater-content">
+                <div style="flex:1;">
+                  <div class="theater-badge">🎬 6月新剧</div>
+                  <div class="theater-title">心理剧场：面对压力</div>
+                  <div style="font-size:10px;color:rgba(255,255,255,0.75);margin-top:3px;">互动剧情 · 约15分钟 · 鸭梨主演</div>
+                </div>
+                <div class="theater-cta">立即体验 →</div>
+              </div>
+            </div>
+
+            <!-- 任务推送：小学版 -->
+            <div class="task-banner gf-primary">
+              <div class="task-banner-top">
+                <span class="task-banner-label">🤍 小星今日探险</span>
+                <span class="task-badge" style="background:#fbbf24;">2 个任务</span>
+              </div>
+              <div class="task-row">
+                <div class="task-dot" style="background:#a78bfa;"></div>
+                <span style="font-size:10px;color:#374151;">🧩 专注小游戏 · 5分钟</span>
+                <span style="font-size:9px;color:#9ca3af;margin-left:auto;">今日探险</span>
+              </div>
+              <div class="task-row">
+                <div class="task-dot" style="background:#10b981;"></div>
+                <span style="font-size:10px;color:#374151;">🎨 情绪涂色本 · 随意画</span>
+                <span style="font-size:9px;color:#9ca3af;margin-left:auto;">轻松活动</span>
+              </div>
+            </div>
+
+            <!-- 任务推送：初中版 -->
+            <div class="task-banner gf-middle">
+              <div class="task-banner-top">
+                <span class="task-banner-label">吉塔今日安排</span>
+                <span class="task-badge">2 待完成</span>
+              </div>
+              <div class="task-row">
+                <div class="task-dot" style="background:#fbbf24;"></div>
+                <span style="font-size:10px;color:#374151;">📊 情绪压力测评 · 预计5分钟</span>
+                <span style="font-size:9px;color:#9ca3af;margin-left:auto;">情绪对应</span>
+              </div>
+              <div class="task-row">
+                <div class="task-dot" style="background:#10b981;"></div>
+                <span style="font-size:10px;color:#374151;">🎵 4-7-8呼吸法 · 3分钟</span>
+                <span style="font-size:9px;color:#9ca3af;margin-left:auto;">今日推荐</span>
+              </div>
+            </div>
+
+            <!-- 任务推送：高中版 -->
+            <div class="task-banner gf-high" style="border-color:#c4b5fd;background:linear-gradient(135deg,#f5f3ff,#ede9fe);">
+              <div class="task-banner-top">
+                <span class="task-banner-label" style="color:#6d28d9;">罗素今日规划</span>
+                <span class="task-badge" style="background:#7c3aed;">3 待完成</span>
+              </div>
+              <div class="task-row">
+                <div class="task-dot" style="background:#7c3aed;"></div>
+                <span style="font-size:10px;color:#374151;">📊 学业压力专项测评 · 8分钟</span>
+                <span style="font-size:9px;color:#9ca3af;margin-left:auto;">高优先</span>
+              </div>
+              <div class="task-row">
+                <div class="task-dot" style="background:#f59e0b;"></div>
+                <span style="font-size:10px;color:#374151;">🧭 选科兴趣初测 · 10分钟</span>
+                <span style="font-size:9px;color:#9ca3af;margin-left:auto;">罗素推荐</span>
+              </div>
+              <div class="task-row">
+                <div class="task-dot" style="background:#10b981;"></div>
+                <span style="font-size:10px;color:#374151;">🎵 4-7-8呼吸法 · 3分钟</span>
+                <span style="font-size:9px;color:#9ca3af;margin-left:auto;">缓解考前焦虑</span>
+              </div>
+            </div>
+
+            <!-- AI推荐：小学版 -->
+            <div class="gf-primary">
+              <div class="section-label">小星为你准备了</div>
+              <div class="recs-grid">
+                <div class="rec-card"><div class="rec-icon" style="background:#fef9c3;">🎮</div><div><div class="rec-title">记忆翻牌游戏</div><div class="rec-sub">脑力小训练 · 好玩</div></div></div>
+                <div class="rec-card"><div class="rec-icon" style="background:#ede9fe;">🎵</div><div><div class="rec-title">放松音乐盒</div><div class="rec-sub">小星选的歌 · 3分钟</div></div></div>
+              </div>
+            </div>
+
+            <!-- AI推荐：初中版 -->
+            <div class="gf-middle">
+              <div class="section-label">吉塔为你推荐</div>
+              <div class="recs-grid">
+                <div class="rec-card" onclick="openDrawerF()"><div class="rec-icon" style="background:#eff6ff;">🎵</div><div><div class="rec-title">5分钟正念呼吸</div><div class="rec-sub">情绪放松 · 今天适合你</div></div></div>
+                <div class="rec-card"><div class="rec-icon" style="background:#fefce8;">📝</div><div><div class="rec-title">鸭梨日记：今天的事</div><div class="rec-sub">心育日记 · 3分钟</div></div></div>
+              </div>
+            </div>
+
+            <!-- AI推荐：高中版 -->
+            <div class="gf-high">
+              <div class="section-label">罗素 + 吉塔为你推荐</div>
+              <div class="recs-grid">
+                <div class="rec-card" onclick="openDrawerF()"><div class="rec-icon" style="background:#f5f3ff;">🐳</div><div><div class="rec-title">选科分析：文理倾向</div><div class="rec-sub">罗素 · 10分钟理清思路</div></div></div>
+                <div class="rec-card"><div class="rec-icon" style="background:#eff6ff;">🎵</div><div><div class="rec-title">考前减压呼吸法</div><div class="rec-sub">吉塔 · 5分钟正念</div></div></div>
+                <div class="rec-card"><div class="rec-icon" style="background:#fefce8;">📈</div><div><div class="rec-title">本月情绪报告</div><div class="rec-sub">你的31天数据 · 查看趋势</div></div></div>
+                <div class="rec-card"><div class="rec-icon" style="background:#f0fdf4;">📝</div><div><div class="rec-title">鸭梨日记</div><div class="rec-sub">心育日记 · 3分钟</div></div></div>
+              </div>
+            </div>
+
+            <!-- 同学动态 -->
+            <div class="section-label">同学动态</div>
+            <div class="community-strip">
+              <div class="community-item">
+                <span style="font-size:14px;">🦔</span>
+                <span style="font-size:11px;color:#6b7280;">小刺 解锁了迷雾森林新居民「阿眠」</span>
+                <span style="font-size:10px;color:#9ca3af;margin-left:auto;">1小时前</span>
+              </div>
+              <div class="community-item">
+                <span style="font-size:14px;">🦥</span>
+                <span style="font-size:11px;color:#6b7280;">拖拖 完成了本月脑之岛挑战</span>
+                <span style="font-size:10px;color:#9ca3af;margin-left:auto;">3小时前</span>
+              </div>
+            </div>
+            <div style="height:20px;"></div>
+          </div><!-- /con-feed -->
+
+          <!-- IP Float（保留） -->
+          <div class="ip-float" id="ipFloatF" onclick="openDrawerF()">
+            <div class="ip-float-orb" id="ipOrbF">🐼</div>
+            <div class="ip-float-label" id="ipLabelF">吉塔</div>
+          </div>
+          <div class="ip-switcher-dots">
+            <div class="ip-dot-s active" style="background:#a855f7;" onclick="switchIPF(0)" title="吉塔"></div>
+            <div class="ip-dot-s" style="background:#60a5fa;" onclick="switchIPF(1)" title="小星"></div>
+            <div class="ip-dot-s" style="background:#34d399;" onclick="switchIPF(2)" title="罗素"></div>
+          </div>
+
+          <!-- Chat Drawer -->
+          <div class="chat-drawer" id="chatDrawerF">
+            <div class="drawer-header">
+              <div class="drawer-ip-av" id="drawerAvF">🐼</div>
+              <div><div class="drawer-ip-name" id="drawerNameF">吉塔</div><div class="drawer-ip-sub" id="drawerSubF">你的情绪守护者 · 随时在线</div></div>
+              <div class="drawer-close" onclick="closeDrawerF()">✕</div>
+            </div>
+            <div class="drawer-msgs" id="drawerMsgsF">
+              <div class="msg"><div class="msg-ip"><div class="msg-av-s">🐼</div><div class="msg-bubble-ip">早上好小明，你今天选了鸭梨——压力不用撑着，说出来就好了。有什么想聊的？</div></div></div>
+            </div>
+            <div class="drawer-intents">
+              <div class="intents-label">快速意图</div>
+              <div class="intents-row">
+                <div class="intent-btn" onclick="sendIntentF('我今天很焦虑')">😰 我焦虑</div>
+                <div class="intent-btn" onclick="sendIntentF('帮我放松一下')">🎵 放松</div>
+                <div class="intent-btn" onclick="sendIntentF('找罗素聊选科')">🐳 选科</div>
+                <div class="intent-btn" onclick="sendIntentF('帮我做测评')">📊 测评</div>
+              </div>
+            </div>
+            <div class="drawer-input">
+              <div class="drawer-mic">🎙️</div>
+              <input class="drawer-input-box" id="chatInputF" placeholder="说话或打字…" onkeydown="if(event.key==='Enter')sendMsgF()"/>
+              <button class="drawer-send" onclick="sendMsgF()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              </button>
+            </div>
+          </div>
+        </div><!-- /con-pad -->
+      </div>
+    </div><!-- /pad-frame -->
+  </div>
+</div>
+
+<div class="anno-section">
+  <div class="anno-card">
+    <div style="display:inline-block;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.25);color:#4f46e5;border-radius:100px;padding:3px 12px;font-size:10px;font-weight:800;margin-bottom:10px;">🔧 功能版</div>
+    <div class="anno-card-title">去掉星球地图面板：首页回归纯功能布局</div>
+    <div class="anno-card-sub">与保守版完全相同的信息流内容（情绪签到、心理剧场、任务推送、AI推荐、同学动态），只去掉右侧 280px 星球地图面板。IP悬浮球和对话抽屉保留。</div>
+    <div class="anno-item"><div class="anno-num a-purple">1</div><div><div class="anno-item-title">信息流宽度变化</div><div class="anno-item-text">原三列布局（64px侧边 + 信息流 + 280px地图），去掉地图后信息流扩展到全宽，内容阅读更舒适，无需在地图面板上分配注意力。</div></div></div>
+    <div class="anno-item"><div class="anno-num a-purple">2</div><div><div class="anno-item-title">什么时候用这个版本</div><div class="anno-item-text">学校采购时未开通减压星球世界观模块（仅购买 ONLY_MENTAL 基础包）；或早期A/B测试，对照组看功能版、实验组看带地图的保守版。</div></div></div>
+    <div class="anno-item"><div class="anno-num a-teal">3</div><div><div class="anno-item-title">年级切换同样生效</div><div class="anno-item-text">小学/初中/高中三套内容差异和保守版完全一致，只是呈现载体变了。</div></div></div>
+    <div class="effort-bar"><div class="effort-label">落地评估</div><div class="effort-tags"><span class="tag t-green">已有组件全部复用</span><span class="tag t-green">0额外资产</span><span class="tag t-green">1–2周</span></div></div>
+  </div>
+  <div class="anno-card" style="background:#f0f9ff;border-color:#bae6fd;">
+    <div style="display:inline-block;background:rgba(56,189,248,0.12);border:1px solid rgba(56,189,248,0.3);color:#0284c7;border-radius:100px;padding:3px 12px;font-size:10px;font-weight:800;margin-bottom:10px;">🔄 与保守版的差异</div>
+    <div class="anno-card-title">功能版 vs 保守版：一眼看懂</div>
+    <div class="anno-card-sub">两个版本信息流内容 100% 一致，只有右侧面板不同。</div>
+    <div class="anno-item"><div class="anno-num" style="background:rgba(56,189,248,0.15);color:#0284c7;">A</div><div><div class="anno-item-title">保守版：三列布局</div><div class="anno-item-text">信息流 + 右侧星球地图面板（280px）。地图是情感锚点，可视化今日情绪 → 区域亮灯联动，引入减压星球世界观。</div></div></div>
+    <div class="anno-item"><div class="anno-num" style="background:rgba(56,189,248,0.15);color:#0284c7;">B</div><div><div class="anno-item-title">功能版：两列布局</div><div class="anno-item-text">仅信息流，无地图面板。优点：布局更简洁、无需星球插画资产、适合世界观功能未开通的场景。</div></div></div>
+    <div class="anno-item"><div class="anno-num" style="background:rgba(56,189,248,0.15);color:#0284c7;">C</div><div><div class="anno-item-title">IP悬浮球两版一致</div><div class="anno-item-text">无论保守版还是功能版，右下角 IP 悬浮球 + 三IP切换点 + 对话抽屉均保留——这是独立于星球地图的功能模块。</div></div></div>
+  </div>
+</div>
+</section>
+<script>
+function switchVersion(v,btn){
+  document.querySelectorAll('.v-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.screen-section').forEach(s=>s.classList.remove('visible'));
+  document.getElementById('sec-'+v).classList.add('visible');
+}
+
+const gradeConfig={
+  primary:{
+    greeting:'早上好，小明小朋友 🌟',
+    note:'小学视图 · phaseCode=primary · 表情签到 + 小星主导',
+    ipOrb:'🤍',ipLabel:'小星',ipName:'小星',ipSub:'云朵广场的守望者 · 随时在',
+    ipMsg:'嗨小明！今天你选了开心——今天有什么好事？跟小星说说！',
+    drawerIpAv:'🤍',drawerIpName:'小星',drawerIpSub:'云朵广场的守望者 · 凌晨3点我也在'
+  },
+  middle:{
+    greeting:'早上好，小明同学 👋',
+    note:'初中视图 · phaseCode=middle · 情绪邻居 + 吉塔主导',
+    ipOrb:'🐼',ipLabel:'吉塔',ipName:'吉塔',ipSub:'你的情绪守护者 · 随时在线',
+    ipMsg:'早上好小明，你今天选了鸭梨——压力不用撑着，说出来就好了。有什么想聊的？',
+    drawerIpAv:'🐼',drawerIpName:'吉塔',drawerIpSub:'你的情绪守护者 · 随时在线'
+  },
+  high:{
+    greeting:'早上好，高二小明 📚',
+    note:'高中视图 · phaseCode=high · 罗素/生涯 + 三IP全出 · 高考倒计时',
+    ipOrb:'🐳',ipLabel:'罗素',ipName:'罗素',ipSub:'深海图书馆馆长 · 帮你把问题问对',
+    ipMsg:'早上好小明，今天罗素来了。选科的事想继续聊吗？上次说到文理倾向——',
+    drawerIpAv:'🐳',drawerIpName:'罗素',drawerIpSub:'深海图书馆馆长 · 帮你把问题问对'
+  }
+};
+
+function switchGrade(grade,btn){
+  document.querySelectorAll('.grade-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  const cfg=gradeConfig[grade];
+  document.getElementById('gradeGreeting').innerText=cfg.greeting;
+  document.getElementById('gradeNote').innerText=cfg.note;
+  // show/hide grade blocks
+  ['g-primary','g-middle','g-high'].forEach(cls=>{
+    const show=cls==='g-'+grade;
+    document.querySelectorAll('#sec-conservative .'+cls).forEach(el=>{
+      el.classList.toggle('gshow',show);
+    });
+  });
+  // reset gaokao badge visibility
+  const gk=document.getElementById('gaokaoBlock');
+  if(gk) gk.style.display='';
+  // update IP float
+  document.getElementById('ipOrb').innerText=cfg.ipOrb;
+  document.getElementById('ipLabel').innerText=cfg.ipLabel;
+  document.getElementById('drawerAv').innerText=cfg.drawerIpAv;
+  document.getElementById('drawerName').innerText=cfg.drawerIpName;
+  document.getElementById('drawerSub').innerText=cfg.drawerIpSub;
+  document.getElementById('drawerMsgs').innerHTML='<div class="msg"><div class="msg-ip"><div class="msg-av-s">'+cfg.ipOrb+'</div><div class="msg-bubble-ip">'+cfg.ipMsg+'</div></div></div>';
+  // update IP dot active state
+  const dotIdx={primary:1,middle:0,high:2};
+  document.querySelectorAll('.ip-dot-s').forEach((d,i)=>d.classList.toggle('active',i===dotIdx[grade]));
+}
+
+const primaryFaceResponses={
+  '开心':'开心就要说出来！今天有什么好事？给小星讲讲～',
+  '还好':'还好也很好，今天有什么有趣的事发生吗？',
+  '有点累':'累了就休息一下～有什么想说的吗？',
+  '不开心':'没关系，小星陪着你。发生了什么？',
+  '生气了':'哇，发生什么事了？说出来会轻松一点的～'
+};
+
+function selectFace(el,name,emoji){
+  document.querySelectorAll('.emoji-face').forEach(f=>f.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('primaryResponseText').innerText=primaryFaceResponses[name]||'今天的心情很真实，说说看？';
+  document.getElementById('primaryChipEmoji').innerText=emoji;
+  document.getElementById('primaryChipText').innerText='今天：'+name;
+  setTimeout(()=>{
+    const card=document.getElementById('checkinCardPrimary');
+    card.classList.add('collapsed');
+    document.getElementById('primaryCheckinFull').style.display='none';
+    document.getElementById('primaryChipRow').style.display='flex';
+  },800);
+}
+
+function reopenPrimaryCheckin(){
+  const card=document.getElementById('checkinCardPrimary');
+  card.classList.remove('collapsed');
+  document.getElementById('primaryCheckinFull').style.display='block';
+  document.getElementById('primaryChipRow').style.display='none';
+}
+
+const ipData=[
+  {orb:'🐼',label:'吉塔',name:'吉塔',sub:'你的情绪守护者 · 随时在线',msg:'早上好小明，你今天选了鸭梨——压力不用撑着，说出来就好了。有什么想聊的？'},
+  {orb:'🤍',label:'小星',name:'小星',sub:'云朵广场的守望者 · 凌晨3点我也在',msg:'嗨小明，今天选了鸭梨——压力很真实。想随便说说吗？不用逻辑，想到什么说什么。'},
+  {orb:'🐳',label:'罗素',name:'罗素',sub:'深海图书馆馆长 · 帮你把问题问对',msg:'选了鸭梨。鸭梨代表压力——具体是哪种？时间压力、能力压力、还是别人期望的压力？'}
+];
+
+const neighborResponses={
+  pressure:'压力很大？不用解释。你现在是还在那个状态里，还是已经有点平了？',
+  sleep:'脑子停不下来的感觉，我懂。今天想试试睡前清空吗？',
+  social:'想缩起来是真实的感受，不强求你出去。你愿意跟我说说今天怎么了吗？',
+  procrastinate:'站在起跑线上迈不出脚——这个我熟。一件事，最小的第一步是什么？',
+  anger:'情绪来得快，不是你的错。你现在还在那个状态里吗？',
+  appearance:'今天在意别人眼光了？说说，你自己觉得今天怎么样？'
+};
+
+function selectNeighbor(el,name,emoji,type){
+  document.querySelectorAll('.n-chip').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('ipResponseText').innerText=neighborResponses[type]||'今天的感受很真实，说说看？';
+  document.getElementById('chipEmoji').innerText=emoji;
+  document.getElementById('chipText').innerText='今天：'+name;
+  setTimeout(()=>{
+    const card=document.getElementById('checkinCard');
+    card.classList.add('collapsed');
+    document.getElementById('checkinFull').style.display='none';
+    document.getElementById('checkinChipRow').style.display='flex';
+    document.getElementById('bubbleText').innerHTML='<b>'+name+'选中了</b>——'+neighborResponses[type];
+    document.getElementById('ipBubble').style.display='block';
+  },800);
+}
+
+function reopenCheckin(){
+  const card=document.getElementById('checkinCard');
+  card.classList.remove('collapsed');
+  document.getElementById('checkinFull').style.display='block';
+  document.getElementById('checkinChipRow').style.display='none';
+}
+
+function openDrawer(){
+  document.getElementById('chatDrawer').classList.add('open');
+  document.getElementById('ipBubble').style.display='none';
+}
+function closeDrawer(){document.getElementById('chatDrawer').classList.remove('open');}
+
+function openDrawerBold(){document.getElementById('chatDrawerBold').classList.add('open');}
+function closeDrawerBold(){document.getElementById('chatDrawerBold').classList.remove('open');}
+
+function toggleBoldTray(){
+  const t=document.getElementById('boldTray');
+  const c=document.getElementById('boldTrayContent');
+  if(t.style.height==='68px'){
+    t.style.height='154px'; c.style.display='block';
+  } else {
+    t.style.height='68px'; c.style.display='none';
+  }
+}
+
+function closeBubble(){document.getElementById('ipBubble').style.display='none';}
+
+function switchIP(idx){
+  const d=ipData[idx];
+  document.getElementById('ipOrb').innerText=d.orb;
+  document.getElementById('ipLabel').innerText=d.label;
+  document.getElementById('drawerAv').innerText=d.orb;
+  document.getElementById('drawerName').innerText=d.name;
+  document.getElementById('drawerSub').innerText=d.sub;
+  document.querySelectorAll('.ip-dot-s').forEach((dot,i)=>dot.classList.toggle('active',i===idx));
+  const msgs=document.getElementById('drawerMsgs');
+  msgs.innerHTML='<div class="msg"><div class="msg-ip"><div class="msg-av-s">'+d.orb+'</div><div class="msg-bubble-ip">'+d.msg+'</div></div></div>';
+}
+
+function sendIntent(text){
+  openDrawer();
+  setTimeout(()=>addUserMsg(text),200);
+}
+
+function sendMsg(){
+  const input=document.getElementById('chatInput');
+  const text=input.value.trim();
+  if(!text)return;
+  addUserMsg(text);
+  input.value='';
+}
+
+function addUserMsg(text){
+  const msgs=document.getElementById('drawerMsgs');
+  msgs.innerHTML+='<div class="msg msg-user"><div class="msg-bubble-user">'+text+'</div></div>';
+  msgs.scrollTop=msgs.scrollHeight;
+  setTimeout(()=>{
+    const orb=document.getElementById('ipOrb').innerText;
+    msgs.innerHTML+='<div class="msg"><div class="msg-ip"><div class="msg-av-s">'+orb+'</div><div class="msg-bubble-ip" style="animation:blink 0.4s ease">…</div></div></div>';
+    msgs.scrollTop=msgs.scrollHeight;
+  },600);
+}
+
+/* ── FUNCTIONAL VERSION JS ── */
+const gradeConfigF={
+  primary:{
+    greeting:'早上好，小明小朋友 🌟',
+    note:'小学视图 · phaseCode=primary · 表情签到 + 小星主导',
+    ipOrb:'🤍',ipLabel:'小星',
+    drawerIpAv:'🤍',drawerIpName:'小星',drawerIpSub:'云朵广场的守望者 · 凌晨3点我也在',
+    ipMsg:'嗨小明！今天你选了开心——今天有什么好事？跟小星说说！'
+  },
+  middle:{
+    greeting:'早上好，小明同学 👋',
+    note:'初中视图 · phaseCode=middle · 情绪邻居 + 吉塔主导',
+    ipOrb:'🐼',ipLabel:'吉塔',
+    drawerIpAv:'🐼',drawerIpName:'吉塔',drawerIpSub:'你的情绪守护者 · 随时在线',
+    ipMsg:'早上好小明，你今天选了鸭梨——压力不用撑着，说出来就好了。有什么想聊的？'
+  },
+  high:{
+    greeting:'早上好，高二小明 📚',
+    note:'高中视图 · phaseCode=high · 罗素/生涯 + 三IP全出 · 高考倒计时',
+    ipOrb:'🐳',ipLabel:'罗素',
+    drawerIpAv:'🐳',drawerIpName:'罗素',drawerIpSub:'深海图书馆馆长 · 帮你把问题问对',
+    ipMsg:'早上好小明，今天罗素来了。选科的事想继续聊吗？上次说到文理倾向——'
+  }
+};
+
+function switchGradeF(grade,btn){
+  document.querySelectorAll('#sec-functional .grade-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  const cfg=gradeConfigF[grade];
+  document.getElementById('gradeGreetingF').innerText=cfg.greeting;
+  document.getElementById('gradeNoteF').innerText=cfg.note;
+  ['gf-primary','gf-middle','gf-high'].forEach(cls=>{
+    const show=cls==='gf-'+grade;
+    document.querySelectorAll('#sec-functional .'+cls).forEach(el=>{
+      el.classList.toggle('gshow',show);
+    });
+  });
+  const gk=document.getElementById('gaokaoBlockF');
+  if(gk) gk.style.display='';
+  document.getElementById('ipOrbF').innerText=cfg.ipOrb;
+  document.getElementById('ipLabelF').innerText=cfg.ipLabel;
+  document.getElementById('drawerAvF').innerText=cfg.drawerIpAv;
+  document.getElementById('drawerNameF').innerText=cfg.drawerIpName;
+  document.getElementById('drawerSubF').innerText=cfg.drawerIpSub;
+  document.getElementById('drawerMsgsF').innerHTML='<div class="msg"><div class="msg-ip"><div class="msg-av-s">'+cfg.ipOrb+'</div><div class="msg-bubble-ip">'+cfg.ipMsg+'</div></div></div>';
+  const dotIdx={primary:1,middle:0,high:2};
+  document.querySelectorAll('#sec-functional .ip-dot-s').forEach((d,i)=>d.classList.toggle('active',i===dotIdx[grade]));
+}
+
+function selectNeighborF(el,name,emoji,type){
+  document.querySelectorAll('#checkinCardF .n-chip').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('ipResponseTextF').innerText=neighborResponses[type]||'今天的感受很真实，说说看？';
+  document.getElementById('chipEmojiF').innerText=emoji;
+  document.getElementById('chipTextF').innerText='今天：'+name;
+  setTimeout(()=>{
+    const card=document.getElementById('checkinCardF');
+    card.classList.add('collapsed');
+    document.getElementById('checkinFullF').style.display='none';
+    document.getElementById('checkinChipRowF').style.display='flex';
+  },800);
+}
+
+function reopenCheckinF(){
+  const card=document.getElementById('checkinCardF');
+  card.classList.remove('collapsed');
+  document.getElementById('checkinFullF').style.display='block';
+  document.getElementById('checkinChipRowF').style.display='none';
+}
+
+function selectFaceF(el,name,emoji){
+  document.querySelectorAll('#checkinCardPF .emoji-face').forEach(f=>f.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('primaryResponseTextF').innerText=primaryFaceResponses[name]||'今天的心情很真实，说说看？';
+  document.getElementById('primaryChipEmojiF').innerText=emoji;
+  document.getElementById('primaryChipTextF').innerText='今天：'+name;
+  setTimeout(()=>{
+    const card=document.getElementById('checkinCardPF');
+    card.classList.add('collapsed');
+    document.getElementById('primaryCheckinFullF').style.display='none';
+    document.getElementById('primaryChipRowF').style.display='flex';
+  },800);
+}
+
+function reopenPrimaryCheckinF(){
+  const card=document.getElementById('checkinCardPF');
+  card.classList.remove('collapsed');
+  document.getElementById('primaryCheckinFullF').style.display='block';
+  document.getElementById('primaryChipRowF').style.display='none';
+}
+
+const ipDataF=[
+  {orb:'🐼',label:'吉塔',name:'吉塔',sub:'你的情绪守护者 · 随时在线',msg:'早上好小明，你今天选了鸭梨——压力不用撑着，说出来就好了。有什么想聊的？'},
+  {orb:'🤍',label:'小星',name:'小星',sub:'云朵广场的守望者 · 凌晨3点我也在',msg:'嗨小明，今天选了鸭梨——压力很真实。想随便说说吗？不用逻辑，想到什么说什么。'},
+  {orb:'🐳',label:'罗素',name:'罗素',sub:'深海图书馆馆长 · 帮你把问题问对',msg:'选了鸭梨。鸭梨代表压力——具体是哪种？时间压力、能力压力、还是别人期望的压力？'}
+];
+
+function switchIPF(idx){
+  const d=ipDataF[idx];
+  document.getElementById('ipOrbF').innerText=d.orb;
+  document.getElementById('ipLabelF').innerText=d.label;
+  document.getElementById('drawerAvF').innerText=d.orb;
+  document.getElementById('drawerNameF').innerText=d.name;
+  document.getElementById('drawerSubF').innerText=d.sub;
+  document.querySelectorAll('#sec-functional .ip-dot-s').forEach((dot,i)=>dot.classList.toggle('active',i===idx));
+  const msgs=document.getElementById('drawerMsgsF');
+  msgs.innerHTML='<div class="msg"><div class="msg-ip"><div class="msg-av-s">'+d.orb+'</div><div class="msg-bubble-ip">'+d.msg+'</div></div></div>';
+}
+
+function openDrawerF(){document.getElementById('chatDrawerF').classList.add('open');}
+function closeDrawerF(){document.getElementById('chatDrawerF').classList.remove('open');}
+
+function sendIntentF(text){
+  openDrawerF();
+  setTimeout(()=>addUserMsgF(text),200);
+}
+
+function sendMsgF(){
+  const input=document.getElementById('chatInputF');
+  const text=input.value.trim();
+  if(!text)return;
+  addUserMsgF(text);
+  input.value='';
+}
+
+function addUserMsgF(text){
+  const msgs=document.getElementById('drawerMsgsF');
+  msgs.innerHTML+='<div class="msg msg-user"><div class="msg-bubble-user">'+text+'</div></div>';
+  msgs.scrollTop=msgs.scrollHeight;
+  setTimeout(()=>{
+    const orb=document.getElementById('ipOrbF').innerText;
+    msgs.innerHTML+='<div class="msg"><div class="msg-ip"><div class="msg-av-s">'+orb+'</div><div class="msg-bubble-ip" style="animation:blink 0.4s ease">…</div></div></div>';
+    msgs.scrollTop=msgs.scrollHeight;
+  },600);
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  document.querySelectorAll('#sec-conservative .g-middle').forEach(el=>el.classList.add('gshow'));
+  document.querySelectorAll('#sec-functional .gf-middle').forEach(el=>el.classList.add('gshow'));
+});
+</script>
+
+<div style="text-align:center;padding:24px 0 16px;font-size:11px;color:#94a3b8;">署名已省略</div>
+</body>
+</html>

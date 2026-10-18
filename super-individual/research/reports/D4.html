@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI星球 · 心育模块用户流程图（整合版）</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', sans-serif; background: #f4f6fb; color: #1e293b; line-height: 1.6; }
+
+  .page-header { background: linear-gradient(135deg,#1e3a5f 0%,#2563eb 60%,#7c3aed 100%); color: #fff; padding: 48px 40px 40px; text-align: center; }
+  .page-header h1 { font-size: 28px; font-weight: 700; letter-spacing: 1px; margin-bottom: 10px; }
+  .page-header .subtitle { font-size: 14px; opacity: 0.8; margin-bottom: 20px; }
+  .badges { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+  .badge { background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.3); border-radius: 20px; padding: 5px 14px; font-size: 13px; font-weight: 500; }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 32px 20px 60px; }
+
+  .card { background: #fff; border-radius: 18px; box-shadow: 0 2px 16px rgba(30,58,95,0.08); padding: 28px 32px; margin-bottom: 28px; }
+  .card-sm { padding: 20px 24px; }
+
+  .intro-card { border-left: 5px solid #2563eb; }
+  .intro-card h2 { font-size: 16px; color: #2563eb; margin-bottom: 10px; }
+  .intro-card p { font-size: 14px; color: #475569; line-height: 1.8; }
+  .intro-card .note { background: #fef9c3; border: 1px solid #fde047; border-radius: 8px; padding: 10px 14px; margin-top: 14px; font-size: 13px; color: #713f12; }
+
+  .legend-grid { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 14px; }
+  .legend-item { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+  .legend-swatch { width: 20px; height: 20px; border-radius: 5px; flex-shrink: 0; }
+  .legend-diamond { width: 18px; height: 18px; background: #fbbf24; transform: rotate(45deg); border-radius: 2px; flex-shrink: 0; }
+  .ux-tag-red { background: #ef4444; color: #fff; font-size: 11px; padding: 2px 7px; border-radius: 4px; font-weight: 600; }
+  .ux-tag-blue { background: #3b82f6; color: #fff; font-size: 11px; padding: 2px 7px; border-radius: 4px; font-weight: 600; }
+
+  .flow-section { margin-bottom: 0; }
+  .flow-header { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 18px; }
+  .flow-num { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 800; color: #fff; flex-shrink: 0; }
+  .flow-num-1 { background: #2563eb; }
+  .flow-num-2 { background: #0d9488; }
+  .flow-num-3 { background: #16a34a; }
+  .flow-num-4 { background: #d97706; }
+  .flow-num-5 { background: #94a3b8; }
+  .flow-title { font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 4px; }
+  .flow-subtitle { font-size: 13px; color: #64748b; }
+  .code-evidence { font-size: 11px; background: #f1f5f9; color: #475569; padding: 2px 8px; border-radius: 4px; font-family: monospace; margin-top: 4px; display: inline-block; }
+
+  .flow-diagram { display: flex; flex-wrap: wrap; align-items: center; gap: 0; margin: 18px 0; }
+  .flow-node { display: inline-flex; align-items: center; justify-content: center; padding: 8px 14px; border-radius: 10px; font-size: 12.5px; font-weight: 500; text-align: center; max-width: 140px; min-width: 80px; line-height: 1.4; position: relative; }
+  .fn-user { background: #dbeafe; color: #1e40af; border: 1.5px solid #93c5fd; }
+  .fn-system { background: #ede9fe; color: #5b21b6; border: 1.5px solid #c4b5fd; }
+  .fn-api { background: #ccfbf1; color: #0f766e; border: 1.5px solid #5eead4; }
+  .fn-decision { background: #fef3c7; color: #92400e; border: 1.5px solid #fcd34d; clip-path: polygon(10% 0%,90% 0%,100% 50%,90% 100%,10% 100%,0% 50%); padding: 8px 18px; }
+  .fn-risk { background: #fee2e2; color: #991b1b; border: 1.5px solid #fca5a5; }
+  .fn-end { background: #f0fdf4; color: #166534; border: 1.5px solid #86efac; }
+  .arrow { font-size: 18px; color: #94a3b8; padding: 0 4px; flex-shrink: 0; }
+  .tag-must { background: #ef4444; color: #fff; font-size: 10px; padding: 1px 5px; border-radius: 3px; position: absolute; top: -8px; right: -4px; font-weight: 700; white-space: nowrap; }
+  .tag-obs { background: #3b82f6; color: #fff; font-size: 10px; padding: 1px 5px; border-radius: 3px; position: absolute; top: -8px; right: -4px; font-weight: 700; white-space: nowrap; }
+
+  .branch-wrap { margin: 10px 0 10px 20px; padding: 14px 18px; background: #f8fafc; border-left: 3px solid #e2e8f0; border-radius: 0 10px 10px 0; }
+  .branch-label { font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 8px; }
+  .branch-label.path-a { color: #16a34a; }
+  .branch-label.path-b { color: #dc2626; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 14px; }
+  th { background: #f1f5f9; color: #475569; font-weight: 600; padding: 9px 12px; text-align: left; border-bottom: 2px solid #e2e8f0; }
+  td { padding: 8px 12px; border-bottom: 1px solid #f1f5f9; color: #334155; vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  .tag-p0 { background: #ef4444; color: #fff; font-size: 10px; padding: 1px 6px; border-radius: 3px; font-weight: 700; }
+  .tag-p1 { background: #f97316; color: #fff; font-size: 10px; padding: 1px 6px; border-radius: 3px; font-weight: 700; }
+  .mono { font-family: monospace; font-size: 12px; color: #0f766e; background: #f0fdfa; padding: 1px 5px; border-radius: 3px; }
+
+  .note-box { background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 10px; padding: 14px 18px; margin-top: 14px; font-size: 13px; color: #0c4a6e; }
+  .note-box strong { color: #0369a1; }
+  .note-box.amber { background: #fffbeb; border-color: #fde68a; color: #78350f; }
+  .note-box.amber strong { color: #b45309; }
+  .note-box.green { background: #f0fdf4; border-color: #bbf7d0; color: #14532d; }
+  .note-box.purple { background: #faf5ff; border-color: #e9d5ff; color: #4c1d95; }
+  .note-box.purple strong { color: #6d28d9; }
+
+  .section-title { font-size: 17px; font-weight: 700; color: #1e293b; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; margin-bottom: 16px; }
+
+  .optional { border: 2px dashed #94a3b8; background: #f8fafc; }
+  .warning-banner { background: #fef2f2; border: 1.5px solid #fca5a5; border-radius: 10px; padding: 12px 18px; margin-bottom: 16px; font-size: 13px; color: #991b1b; font-weight: 600; }
+
+  .state-table { background: #f8fafc; border-radius: 10px; overflow: hidden; margin-top: 12px; }
+  .state-table th { background: #e0f2fe; color: #0369a1; }
+
+  .evidence-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 14px; }
+  .evidence-item { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px; }
+  .evidence-item h4 { font-size: 13px; font-weight: 700; color: #0f172a; margin-bottom: 8px; font-family: monospace; }
+  .evidence-item ul { padding-left: 16px; font-size: 12px; color: #475569; line-height: 1.8; }
+
+  .footer { text-align: center; font-size: 12px; color: #94a3b8; padding: 24px; margin-top: 20px; border-top: 1px solid #e2e8f0; }
+
+  @media (max-width: 720px) {
+    .container { padding: 16px 10px 40px; }
+    .card { padding: 18px 14px; }
+    .evidence-grid { grid-template-columns: 1fr; }
+    .page-header { padding: 28px 16px 24px; }
+    .page-header h1 { font-size: 20px; }
+  }
+</style>
+
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="../../assets/archive-report.css?v=20261014e">
+
+<!-- Mobile reading layout; original report content is preserved. -->
+<style id="report-mobile-layout">
+@media screen and (max-width:720px) {
+
+body { overflow-wrap: anywhere; }
+.container,.section,.card,.header,.page-header { min-width:0; max-width:100%; }
+.report-mobile-scroll { display:block !important; width:100%; max-width:100%; min-width:0; overflow-x:auto; overscroll-behavior-x:contain; margin:16px 0; padding-bottom:8px; border:1px solid #dce3ef; border-radius:8px; scrollbar-width:thin; }
+.report-mobile-scroll::before { content:attr(data-scroll-label); display:block; position:sticky; left:0; width:100%; padding:9px 12px; background:#f4f7fc; color:#5f6b7c; font:11px/1.6 'PingFang SC','Microsoft YaHei',sans-serif; text-align:left; }
+.report-mobile-scroll:focus-visible { outline:3px solid #3358df; outline-offset:3px; }
+.report-mobile-scroll>table { min-width:620px; margin:0; }
+.report-mobile-scroll th,.report-mobile-scroll td { overflow-wrap:normal; }
+
+.container { padding:18px 12px 40px; }
+.card { padding:22px 18px; margin-left:12px; margin-right:12px; max-width:calc(100% - 24px); }
+.container .card { margin-left:0; margin-right:0; max-width:100%; }
+.flow-header { gap:12px; }
+.flow-header>div:last-child { min-width:0; }
+.flow-title { font-size:17px; }
+.code-evidence,.mono,.evidence-item h4 { max-width:100%; overflow-wrap:anywhere; }
+.branch-wrap { min-width:0 !important; max-width:100%; margin-left:0; padding:14px 12px; }
+.card div[style*="display:flex"][style*="flex-wrap:wrap"] { display:grid !important; grid-template-columns:minmax(0,1fr); gap:12px !important; }
+.evidence-grid { grid-template-columns:minmax(0,1fr); }
+.evidence-item,.legend-item { min-width:0; }
+.report-mobile-scroll>.flow-diagram { width:max-content; min-width:100%; margin:0; padding:14px 8px 8px; flex-wrap:nowrap; }
+.flow-diagram .flow-node { flex:0 0 auto; }
+.state-table { overflow:visible; }
+}
+</style>
+</head>
+<body>
+<div class="application-archive-note" role="note"><a href="../index.html#doc-D4">← 返回研究资料库</a><strong>Q3研究基础 · 原报告阅读副本</strong><p><b>现状流程与验证边界 · 2026.06.11</b></p><p>历史研究/设计提案；文中评分、预测、预算与排期属于当时的分析或假设，不作为本次已实现业绩。当前采用与状态以成果档案说明为准。</p><p>API 或路由存在不等于完整线上链路已验证；咨询按学校开放条件处理。源文档尾部结构异常保留，未更改原内容。</p><small>原稿：D4_心育模块用户流程图.html</small></div>
+
+
+<div class="page-header">
+  <h1>AI星球 · 心育模块用户流程图（整合版）</h1>
+  <div class="subtitle">D4 · 设计UX版 × APK代码验证版 合并升级</div>
+  <div class="badges">
+    <span class="badge">4条核心流程</span>
+    <span class="badge">真实API端点</span>
+    <span class="badge">UX评测范围</span>
+    <span class="badge">代码验证</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="card intro-card">
+    <h2>关于本文档</h2>
+    <p>本文档合并了两个前序版本：<strong>D4（UX设计评测视角）</strong> 与 <strong>D4b（APK代码验证视角）</strong>，形成完整整合版。流程步骤均已与APK逆向分析的真实API端点及路由对照，节点标注「评测必测」与「观察点」标签，供研究人员直接用于可用性测试。</p>
+    <div class="note">
+      ⚠️ <strong>关于「咨询预约」流程（原D4b Flow 5）：</strong>该功能需学校单独采购，非全量上线，已移至本文档附录（Flow 5 Appendix）。正式评测不将其纳入核心范围。
+    </div>
+  </div>
+
+  </div>
+
+  <!-- FLOW 1 -->
+  <div class="card flow-section">
+    <div class="flow-header">
+      <div class="flow-num flow-num-1">1</div>
+      <div>
+        <div class="flow-title">AI心理筛查 → 报告生成 → 分级干预路径</div>
+        <div class="flow-subtitle">核心评测流程 · 使用科大讯飞情绪模型</div>
+        <div><span class="code-evidence">chunk-1ac55710</span> &nbsp;<span class="code-evidence">aiScreen/*</span></div>
+      </div>
+    </div>
+    <div class="report-mobile-scroll" style="display:contents" role="region" tabindex="0" aria-label="AI心理筛查 → 报告生成 → 分级干预路径 · 流程左右滑动查看" data-scroll-label="AI心理筛查 → 报告生成 → 分级干预路径 · 流程左右滑动查看"><div class="flow-diagram">
+      <div class="flow-node fn-user" style="position:relative;">进入首页<span class="tag-must">评测必测</span></div><div class="arrow">→</div>
+      <div class="flow-node fn-user">点击「心理测评」<br><span style="font-size:10px;color:#6b7280">/startTesting</span></div><div class="arrow">→</div>
+      <div class="flow-node fn-api">麦克风检测<br><span style="font-size:10px">checkLiveSound</span></div><div class="arrow">→</div>
+      <div class="flow-node fn-user" style="position:relative;">逐题作答<span class="tag-obs">观察点</span></div><div class="arrow">→</div>
+      <div class="flow-node fn-api">单题保存<br><span style="font-size:10px">saveAnswerSingle</span></div><div class="arrow">→</div>
+      <div class="flow-node fn-system">完成题目</div><div class="arrow">→</div>
+      <div class="flow-node fn-api">批量提交<br><span style="font-size:10px">saveAnswerAll</span></div><div class="arrow">→</div>
+      <div class="flow-node fn-api">AI情绪分析<br><span style="font-size:10px">pushScreenV2</span></div><div class="arrow">→</div>
+      <div class="flow-node fn-api">生成报告<br><span style="font-size:10px">evalResultList</span></div><div class="arrow">→</div>
+      <div class="flow-node fn-user" style="position:relative;">查看报告<br><span style="font-size:10px">/testReport</span><span class="tag-must">评测必测</span></div>
+    </div></div>
+    <div style="margin-top:16px;font-size:13px;color:#475569;font-weight:600;margin-bottom:8px;">报告后分级路径：</div>
+    <div class="branch-wrap">
+      <div class="branch-label path-a">▶ 路径A：普通风险（Normal）</div>
+      <div class="report-mobile-scroll" style="display:contents" role="region" tabindex="0" aria-label="▶ 路径A：普通风险（Normal） · 流程左右滑动查看" data-scroll-label="▶ 路径A：普通风险（Normal） · 流程左右滑动查看"><div class="flow-diagram">
+        <div class="flow-node fn-system">普通风险结果</div><div class="arrow">→</div>
+        <div class="flow-node fn-user">焦虑处理盒<br><span style="font-size:10px">/worryHandleBox</span></div><div class="arrow">→</div>
+        <div class="flow-node fn-user">放松专区<br><span style="font-size:10px">/musicRelax</span></div><div class="arrow">→</div>
+        <div class="flow-node fn-end">流程结束</div>
+      </div></div>
+    </div>
+    <div class="branch-wrap" style="border-left-color:#dc2626;">
+      <div class="branch-label path-b">▶ 路径B：高风险预警（High-risk）</div>
+      <div class="report-mobile-scroll" style="display:contents" role="region" tabindex="0" aria-label="▶ 路径B：高风险预警（High-risk） · 流程左右滑动查看" data-scroll-label="▶ 路径B：高风险预警（High-risk） · 流程左右滑动查看"><div class="flow-diagram">
+        <div class="flow-node fn-risk">系统预警<br><span style="font-size:10px">escalation</span></div><div class="arrow">→</div>
+        <div class="flow-node fn-system">推送家长微信</div><div class="arrow">→</div>
+        <div class="flow-node fn-system">心理老师<br>收到预警</div><div class="arrow">→</div>
+        <div class="flow-node fn-end">人工介入</div>
+      </div></div>
+    </div>
+    <div style="margin-top:20px;">
+      <div style="font-size:13px;font-weight:700;color:#1e293b;margin-bottom:6px;">Flow 1 涉及的API端点</div>
+      <div class="report-mobile-scroll" style="display:contents" role="region" tabindex="0" aria-label="AI心理筛查 → 报告生成 → 分级干预路径 · 表格左右滑动查看" data-scroll-label="AI心理筛查 → 报告生成 → 分级干预路径 · 表格左右滑动查看"><table>
+        <tr><th>API端点</th><th>功能</th><th>触发节点</th></tr>
+        <tr><td><span class="mono">saveAnswerSingle</span></td><td>逐题实时保存答案</td><td>每道题作答后</td></tr>
+        <tr><td><span class="mono">saveAnswerAll</span></td><td>批量提交全部答案</td><td>完成全部题目</td></tr>
+        <tr><td><span class="mono">pushScreenV2</span></td><td>调用讯飞情绪分析引擎</td><td>提交后后台调用</td></tr>
+        <tr><td><span class="mono">getUserReport / evalResultList</span></td><td>获取/展示报告数据</td><td>报告页加载</td></tr>
+        <tr><td><span class="mono">escalation</span></td><td>高风险预警推送</td><td>风险等级判定后</td></tr>
+      </table></div>
+    </div>
+    <div class="note-box" style="margin-top:16px;">
+      <strong>评测任务建议：</strong>
+      1. 引导用户完成完整筛查，观察麦克风检测步骤的理解度。2. 在逐题作答阶段观察是否有跳题/回退行为。3. 报告页信息密度是否过载（重点观察）。4. 高风险路径预警推送的用户认知清晰度。
+    </div>
+  </div>
+
+  <!-- FLOW 2 -->
+  <div class="card flow-section">
+    <div class="flow-header">
+      <div class="flow-num flow-num-2">2</div>
+      <div>
+        <div class="flow-title">日常情绪打卡 → 心情能量卡 → 放松工具</div>
+        <div class="flow-subtitle">高频每日路径 · signStatus状态机（1~5）</div>
+        <div><span class="code-evidence">chunk-4c40f85a</span> &nbsp;<span class="code-evidence">dailySummary/*</span></div>
+      </div>
+    </div>
+    <div class="report-mobile-scroll" style="display:contents" role="region" tabindex="0" aria-label="日常情绪打卡 → 心情能量卡 → 放松工具 · 流程左右滑动查看" data-scroll-label="日常情绪打卡 → 心情能量卡 → 放松工具 · 流程左右滑动查看"><div class="flow-diagram">
+      <div class="flow-node fn-user">打开App首页</div><div class="arrow">→</div>
+      <div class="flow-node fn-api">系统判断<br>signStatus</div><div class="arrow">→</div>
+      <div class="flow-node fn-decision">signStatus<br>= 1~4？</div>
+    </div></div>
+    <div style="margin-top:12px;display:flex;gap:16px;flex-wrap:wrap;">
+      <div class="branch-wrap" style="flex:1;min-width:220px;border-left-color:#0d9488;">
+        <div class="branch-label" style="color:#0d9488;">▶ YES（1~4）→ 显示打卡入口 /clockIn</div>
+        <div class="report-mobile-scroll" style="display:contents" role="region" tabindex="0" aria-label="▶ YES（1~4）→ 显示打卡入口 /clockIn · 流程左右滑动查看" data-scroll-label="▶ YES（1~4）→ 显示打卡入口 /clockIn · 流程左右滑动查看"><div class="flow-diagram">
+          <div class="flow-node fn-user" style="position:relative;">选择心情<br><span style="font-size:10px">mood:type</span><span class="tag-obs">观察点</span></div><div class="arrow">→</div>
+          <div class="flow-node fn-api">提交打卡<br><span style="font-size:10px">updateDailySummary</span></div><div class="arrow">→</div>
+          <div class="flow-node fn-system">返回<br>signRecordId</div><div class="arrow">→</div>
+          <div class="flow-node fn-user">心情能量卡<br><span style="font-size:10px">/energyCard</span></div>
+        </div></div>
+      </div>
+      <div class="branch-wrap" style="flex:1;min-width:180px;border-left-color:#7c3aed;">
+        <div class="branch-label" style="color:#7c3aed;">▶ NO（signStatus=5）→ /moonCalendar</div>
+        <div class="report-mobile-scroll" style="display:contents" role="region" tabindex="0" aria-label="▶ NO（signStatus=5）→ /moonCalendar · 流程左右滑动查看" data-scroll-label="▶ NO（signStatus=5）→ /moonCalendar · 流程左右滑动查看"><div class="flow-diagram">
+          <div class="flow-node fn-user">月历视图<br><span style="font-size:10px">/moonCalendar</span></div><div class="arrow">→</div>
+          <div class="flow-node fn-system">展示月度<br>打卡记录</div>
+        </div></div>
+      </div>
+    </div>
+    <div style="margin-top:14px;font-size:13px;font-weight:700;color:#1e293b;margin-bottom:8px;">能量卡后续分支：</div>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;">
+      <div class="branch-wrap" style="flex:1;min-width:200px;border-left-color:#f59e0b;">
+        <div class="branch-label" style="color:#b45309;">▶ 心情较差 → 推荐放松内容</div>
+        <div class="report-mobile-scroll" style="display:contents" role="region" tabindex="0" aria-label="▶ 心情较差 → 推荐放松内容 · 流程左右滑动查看" data-scroll-label="▶ 心情较差 → 推荐放松内容 · 流程左右滑动查看"><div class="flow-diagram">
+          <div class="flow-node fn-api">推荐资源<br><span style="font-size:10px">resource/recommend</span></div><div class="arrow">→</div>
+          <div class="flow-node fn-user">放松专区<br><span style="font-size:10px">/musicRelax<br>/readRelax</span></div>
+        </div></div>
+      </div>
+      <div class="branch-wrap" style="flex:1;min-width:200px;border-left-color:#16a34a;">
+        <div class="branch-label" style="color:#15803d;">▶ 心情较好 → 引导分享</div>
+        <div class="report-mobile-scroll" style="display:contents" role="region" tabindex="0" aria-label="▶ 心情较好 → 引导分享 · 流程左右滑动查看" data-scroll-label="▶ 心情较好 → 引导分享 · 流程左右滑动查看"><div class="flow-diagram">
+          <div class="flow-node fn-user">朋友圈分享<br><span style="font-size:10px">/mentalFriendCircle</span></div>
+        </div></div>
+      </div>
+    </div>
+    <div style="margin-top:18px;">
+      <div style="font-size:13px;font-weight:700;color:#1e293b;margin-bottom:6px;">signStatus 状态机说明（5个状态）</div>
+      <div class="report-mobile-scroll" style="display:contents" role="region" tabindex="0" aria-label="日常情绪打卡 → 心情能量卡 → 放松工具 · 表格左右滑动查看" data-scroll-label="日常情绪打卡 → 心情能量卡 → 放松工具 · 表格左右滑动查看"><table class="state-table">
+        <tr><th>状态值</th><th>含义</th><th>入口路由</th><th>展示文案（示意）</th></tr>
+        <tr><td>1</td><td>今日未打卡</td><td>/clockIn</td><td>「今天感觉怎么样？」</td></tr>
+        <tr><td>2</td><td>已打卡·心情良好</td><td>/clockIn（已完成态）</td><td>「你今天状态不错！」</td></tr>
+        <tr><td>3</td><td>已打卡·心情一般</td><td>/clockIn（已完成态）</td><td>「来放松一下吧」</td></tr>
+        <tr><td>4</td><td>已打卡·心情较差</td><td>/clockIn（已完成态）</td><td>「需要和小星聊聊吗？」</td></tr>
+        <tr><td>5</td><td>本月已满打卡</td><td>/moonCalendar</td><td>「查看你的月度心情地图」</td></tr>
+      </table></div>
+    </div>
+    <div style="margin-top:16px;">
+      <div style="font-size:13px;font-weight:700;color:#1e293b;margin-bottom:6px;">Flow 2 涉及的API端点</div>
+      <div class="report-mobile-scroll" style="display:contents" role="region" tabindex="0" aria-label="日常情绪打卡 → 心情能量卡 → 放松工具 · 表格左右滑动查看" data-scroll-label="日常情绪打卡 → 心情能量卡 → 放松工具 · 表格左右滑动查看"><table>
+        <tr><th>API端点</th><th>功能</th></tr>
+        <tr><td><span class="mono">getDailySummary</span></td><td>获取今日打卡状态（signStatus）</td></tr>
+        <tr><td><span class="mono">updateDailySummary</span></td><td>提交心情打卡数据</td></tr>
+        <tr><td><span class="mono">resource/recommend</span></td><td>根据心情返回推荐内容</td></tr>
+        <tr><td><span class="mono">sourceCard/draw</span></td><td>生成心情能量卡图片</td></tr>
+      </table></div>
+    </div>
+    <div class="note-box" style="margin-top:14px;">
+      <strong>评测任务建议：</strong>
+      1. 首次打开App时打卡入口的发现性（findability）。2. 心情选择器的选项颗粒度是否足够（5级 or 更细？）。3. 心情能量卡的分享意愿与操作路径流畅度。
+    </div>
+  </div>
+
+  <!-- FLOW 3 -->
+  <div class="card flow-section">
+    <div class="flow-header">
+      <div class="flow-num flow-num-3">3</div>
+      <div>
+        <div class="flow-title">三IP AI对话完整路径</div>
+        <div class="flow-subtitle">最核心的日常交互 · 学生与小星🤍 / 吉塔🐼 / 罗素🐳 对话</div>
+        <div><span class="code-evidence">studentGptSession/*</span></div>
+      </div>
+    </div>
+    <div class="report-mobile-scroll" style="display:contents" role="region" tabindex="0" aria-label="三IP AI对话完整路径 · 流程左右滑动查看" data-scroll-label="三IP AI对话完整路径 · 流程左右滑动查看"><div class="flow-diagram">
+      <div class="flow-node fn-user">打开App</div><div class="arrow">→</div>
+      <div class="flow-node fn-user">点击悬浮球IP<br>或底部「咨询」Tab</div><div class="arrow">→</div>
+      <div class="flow-node fn-user" style="position:relative;">进入对话界面<br><span style="font-size:10px">/gptChatSessionPage</span><span class="tag-must">评测必测</span></div><div class="arrow">→</div>
+      <div class="flow-node fn-user" style="position:relative;">选择对话IP<br><span style="font-size:10px">小星/吉塔/罗素</span><span class="tag-obs">观察点</span></div><div class="arrow">→</div>
+      <div class="flow-node fn-user">学生发起对话</div><div class="arrow">→</div>
+      <div class="flow-node fn-api">发送消息<br><span style="font-size:10px">studentGptSession/send</span></div><div class="arrow">→</div>
+      <div class="flow-node fn-system">IP语义生成回复</div>
+    </div></div>
+    <div style="margin-top:14px;font-size:13px;font-weight:700;color:#1e293b;margin-bottom:8px;">对话中情绪检测分支：</div>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;">
+      <div class="branch-wrap" style="flex:1;min-width:220px;border-left-color:#dc2626;">
+        <div class="branch-label path-b">▶ 检测到负向情绪词</div>
+        <div class="report-mobile-scroll" style="display:contents" role="region" tabindex="0" aria-label="▶ 检测到负向情绪词 · 流程左右滑动查看" data-scroll-label="▶ 检测到负向情绪词 · 流程左右滑动查看"><div class="flow-diagram">
+          <div class="flow-node fn-decision">负向情绪<br>检测？</div><div class="arrow">→</div>
+          <div class="flow-node fn-system">小星建议<br>切换吉塔🐼</div><div class="arrow">→</div>
+          <div class="flow-node fn-user">学生确认切换</div><div class="arrow">→</div>
+          <div class="flow-node fn-system">吉塔接手对话</div>
+        </div></div>
+      </div>
+      <div class="branch-wrap" style="flex:1;min-width:220px;border-left-color:#16a34a;">
+        <div class="branch-label path-a">▶ 情绪稳定后进入生涯/学习话题</div>
+        <div class="report-mobile-scroll" style="display:contents" role="region" tabindex="0" aria-label="▶ 情绪稳定后进入生涯/学习话题 · 流程左右滑动查看" data-scroll-label="▶ 情绪稳定后进入生涯/学习话题 · 流程左右滑动查看"><div class="flow-diagram">
+          <div class="flow-node fn-system">话题检测<br>（生涯/学业）</div><div class="arrow">→</div>
+          <div class="flow-node fn-system">引入罗素🐳<br>接手对话</div>
+        </div></div>
+      </div>
+    </div>
+    <div style="margin-top:14px;font-size:13px;font-weight:700;color:#1e293b;margin-bottom:8px;">对话结束后：</div>
+    <div class="report-mobile-scroll" style="display:contents" role="region" tabindex="0" aria-label="▶ 情绪稳定后进入生涯/学习话题 · 流程左右滑动查看" data-scroll-label="▶ 情绪稳定后进入生涯/学习话题 · 流程左右滑动查看"><div class="flow-diagram">
+      <div class="flow-node fn-api">保存对话摘要<br><span style="font-size:10px">saveRecord</span></div><div class="arrow">→</div>
+      <div class="flow-node fn-system">写入情绪档案</div><div class="arrow">→</div>
+      <div class="flow-node fn-system">首页显示<br>「今日已和XXX聊过」</div>
+    </div></div>
+    <div style="margin-top:16px;">
+      <div style="font-size:13px;font-weight:700;color:#1e293b;margin-bottom:6px;">Flow 3 涉及的API端点</div>
+      <div class="report-mobile-scroll" style="display:contents" role="region" tabindex="0" aria-label="三IP AI对话完整路径 · 表格左右滑动查看" data-scroll-label="三IP AI对话完整路径 · 表格左右滑动查看"><table>
+        <tr><th>API端点</th><th>功能</th></tr>
+        <tr><td><span class="mono">studentGptSession/send</span></td><td>发送对话消息，获取IP回复</td></tr>
+        <tr><td><span class="mono">studentGptSession/getHistory</span></td><td>获取历史对话记录</td></tr>
+        <tr><td><span class="mono">studentGptSession/saveRecord</span></td><td>保存对话摘要至情绪档案</td></tr>
+      </table></div>
+    </div>
+    <div class="note-box purple" style="margin-top:14px;">
+      <strong>IP切换规则说明（来自D6）：</strong>
+      三个IP各有专属情绪/话题领域。小星🤍 = 情绪陪伴通用入口；吉塔🐼 = 深度情绪疏导（检测到负向词汇时介入）；罗素🐳 = 生涯规划/学业压力专属。切换由系统语义分析触发，学生可手动确认是否切换。
+    </div>
+    <div class="note-box" style="margin-top:10px;">
+      <strong>评测任务建议：</strong>
+      1. IP选择界面的三个角色区分度与选择动机（为什么选这个IP？）。2. 对话轮次中IP人格一致性感知。3. 系统主动建议切换IP时的用户接受度与理解度。
+    </div>
+  </div>
+
+  <!-- FLOW 4 -->
+  <div class="card flow-section">
+    <div class="flow-header">
+      <div class="flow-num flow-num-4">4</div>
+      <div>
+        <div class="flow-title">心理剧场观看与互动路径</div>
+        <div class="flow-subtitle">E2设计提案P0优先级功能 · 月度更新 · 鸭梨🍐担任剧场主持人</div>
+        <div><span class="code-evidence">mentalTheatre/*</span></div>
+      </div>
+    </div>
+    <div class="report-mobile-scroll" style="display:contents" role="region" tabindex="0" aria-label="心理剧场观看与互动路径 · 流程左右滑动查看" data-scroll-label="心理剧场观看与互动路径 · 流程左右滑动查看"><div class="flow-diagram">
+      <div class="flow-node fn-user" style="position:relative;">首页心理剧场Banner<span class="tag-must">评测必测</span></div><div class="arrow">→</div>
+      <div class="flow-node fn-user">点击进入剧场</div><div class="arrow">→</div>
+      <div class="flow-node fn-user" style="position:relative;">选择剧集<br><span style="font-size:10px">本月新剧/历史胶囊</span><span class="tag-obs">观察点</span></div><div class="arrow">→</div>
+      <div class="flow-node fn-user">开始观看</div><div class="arrow">→</div>
+      <div class="flow-node fn-decision">情绪选择<br>节点</div><div class="arrow">→</div>
+      <div class="flow-node fn-user" style="position:relative;">学生做出选择<span class="tag-obs">观察点</span></div><div class="arrow">→</div>
+      <div class="flow-node fn-api">系统记录选择<br>至情绪档案</div><div class="arrow">→</div>
+      <div class="flow-node fn-user">继续观看</div>
+    </div></div>
+    <div style="margin-top:14px;font-size:13px;font-weight:700;color:#1e293b;margin-bottom:8px;">观看完成后：</div>
+    <div class="report-mobile-scroll" style="display:contents" role="region" tabindex="0" aria-label="心理剧场观看与互动路径 · 流程左右滑动查看" data-scroll-label="心理剧场观看与互动路径 · 流程左右滑动查看"><div class="flow-diagram">
+      <div class="flow-node fn-system">观看完成弹窗</div><div class="arrow">→</div>
+      <div class="flow-node fn-decision">用户选择</div>
+    </div></div>
+    <div style="margin-top:8px;display:flex;gap:12px;flex-wrap:wrap;">
+      <div class="branch-wrap" style="flex:1;min-width:160px;">
+        <div class="branch-label" style="color:#2563eb;">▶ 分享感受到朋友圈</div>
+        <div class="report-mobile-scroll" style="display:contents" role="region" tabindex="0" aria-label="▶ 分享感受到朋友圈 · 流程左右滑动查看" data-scroll-label="▶ 分享感受到朋友圈 · 流程左右滑动查看"><div class="flow-diagram"><div class="flow-node fn-user">分享到朋友圈</div></div></div>
+      </div>
+      <div class="branch-wrap" style="flex:1;min-width:160px;border-left-color:#16a34a;">
+        <div class="branch-label" style="color:#15803d;">▶ 和吉塔聊聊这期剧</div>
+        <div class="report-mobile-scroll" style="display:contents" role="region" tabindex="0" aria-label="▶ 和吉塔聊聊这期剧 · 流程左右滑动查看" data-scroll-label="▶ 和吉塔聊聊这期剧 · 流程左右滑动查看"><div class="flow-diagram"><div class="flow-node fn-user">跳转吉塔🐼<br>对话界面</div></div></div>
+      </div>
+      <div class="branch-wrap" style="flex:1;min-width:180px;border-left-color:#7c3aed;">
+        <div class="branch-label" style="color:#7c3aed;">▶ 查看历史档案</div>
+        <div class="report-mobile-scroll" style="display:contents" role="region" tabindex="0" aria-label="▶ 查看历史档案 · 流程左右滑动查看" data-scroll-label="▶ 查看历史档案 · 流程左右滑动查看"><div class="flow-diagram">
+          <div class="flow-node fn-user">历史剧场胶囊<br><span style="font-size:10px">3/4/5月</span></div><div class="arrow">→</div>
+          <div class="flow-node fn-system">历史情绪记录<br>对比当前状态</div>
+        </div></div>
+      </div>
+    </div>
+    <div class="note-box amber" style="margin-top:16px;">
+      <strong>产品护城河说明：</strong>
+      历史剧场 + 情绪记录组合构成不可迁移的数据资产。每月更新的剧集形成使用习惯的时间锚点；历史胶囊中的情绪选择数据构成个人化的心理成长档案，是产品最具差异化的留存机制。
+    </div>
+    <div class="note-box" style="margin-top:10px;">
+      <strong>评测任务建议：</strong>
+      1. Banner的点击率与初次进入动机。2. 情绪选择节点的参与率（是否会跳过？）。3. 观看后弹窗的三选项选择分布。4. 历史档案胶囊的探索意愿。
+    </div>
+  </div>
+
+  <!-- FLOW 5 APPENDIX -->
+  <div class="card flow-section optional">
+    <div class="warning-banner">⚠️ 部分学校功能 — 此流程需学校单独采购，并非全量上线。优先级低，不列入核心评测范围。</div>
+    <div class="flow-header">
+      <div class="flow-num flow-num-5">5</div>
+      <div>
+        <div class="flow-title">【附录】咨询预约 → 心理老师确认路径</div>
+        <div class="flow-subtitle">可选功能 · 仅部分学校开放</div>
+        <div><span class="code-evidence">appointment/*</span> &nbsp;<span style="font-size:11px;color:#94a3b8;">（代码仅发现appointmentCancel，create端点不明确）</span></div>
+      </div>
+    </div>
+    <div class="report-mobile-scroll" style="display:contents" role="region" tabindex="0" aria-label="【附录】咨询预约 → 心理老师确认路径 · 流程左右滑动查看" data-scroll-label="【附录】咨询预约 → 心理老师确认路径 · 流程左右滑动查看"><div class="flow-diagram">
+      <div class="flow-node fn-user">进入咨询预约页</div><div class="arrow">→</div>
+      <div class="flow-node fn-user">选择可用时间槽</div><div class="arrow">→</div>
+      <div class="flow-node fn-api">提交预约<br><span style="font-size:10px">appointment/create?</span></div><div class="arrow">→</div>
+      <div class="flow-node fn-decision">老师确认？</div>
+    </div></div>
+    <div style="margin-top:8px;display:flex;gap:12px;flex-wrap:wrap;">
+      <div class="branch-wrap" style="flex:1;min-width:180px;border-left-color:#16a34a;">
+        <div class="branch-label path-a">▶ 确认 → 学生收到通知 → 线下咨询</div>
+      </div>
+      <div class="branch-wrap" style="flex:1;min-width:180px;border-left-color:#dc2626;">
+        <div class="branch-label path-b">▶ 拒绝/取消 → appointmentCancel → 重新选择</div>
+      </div>
+    </div>
+    <div class="note-box" style="margin-top:12px;">
+      <strong>代码局限性说明：</strong>APK逆向分析中仅发现 <span class="mono">appointmentCancel</span> 端点，预约创建（create）的具体端点路径不明确，无法完整验证预约提交流程。建议在有该功能的学校环境中单独测试。
+    </div>
+  </div>
+
+  <!-- API SUMMARY TABLE -->
+  <div class="card">
+    <div class="section-title">全流程API汇总</div>
+    <div class="report-mobile-scroll" style="display:contents" role="region" tabindex="0" aria-label="【附录】咨询预约 → 心理老师确认路径 · 表格左右滑动查看" data-scroll-label="【附录】咨询预约 → 心理老师确认路径 · 表格左右滑动查看"><table>
+      <tr><th>API端点</th><th>所属流程</th><th>功能描述</th><th>触发时机</th></tr>
+      <tr><td><span class="mono">checkLiveSound</span></td><td>Flow 1</td><td>麦克风环境检测</td><td>进入测评前</td></tr>
+      <tr><td><span class="mono">saveAnswerSingle</span></td><td>Flow 1</td><td>单题保存</td><td>每题作答后</td></tr>
+      <tr><td><span class="mono">saveAnswerAll</span></td><td>Flow 1</td><td>批量提交全部答案</td><td>完成所有题目</td></tr>
+      <tr><td><span class="mono">pushScreenV2</span></td><td>Flow 1</td><td>AI情绪分析（讯飞引擎）</td><td>提交后后台</td></tr>
+      <tr><td><span class="mono">getUserReport / evalResultList</span></td><td>Flow 1</td><td>报告生成与展示</td><td>分析完成后</td></tr>
+      <tr><td><span class="mono">escalation</span></td><td>Flow 1</td><td>高风险预警推送</td><td>风险判定后</td></tr>
+      <tr><td><span class="mono">getDailySummary</span></td><td>Flow 2</td><td>获取打卡状态</td><td>每日打开App</td></tr>
+      <tr><td><span class="mono">updateDailySummary</span></td><td>Flow 2</td><td>提交心情打卡</td><td>选择心情后</td></tr>
+      <tr><td><span class="mono">resource/recommend</span></td><td>Flow 2</td><td>内容推荐</td><td>打卡结果后</td></tr>
+      <tr><td><span class="mono">sourceCard/draw</span></td><td>Flow 2</td><td>生成心情能量卡</td><td>打卡完成</td></tr>
+      <tr><td><span class="mono">studentGptSession/send</span></td><td>Flow 3</td><td>AI对话消息发送</td><td>每次发送消息</td></tr>
+      <tr><td><span class="mono">studentGptSession/getHistory</span></td><td>Flow 3</td><td>历史对话记录</td><td>打开对话页</td></tr>
+      <tr><td><span class="mono">studentGptSession/saveRecord</span></td><td>Flow 3</td><td>对话摘要存档</td><td>对话结束</td></tr>
+      <tr><td><span class="mono">appointmentCancel</span></td><td>Flow 5（附录）</td><td>取消预约（仅此端点有确认）</td><td>取消咨询时</td></tr>
+    </table></div>
+  </div>
+
+  <!-- UX EVALUATION SUMMARY -->
+  <div class="card">
+    <div class="section-title">UX评测范围汇总（4条核心流程）</div>
+    <div class="report-mobile-scroll" style="display:contents" role="region" tabindex="0" aria-label="【附录】咨询预约 → 心理老师确认路径 · 表格左右滑动查看" data-scroll-label="【附录】咨询预约 → 心理老师确认路径 · 表格左右滑动查看"><table>
+      <tr><th>流程</th><th>核心评测任务</th><th>关键观察点</th><th>评测指标</th><th>优先级</th></tr>
+      <tr>
+        <td><strong>Flow 1</strong><br>AI心理筛查</td>
+        <td>完成完整筛查→查看报告</td>
+        <td>麦克风步骤理解度、逐题回退行为、报告信息密度</td>
+        <td>完成率、时长、错误率、满意度</td>
+        <td><span class="tag-p0">P0</span></td>
+      </tr>
+      <tr>
+        <td><strong>Flow 2</strong><br>情绪打卡</td>
+        <td>找到打卡入口→完成打卡→查看能量卡</td>
+        <td>打卡入口发现性、心情选项粒度感知、能量卡分享意愿</td>
+        <td>任务成功率、打卡时长、分享转化率</td>
+        <td><span class="tag-p0">P0</span></td>
+      </tr>
+      <tr>
+        <td><strong>Flow 3</strong><br>IP AI对话</td>
+        <td>选择IP→完成一轮对话→理解IP切换</td>
+        <td>IP选择动机、对话人格一致性感知、切换建议接受度</td>
+        <td>IP选择分布、对话轮数、切换接受率</td>
+        <td><span class="tag-p0">P0</span></td>
+      </tr>
+      <tr>
+        <td><strong>Flow 4</strong><br>心理剧场</td>
+        <td>发现Banner→进入→完成一集→使用互动节点</td>
+        <td>Banner点击率、情绪节点参与率、历史档案探索</td>
+        <td>完播率、节点互动率、历史胶囊访问率</td>
+        <td><span class="tag-p1">P1</span></td>
+      </tr>
+    </table></div>
+  </div>
+
+  <!-- CODE EVIDENCE INDEX -->
+  <div class="card">
+    <div class="section-title">APK代码验证索引</div>
+    <div class="evidence-grid">
+      <div class="evidence-item">
+        <h4>chunk-1ac55710（AI筛查模块）</h4>
+        <ul>
+          <li>路由: /startTesting, /testReport</li>
+          <li>API: saveAnswerSingle, saveAnswerAll</li>
+          <li>API: pushScreenV2（讯飞情绪引擎）</li>
+          <li>API: evalResultList, escalation</li>
+          <li>状态变量: testingStatus, riskLevel</li>
+        </ul>
+      </div>
+      <div class="evidence-item">
+        <h4>chunk-4c40f85a（打卡模块）</h4>
+        <ul>
+          <li>路由: /clockIn, /moonCalendar, /energyCard</li>
+          <li>状态机: signStatus（枚举1~5）</li>
+          <li>API: getDailySummary, updateDailySummary</li>
+          <li>API: resource/recommend, sourceCard/draw</li>
+          <li>字段: mood.type, signRecordId</li>
+        </ul>
+      </div>
+      <div class="evidence-item">
+        <h4>studentGptSession/*（AI对话模块）</h4>
+        <ul>
+          <li>路由: /gptChatSessionPage</li>
+          <li>IP标识: 小星(xiaoxing), 吉塔(jita), 罗素(luosu)</li>
+          <li>API: send, getHistory, saveRecord</li>
+          <li>情绪检测: 负向词汇触发IP切换逻辑</li>
+          <li>字段: sessionId, ipType, emotionScore</li>
+        </ul>
+      </div>
+      <div class="evidence-item">
+        <h4>其他路由与端点</h4>
+        <ul>
+          <li>/worryHandleBox（焦虑处理盒）</li>
+          <li>/musicRelax, /readRelax（放松专区）</li>
+          <li>/mentalFriendCircle（朋友圈）</li>
+          <li>appointment/cancel（预约取消）</li>
+          <li>mentalTheatre/*（剧场，待验证）</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">AI星球 · 心育模块用户流程图（整合版） · D4 · 2026.06.11</div>
+
+
+<div style="text-align:center;padding:24px 0 16px;font-size:11px;color:#94a3b8;">署名已省略</div>
+</body>
+</html>
+
+    <div class="section-title">图例说明</div>
+    <div class="legend-grid">
+      <div class="legend-item"><div class="legend-swatch" style="background:#dbeafe;border:1.5px solid #93c5fd;"></div> 用户操作（蓝色节点）</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:#ede9fe;border:1.5px solid #c4b5fd;"></div> 系统处理（紫色节点）</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:#ccfbf1;border:1.5px solid #5eead4;"></div> API调用（青色节点）</div>
+      <div class="legend-item"><div class="legend-diamond"></div> 决策分支（黄色六边形）</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:#fee2e2;border:1.5px solid #fca5a5;"></div> 风险预警（红色节点）</div>
+      <div class="legend-item"><span class="ux-tag-red">评测必测</span> &nbsp;核心评测任务节点</div>
+      <div class="legend-item"><span class="ux-tag-blue">观察点</span> &nbsp;重点行为观察节点</div>
+    </div>
+  </div>

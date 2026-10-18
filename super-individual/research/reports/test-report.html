@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>减压星球 · 易用性测试分析报告</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', sans-serif;
+  background: #EDE7DA;
+  color: #1F2421;
+  line-height: 1.6;
+  padding: 40px 20px 80px;
+}
+.container { max-width: 920px; margin: 0 auto; }
+
+.page-header { margin-bottom: 28px; }
+.page-header h1 { font-size: 26px; font-weight: 800; margin-bottom: 4px; }
+.page-header p { font-size: 13px; color: #8A8A80; }
+.header-rule { margin-top: 14px; height: 3px; background: linear-gradient(to right, #C8853F, #E2C9A8); border-radius: 2px; }
+
+.card { background: #fff; border-radius: 12px; box-shadow: 0 1px 6px rgba(0,0,0,0.06); overflow: hidden; margin-bottom: 24px; }
+.card-head { background: #2A2723; padding: 12px 20px; }
+.card-head span { font-size: 11px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: #C8853F; }
+.card-body { padding: 22px 24px; }
+
+/* INFO GRID */
+.info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 0; }
+.info-field { display: flex; flex-direction: column; gap: 5px; }
+.info-field label { font-size: 11px; font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase; color: #8A8A80; }
+.info-field input[type="text"], .info-field input[type="date"] {
+  padding: 9px 12px; border: 1px solid #E2D9C8; border-radius: 6px;
+  font-size: 14px; font-family: inherit; color: #1F2421; background: #FDFAF5;
+}
+.info-field input:focus { outline: none; border-color: #C8853F; background: #fff; }
+
+/* SUMMARY SCORES */
+.score-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 16px; }
+.score-box { border-radius: 10px; padding: 18px 20px; text-align: center; }
+.score-box .sb-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
+.score-box .sb-val { font-size: 36px; font-weight: 800; margin-bottom: 3px; }
+.score-box .sb-sub { font-size: 11px; }
+.sb-sus { background: #E8F3EB; border: 1px solid #B8DCBE; }
+.sb-sus .sb-label, .sb-sus .sb-sub { color: #2A7A3A; }
+.sb-sus .sb-val { color: #1A6A2A; }
+.sb-nps { background: #E8F0F8; border: 1px solid #B8CEDE; }
+.sb-nps .sb-label, .sb-nps .sb-sub { color: #1A5A8A; }
+.sb-nps .sb-val { color: #0A4A7A; }
+.sb-comp { background: #FEF0E0; border: 1px solid #E2C9A8; }
+.sb-comp .sb-label, .sb-comp .sb-sub { color: #8A5020; }
+.sb-comp .sb-val { color: #7A4010; }
+
+.score-input { width: 100%; font-size: 32px; font-weight: 800; border: none; background: transparent; text-align: center; font-family: inherit; outline: none; }
+.score-input:focus { background: rgba(200,133,63,0.08); border-radius: 6px; }
+
+/* TABLE */
+.data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.data-table th { background: #2A2723; color: #fff; padding: 10px 13px; text-align: left; font-size: 12px; font-weight: 600; }
+.data-table td { padding: 10px 13px; border-bottom: 1px solid #F0E9DE; vertical-align: middle; }
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:nth-child(even) td { background: #FDFAF5; }
+.data-table input[type="text"] { width: 100%; border: none; background: transparent; font-size: 13px; font-family: inherit; outline: none; padding: 2px 0; }
+.data-table input[type="text"]:focus { background: rgba(200,133,63,0.08); border-radius: 4px; padding: 2px 4px; }
+.result-radio { display: flex; gap: 12px; }
+.result-radio label { display: flex; align-items: center; gap: 4px; font-size: 12px; cursor: pointer; }
+
+/* NPS TALLY */
+.nps-tally { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+.nt-cell { flex: 1; min-width: 70px; text-align: center; padding: 12px 8px; border-radius: 8px; }
+.nt-detract { background: #FDEAEA; border: 1px solid #EABABA; }
+.nt-passive { background: #FEF3D0; border: 1px solid #E8D890; }
+.nt-promote { background: #E8F3EB; border: 1px solid #B0DCBA; }
+.nt-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; }
+.nt-detract .nt-label { color: #B03030; }
+.nt-passive .nt-label { color: #8A6020; }
+.nt-promote .nt-label { color: #2A7A3A; }
+.nt-input { font-size: 20px; font-weight: 800; border: none; background: transparent; text-align: center; width: 100%; font-family: inherit; outline: none; }
+.nt-desc { font-size: 10px; color: #8A8A80; margin-top: 2px; }
+
+/* EMOTION CHART */
+.emo-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 12px; }
+.emo-table th { background: #2A2723; color: #fff; padding: 9px 12px; font-size: 11px; }
+.emo-table td { padding: 9px 12px; border-bottom: 1px solid #F0E9DE; }
+.emo-table input[type="number"] { width: 50px; border: none; background: transparent; font-size: 13px; text-align: center; font-family: inherit; outline: none; padding: 2px 4px; }
+.emo-table input[type="number"]:focus { background: rgba(200,133,63,0.08); border-radius: 4px; }
+.emo-table input[type="text"] { width: 100%; border: none; background: transparent; font-size: 13px; font-family: inherit; outline: none; padding: 2px 0; }
+.emo-table input[type="text"]:focus { background: rgba(200,133,63,0.08); border-radius: 4px; padding: 2px 4px; }
+.emo-avg { font-weight: 700; font-size: 13px; }
+.table-ta { padding: 2px 0 !important; border: none !important; background: transparent !important; border-radius: 0 !important; font-size: 12px !important; min-height: unset !important; resize: none !important; line-height: 1.5 !important; }
+.table-ta:focus { background: rgba(200,133,63,0.08) !important; }
+.emo-pos { color: #2A7A3A; }
+.emo-mid { color: #8A8A80; }
+.emo-neg { color: #B03030; }
+
+/* TEXTAREA */
+textarea { width: 100%; padding: 12px 14px; border: 1px solid #E2D9C8; border-radius: 6px; font-size: 14px; font-family: inherit; color: #1F2421; background: #FDFAF5; resize: vertical; min-height: 80px; line-height: 1.75; }
+textarea:focus { outline: none; border-color: #C8853F; background: #fff; }
+textarea::placeholder { color: #9A9A90; }
+
+/* SVG CHART AREA */
+.chart-wrap { width: 100%; height: 200px; background: #FDFAF5; border: 1px solid #E2D9C8; border-radius: 8px; margin: 12px 0; position: relative; }
+.chart-hint { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); font-size: 12px; color: #B0A898; text-align: center; line-height: 1.8; pointer-events: none; }
+
+.section-title { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #B0A898; margin: 28px 0 12px; padding-bottom: 6px; border-bottom: 1px solid #D8D0C4; }
+.note-row { font-size: 12px; color: #8A8A80; margin-bottom: 12px; line-height: 1.7; }
+.note-row strong { color: #5A5A58; }
+
+.pain-check { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.pain-chip { display: flex; align-items: center; gap: 6px; font-size: 12px; padding: 5px 12px; border-radius: 20px; background: #F8F4EF; border: 1px solid #E2D9C8; cursor: pointer; }
+.pain-chip input[type="checkbox"] { accent-color: #C8853F; }
+.pain-chip.high { background: #FDEAEA; border-color: #EAB8B8; }
+.pain-chip.mid { background: #FEF0E0; border-color: #E2C9A8; }
+.pain-chip.low { background: #E8F0F8; border-color: #B8CEDE; }
+
+.page-footer { text-align: center; font-size: 12px; color: #9A9A90; margin-top: 36px; padding-top: 20px; border-top: 1px solid #D8D0C4; line-height: 1.9; }
+</style>
+
+<link rel="stylesheet" href="../../assets/archive-report.css?v=20261014e">
+<meta name="robots" content="noindex, nofollow">
+</head>
+<body>
+<div class="application-archive-note" role="note"><a href="../index.html#doc-test-report">← 返回研究资料库</a><p>分析报告空模板：用于将原始记录转为问题优先级与产品决策。占位、示例和参考阈值不是实际测试分数；非学生实测结果。</p><small>原稿：07_测试分析报告模板.html</small></div>
+
+<div class="container">
+
+<div class="page-header">
+  <h1>减压星球 · 易用性测试分析报告</h1>
+  <p>测试完成后由分析员填写 · 汇总全部参与者数据 · 用于产品迭代决策</p>
+  <div class="header-rule"></div>
+</div>
+
+<div class="card">
+  <div class="card-head"><span>基本信息</span></div>
+  <div class="card-body">
+    <div class="info-grid">
+      <div class="info-field"><label>测试批次</label><input type="text" placeholder="如：2026年7月第1轮"></div>
+      <div class="info-field"><label>参与人数</label><input type="text" placeholder="如：12人（10–18岁在校学生）"></div>
+      <div class="info-field"><label>测试日期</label><input type="date"></div>
+      <div class="info-field"><label>分析员</label><input type="text" placeholder="姓名"></div>
+      <div class="info-field"><label>App版本</label><input type="text" placeholder="如：AI星球 v1.0.2801"></div>
+      <div class="info-field"><label>测试设备</label><input type="text" placeholder="如：Huawei AGS5Z-W09 / Android 11"></div>
+    </div>
+  </div>
+</div>
+
+<!-- EXECUTIVE SUMMARY -->
+<p class="section-title">综合得分一览</p>
+<div class="score-row">
+  <div class="score-box sb-sus">
+    <div class="sb-label">SUS 可用性</div>
+    <input class="score-input" type="text" placeholder="—" style="color:#1A6A2A;">
+    <div class="sb-sub">行业均值 68 · 优秀 80+</div>
+  </div>
+  <div class="score-box sb-nps">
+    <div class="sb-label">NPS 净推荐值</div>
+    <input class="score-input" type="text" placeholder="—" style="color:#0A4A7A;">
+    <div class="sb-sub">及格 ≥0 · 优秀 ≥30</div>
+  </div>
+  <div class="score-box sb-comp">
+    <div class="sb-label">任务完成率</div>
+    <input class="score-input" type="text" placeholder="—%" style="color:#7A4010;">
+    <div class="sb-sub">Flow 1–7 平均完成率</div>
+  </div>
+</div>
+
+<!-- FLOW COMPLETION TABLE -->
+<div class="card">
+  <div class="card-head"><span>Flow 1–7 完成情况汇总</span></div>
+  <div class="card-body">
+    <p class="note-row" style="margin-bottom:14px;"><strong>完成率</strong> = 成功人数 ÷ 总参与人数 × 100%　·　<strong>中位时长</strong> = 测试录屏回看后核算填入，单位见各行</p>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>场景</th>
+          <th>成功人数</th>
+          <th>需提示</th>
+          <th>失败</th>
+          <th>完成率</th>
+          <th>中位时长</th>
+          <th>主要障碍</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Flow 1 · AI对话入口可达性</td><td><input type="text" placeholder="—"></td><td><input type="text" placeholder="—"></td><td><input type="text" placeholder="—"></td><td><input type="text" placeholder="%"></td><td><input type="text" placeholder="秒"></td><td style="min-width:130px;"><textarea class="table-ta" rows="2" placeholder="观察到的主要卡点"></textarea></td></tr>
+        <tr><td>Flow 2 · 文字输入与对话深度</td><td><input type="text" placeholder="—"></td><td><input type="text" placeholder="—"></td><td><input type="text" placeholder="—"></td><td><input type="text" placeholder="%"></td><td><input type="text" placeholder="秒"></td><td style="min-width:130px;"><textarea class="table-ta" rows="2" placeholder="观察到的主要卡点"></textarea></td></tr>
+        <tr><td>Flow 3 · 三IP认知与切换</td><td><input type="text" placeholder="—"></td><td><input type="text" placeholder="—"></td><td><input type="text" placeholder="—"></td><td><input type="text" placeholder="%"></td><td><input type="text" placeholder="秒"></td><td style="min-width:130px;"><textarea class="table-ta" rows="2" placeholder="观察到的主要卡点"></textarea></td></tr>
+        <tr><td>Flow 4 · 情绪打卡全流程</td><td><input type="text" placeholder="—"></td><td><input type="text" placeholder="—"></td><td><input type="text" placeholder="—"></td><td><input type="text" placeholder="%"></td><td><input type="text" placeholder="分钟"></td><td style="min-width:130px;"><textarea class="table-ta" rows="2" placeholder="观察到的主要卡点"></textarea></td></tr>
+        <tr><td>Flow 5 · 危机响应触发</td><td><input type="text" placeholder="—"></td><td><input type="text" placeholder="—"></td><td><input type="text" placeholder="—"></td><td><input type="text" placeholder="%"></td><td><input type="text" placeholder="秒"></td><td style="min-width:130px;"><textarea class="table-ta" rows="2" placeholder="观察到的主要卡点"></textarea></td></tr>
+        <tr><td>Flow 6 · 对话报告生成与查阅</td><td><input type="text" placeholder="—"></td><td><input type="text" placeholder="—"></td><td><input type="text" placeholder="—"></td><td><input type="text" placeholder="%"></td><td><input type="text" placeholder="分钟"></td><td style="min-width:130px;"><textarea class="table-ta" rows="2" placeholder="观察到的主要卡点"></textarea></td></tr>
+        <tr><td>Flow 7 · 脑之岛训练全流程</td><td><input type="text" placeholder="—"></td><td><input type="text" placeholder="—"></td><td><input type="text" placeholder="—"></td><td><input type="text" placeholder="%"></td><td><input type="text" placeholder="分钟"></td><td style="min-width:130px;"><textarea class="table-ta" rows="2" placeholder="观察到的主要卡点"></textarea></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- SUS ANALYSIS -->
+<div class="card">
+  <div class="card-head"><span>SUS 系统可用性量表 · 数据汇总</span></div>
+  <div class="card-body">
+    <p class="note-row"><strong>计分说明：</strong>奇数题（1,3,5,7,9）：(用户打分 − 1)；偶数题（2,4,6,8,10）：(5 − 用户打分)；10题之和 × 2.5 = SUS 分数（0–100）</p>
+    <table class="emo-table">
+      <thead>
+        <tr>
+          <th>SUS题目</th>
+          <th>正反</th>
+          <th>均值</th>
+          <th>换算分</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>1. 愿意经常使用</td><td>正向</td><td><input id="sus1" type="number" min="1" max="5" step="0.1" placeholder="—"></td><td class="emo-avg emo-pos" id="sus1c">—</td></tr>
+        <tr><td>2. 过于复杂</td><td>反向</td><td><input id="sus2" type="number" min="1" max="5" step="0.1" placeholder="—"></td><td class="emo-avg emo-neg" id="sus2c">—</td></tr>
+        <tr><td>3. 容易使用</td><td>正向</td><td><input id="sus3" type="number" min="1" max="5" step="0.1" placeholder="—"></td><td class="emo-avg emo-pos" id="sus3c">—</td></tr>
+        <tr><td>4. 需要技术帮助</td><td>反向</td><td><input id="sus4" type="number" min="1" max="5" step="0.1" placeholder="—"></td><td class="emo-avg emo-neg" id="sus4c">—</td></tr>
+        <tr><td>5. 功能整合良好</td><td>正向</td><td><input id="sus5" type="number" min="1" max="5" step="0.1" placeholder="—"></td><td class="emo-avg emo-pos" id="sus5c">—</td></tr>
+        <tr><td>6. 不一致之处太多</td><td>反向</td><td><input id="sus6" type="number" min="1" max="5" step="0.1" placeholder="—"></td><td class="emo-avg emo-neg" id="sus6c">—</td></tr>
+        <tr><td>7. 大部分人能快速学会</td><td>正向</td><td><input id="sus7" type="number" min="1" max="5" step="0.1" placeholder="—"></td><td class="emo-avg emo-pos" id="sus7c">—</td></tr>
+        <tr><td>8. 很难用</td><td>反向</td><td><input id="sus8" type="number" min="1" max="5" step="0.1" placeholder="—"></td><td class="emo-avg emo-neg" id="sus8c">—</td></tr>
+        <tr><td>9. 使用时感到自信</td><td>正向</td><td><input id="sus9" type="number" min="1" max="5" step="0.1" placeholder="—"></td><td class="emo-avg emo-pos" id="sus9c">—</td></tr>
+        <tr><td>10. 需要学习很多</td><td>反向</td><td><input id="sus10" type="number" min="1" max="5" step="0.1" placeholder="—"></td><td class="emo-avg emo-neg" id="sus10c">—</td></tr>
+      </tbody>
+    </table>
+    <div class="note-row" style="margin-top:10px;">
+      <strong>SUS总分：</strong>
+      <input id="sus-total" type="text" readonly style="width:80px;border:1px solid #E2D9C8;border-radius:4px;padding:4px 8px;font-size:16px;font-weight:700;text-align:center;background:#FDFAF5;" placeholder="—">
+      &nbsp;分&nbsp;·&nbsp;
+      <input id="sus-grade" type="text" readonly style="width:200px;border:1px solid #E2D9C8;border-radius:4px;padding:4px 8px;font-size:13px;background:#FDFAF5;" placeholder="评级（自动生成）">
+    </div>
+  </div>
+</div>
+
+<!-- NPS ANALYSIS -->
+<div class="card">
+  <div class="card-head"><span>NPS 净推荐值 · 数据分析</span></div>
+  <div class="card-body">
+    <div class="nps-tally">
+      <div class="nt-cell nt-detract">
+        <div class="nt-label">贬损者 (0–6)</div>
+        <input id="nps-detract" class="nt-input" type="number" min="0" placeholder="0">
+        <div class="nt-desc">人数</div>
+      </div>
+      <div class="nt-cell nt-passive">
+        <div class="nt-label">被动者 (7–8)</div>
+        <input id="nps-passive" class="nt-input" type="number" min="0" placeholder="0">
+        <div class="nt-desc">人数</div>
+      </div>
+      <div class="nt-cell nt-promote">
+        <div class="nt-label">推荐者 (9–10)</div>
+        <input id="nps-promote" class="nt-input" type="number" min="0" placeholder="0">
+        <div class="nt-desc">人数</div>
+      </div>
+      <div class="nt-cell" style="background:#F8F4EF;border:1px solid #E2D9C8;">
+        <div class="nt-label" style="color:#5A5A58;">NPS 得分</div>
+        <input id="nps-score" class="nt-input" type="text" readonly placeholder="—" style="color:#C8853F;">
+        <div class="nt-desc">推荐者% − 贬损者%</div>
+      </div>
+    </div>
+    <div class="note-row"><strong>各分数段人数分布：</strong>填写选择该分数的参与者人数</div>
+    <table class="data-table" style="margin-bottom:16px;">
+      <thead>
+        <tr>
+          <th rowspan="2" style="width:44px;"></th>
+          <th colspan="7" style="background:#7A2020;text-align:center;">贬损者（0–6 分）</th>
+          <th colspan="2" style="background:#7A5010;text-align:center;">被动者（7–8 分）</th>
+          <th colspan="2" style="background:#1A6A2A;text-align:center;">推荐者（9–10 分）</th>
+        </tr>
+        <tr>
+          <th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th>
+          <th>7</th><th>8</th><th>9</th><th>10</th>
+        </tr>
+      </thead>
+      <tbody><tr>
+        <td style="font-size:11px;font-weight:700;color:#8A8A80;text-align:center;white-space:nowrap;">人数</td>
+        <td><input type="text" placeholder="—"></td><td><input type="text" placeholder="—"></td>
+        <td><input type="text" placeholder="—"></td><td><input type="text" placeholder="—"></td>
+        <td><input type="text" placeholder="—"></td><td><input type="text" placeholder="—"></td>
+        <td><input type="text" placeholder="—"></td><td><input type="text" placeholder="—"></td>
+        <td><input type="text" placeholder="—"></td><td><input type="text" placeholder="—"></td>
+        <td><input type="text" placeholder="—"></td>
+      </tr></tbody>
+    </table>
+    <div style="font-size:11px;font-weight:700;letter-spacing:.6px;color:#8A8A80;text-transform:uppercase;margin-bottom:8px;">高频推荐理由（9–10分）</div>
+    <textarea placeholder="整理推荐者的主要原因，如：「AI伙伴说的话让我感觉被理解了」「打卡完成感很强」"></textarea>
+    <div style="font-size:11px;font-weight:700;letter-spacing:.6px;color:#8A8A80;text-transform:uppercase;margin:12px 0 8px;">高频不推荐理由（0–6分）</div>
+    <textarea placeholder="整理贬损者的主要原因，如：「不知道从哪里开始用」「AI回复感觉很套路」"></textarea>
+  </div>
+</div>
+
+<!-- EMOTION CURVE DATA -->
+<div class="card">
+  <div class="card-head"><span>情绪曲线 · 触点数据</span></div>
+  <div class="card-body">
+    <p class="note-row">按「开心+1 / 平静 0 / 难受−1」计算各触点平均情绪分，填入下表，再在折线区手绘曲线或另附 Excel 图。</p>
+    <table class="emo-table">
+      <thead>
+        <tr><th>触点</th><th>开心 / 正向（+1）</th><th>平静 / 中性（0）</th><th>难受 / 负向（−1）</th><th>平均分</th><th>主要评价</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>F1 AI对话入口</td><td><input type="number" id="emo1p"></td><td><input type="number" id="emo1m"></td><td><input type="number" id="emo1n"></td><td class="emo-avg emo-mid" id="emo1avg">—</td><td><input type="text" placeholder="关键词"></td></tr>
+        <tr><td>F2 文字对话体验</td><td><input type="number" id="emo2p"></td><td><input type="number" id="emo2m"></td><td><input type="number" id="emo2n"></td><td class="emo-avg emo-mid" id="emo2avg">—</td><td><input type="text" placeholder="关键词"></td></tr>
+        <tr><td>F3 IP认知选择</td><td><input type="number" id="emo3p"></td><td><input type="number" id="emo3m"></td><td><input type="number" id="emo3n"></td><td class="emo-avg emo-mid" id="emo3avg">—</td><td><input type="text" placeholder="关键词"></td></tr>
+        <tr><td>F4 情绪打卡</td><td><input type="number" id="emo4p"></td><td><input type="number" id="emo4m"></td><td><input type="number" id="emo4n"></td><td class="emo-avg emo-mid" id="emo4avg">—</td><td><input type="text" placeholder="关键词"></td></tr>
+        <tr><td>F5 危机响应</td><td><input type="number" id="emo5p"></td><td><input type="number" id="emo5m"></td><td><input type="number" id="emo5n"></td><td class="emo-avg emo-mid" id="emo5avg">—</td><td><input type="text" placeholder="关键词"></td></tr>
+        <tr><td>F6 对话报告</td><td><input type="number" id="emo6p"></td><td><input type="number" id="emo6m"></td><td><input type="number" id="emo6n"></td><td class="emo-avg emo-mid" id="emo6avg">—</td><td><input type="text" placeholder="关键词"></td></tr>
+        <tr><td>F7 脑之岛训练</td><td><input type="number" id="emo7p"></td><td><input type="number" id="emo7m"></td><td><input type="number" id="emo7n"></td><td class="emo-avg emo-mid" id="emo7avg">—</td><td><input type="text" placeholder="关键词"></td></tr>
+      </tbody>
+    </table>
+    <div class="chart-wrap">
+      <div class="chart-hint">情绪曲线图区域<br>将 Excel 情绪曲线截图粘贴至此处，或打印后手绘</div>
+    </div>
+  </div>
+</div>
+
+<!-- HIGH-FREQ PAIN POINTS -->
+<div class="card">
+  <div class="card-head"><span>高频痛点与用户原声</span></div>
+  <div class="card-body">
+    <p class="note-row">勾选本次测试中被多名用户触发的痛点，并在对应方框记录典型原声（≥3人提及即视为高频）。</p>
+    <div class="pain-check">
+      <label class="pain-chip high"><input type="checkbox">P1 首屏无视觉主角</label>
+      <label class="pain-chip high"><input type="checkbox">P2 AI无全局入口</label>
+      <label class="pain-chip high"><input type="checkbox">P3 对话无情感记忆</label>
+      <label class="pain-chip high"><input type="checkbox">P4 无年级内容过滤</label>
+      <label class="pain-chip mid"><input type="checkbox">P5 脑之岛成就不外溢</label>
+      <label class="pain-chip mid"><input type="checkbox">P6 解忧信箱无回执</label>
+      <label class="pain-chip mid"><input type="checkbox">P7 换装与成长割裂</label>
+      <label class="pain-chip mid"><input type="checkbox">P8 星星激励闭环不清</label>
+      <label class="pain-chip low"><input type="checkbox">P9 免责声明削弱信任</label>
+      <label class="pain-chip low"><input type="checkbox">P10 咨询Tab功能极弱</label>
+      <label class="pain-chip low"><input type="checkbox">P11 任务缺乏情境推送</label>
+    </div>
+    <p class="section-title" style="margin-top:22px;">典型用户原声记录</p>
+    <textarea style="min-height:120px;" placeholder="格式建议：[用户03·14岁·Flow4] 「找不到合适的情绪词，感觉都不是我的感受」&#10;[用户07·16岁·Flow1] 「切到脑之岛就找不到AI了，以为它消失了」"></textarea>
+  </div>
+</div>
+
+<!-- PRIORITY RECOMMENDATIONS -->
+<div class="card">
+  <div class="card-head"><span>优先级更新建议</span></div>
+  <div class="card-body">
+    <p class="note-row" style="margin-bottom:16px;">基于本次测试数据，对原有P1–P11优先级给出调整建议。</p>
+    <table class="data-table">
+      <thead>
+        <tr><th>痛点</th><th>原优先级</th><th>本次触发率</th><th>建议调整</th><th>调整理由</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>P1 首屏视觉主角</td><td>高</td><td><input type="text" placeholder="%"></td>
+          <td><div class="result-radio"><label><input type="radio" name="adj1"> 升级</label><label><input type="radio" name="adj1"> 不变</label><label><input type="radio" name="adj1"> 降级</label></div></td>
+          <td><input type="text" placeholder="理由"></td></tr>
+        <tr><td>P2 AI全局入口</td><td>高</td><td><input type="text" placeholder="%"></td>
+          <td><div class="result-radio"><label><input type="radio" name="adj2"> 升级</label><label><input type="radio" name="adj2"> 不变</label><label><input type="radio" name="adj2"> 降级</label></div></td>
+          <td><input type="text" placeholder="理由"></td></tr>
+        <tr><td>P3 对话情感记忆</td><td>高</td><td><input type="text" placeholder="%"></td>
+          <td><div class="result-radio"><label><input type="radio" name="adj3"> 升级</label><label><input type="radio" name="adj3"> 不变</label><label><input type="radio" name="adj3"> 降级</label></div></td>
+          <td><input type="text" placeholder="理由"></td></tr>
+        <tr><td>P4 年级内容过滤</td><td>高</td><td><input type="text" placeholder="%"></td>
+          <td><div class="result-radio"><label><input type="radio" name="adj4"> 升级</label><label><input type="radio" name="adj4"> 不变</label><label><input type="radio" name="adj4"> 降级</label></div></td>
+          <td><input type="text" placeholder="理由"></td></tr>
+      </tbody>
+      <tbody id="new-pain-tbody">
+        <tr>
+          <td><input type="text" placeholder="描述新发现的问题"></td>
+          <td>—</td><td>—</td>
+          <td><div class="result-radio"><label><input type="radio" name="adj_n1"> 新增高</label><label><input type="radio" name="adj_n1"> 新增中</label></div></td>
+          <td><div style="display:flex;gap:6px;align-items:center;"><input type="text" placeholder="调整理由" style="flex:1;min-width:0;"><button onclick="removeNewPain(this)" style="flex-shrink:0;width:22px;height:22px;border:none;background:#FDEAEA;color:#B03030;border-radius:50%;cursor:pointer;font-size:16px;line-height:1;padding:0;font-family:inherit;">×</button></div></td>
+        </tr>
+      </tbody>
+    </table>
+    <button onclick="addNewPain()" style="margin-top:10px;font-size:12px;padding:5px 16px;border:1px dashed #C8853F;border-radius:20px;background:#FEF8F0;color:#8A5020;cursor:pointer;font-family:inherit;">＋ 新增痛点行</button>
+    <p class="section-title" style="margin-top:22px;">综合分析与迭代建议</p>
+    <textarea style="min-height:100px;" placeholder="综合SUS、NPS、情绪曲线、任务完成率，给出本轮测试的关键结论和建议迭代方向"></textarea>
+  </div>
+</div>
+
+<div class="page-footer">
+  减压星球 · 易用性测试分析报告 · 基于 AI星球 v1.0.2801<br>
+  本报告由测试团队填写，供产品迭代决策参考 · 2026年7月
+</div>
+
+</div>
+<script>
+// ── SUS 自动计算 ──
+(function() {
+  const ODD  = [1,3,5,7,9];   // 正向题：换算分 = 均值 - 1
+  const EVEN = [2,4,6,8,10];  // 反向题：换算分 = 5 - 均值
+
+  function susGrade(score) {
+    if (score >= 90) return score + ' 分 · 优秀（A+，超越98%同类产品）';
+    if (score >= 80) return score + ' 分 · 良好（B，超越行业均值）';
+    if (score >= 68) return score + ' 分 · 可接受（C，达到行业均值68）';
+    if (score >= 51) return score + ' 分 · 较差（D，低于均值，需重点改进）';
+    return score + ' 分 · 不可用（F，需立即优化）';
+  }
+
+  function calcSUS() {
+    let sum = 0, filled = 0;
+    for (let i = 1; i <= 10; i++) {
+      const val = parseFloat(document.getElementById('sus' + i).value);
+      const cell = document.getElementById('sus' + i + 'c');
+      if (isNaN(val) || val < 1 || val > 5) {
+        cell.textContent = '—'; continue;
+      }
+      const converted = ODD.includes(i) ? val - 1 : 5 - val;
+      cell.textContent = converted.toFixed(2);
+      sum += converted; filled++;
+    }
+    const totalEl = document.getElementById('sus-total');
+    const gradeEl = document.getElementById('sus-grade');
+    if (filled === 10) {
+      const score = Math.round(sum * 2.5 * 10) / 10;
+      totalEl.value = score;
+      gradeEl.value = susGrade(score);
+      totalEl.style.color = score >= 80 ? '#1A6A2A' : score >= 68 ? '#C8853F' : '#C04040';
+    } else {
+      totalEl.value = '';
+      gradeEl.value = filled > 0 ? '填完10题后自动评级' : '';
+    }
+  }
+
+  for (let i = 1; i <= 10; i++) {
+    document.getElementById('sus' + i).addEventListener('input', calcSUS);
+  }
+})();
+
+// ── NPS 自动计算 ──
+(function() {
+  function calcNPS() {
+    const d = parseInt(document.getElementById('nps-detract').value) || 0;
+    const pa = parseInt(document.getElementById('nps-passive').value) || 0;
+    const pr = parseInt(document.getElementById('nps-promote').value) || 0;
+    const total = d + pa + pr;
+    const scoreEl = document.getElementById('nps-score');
+    if (total === 0) { scoreEl.value = ''; return; }
+    const score = Math.round((pr / total - d / total) * 100);
+    scoreEl.value = score;
+    scoreEl.style.color = score >= 30 ? '#1A6A2A' : score >= 0 ? '#C8853F' : '#C04040';
+  }
+  ['nps-detract','nps-passive','nps-promote'].forEach(id => {
+    document.getElementById(id).addEventListener('input', calcNPS);
+  });
+})();
+// ── 情绪曲线 平均分自动计算 ──
+(function(){
+  function calcEmo(r){
+    var p=parseInt(document.getElementById('emo'+r+'p').value)||0;
+    var m=parseInt(document.getElementById('emo'+r+'m').value)||0;
+    var n=parseInt(document.getElementById('emo'+r+'n').value)||0;
+    var tot=p+m+n;
+    var cell=document.getElementById('emo'+r+'avg');
+    if(tot===0){cell.textContent='—';cell.className='emo-avg emo-mid';return;}
+    var avg=(p-n)/tot;
+    cell.textContent=avg.toFixed(2);
+    cell.className='emo-avg '+(avg>=0.2?'emo-pos':avg<=-0.2?'emo-neg':'emo-mid');
+  }
+  for(var r=1;r<=7;r++){
+    (function(row){['p','m','n'].forEach(function(t){
+      var el=document.getElementById('emo'+row+t);
+      if(el)el.addEventListener('input',function(){calcEmo(row);});
+    });})(r);
+  }
+})();
+
+// ── 新增痛点 动态行 ──
+var _np=2;
+function addNewPain(){
+  var tb=document.getElementById('new-pain-tbody');
+  var n=_np++;
+  var tr=document.createElement('tr');
+  tr.innerHTML='<td><input type="text" placeholder="描述新发现的问题" style="width:100%;border:none;background:transparent;font-size:13px;font-family:inherit;outline:none;padding:2px 0;"></td>'
+    +'<td>—</td><td>—</td>'
+    +'<td><div class="result-radio"><label><input type="radio" name="adj_n'+n+'"> 新增高</label><label><input type="radio" name="adj_n'+n+'"> 新增中</label></div></td>'
+    +'<td><div style="display:flex;gap:6px;align-items:center;"><input type="text" placeholder="调整理由" style="flex:1;min-width:0;border:none;background:transparent;font-size:13px;font-family:inherit;outline:none;padding:2px 0;"><button onclick="removeNewPain(this)" style="flex-shrink:0;width:22px;height:22px;border:none;background:#FDEAEA;color:#B03030;border-radius:50%;cursor:pointer;font-size:16px;line-height:1;padding:0;font-family:inherit;">×</button></div></td>';
+  tb.appendChild(tr);
+}
+function removeNewPain(btn){
+  var tb=document.getElementById('new-pain-tbody');
+  if(tb.rows.length<=1)return;
+  btn.closest('tr').remove();
+}
+</script>
+</body>
+</html>

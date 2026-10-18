@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>减压星球 × 产品体验设计提案</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'PingFang SC','Noto Sans SC',sans-serif; background:#07080f; color:#e2e8f0; line-height:1.75; }
+
+/* ── HERO ── */
+.hero {
+  min-height:100vh; display:flex; flex-direction:column;
+  justify-content:center; align-items:center; text-align:center;
+  background:
+    radial-gradient(ellipse at 30% 30%, rgba(99,102,241,0.2) 0%, transparent 55%),
+    radial-gradient(ellipse at 75% 65%, rgba(20,184,166,0.14) 0%, transparent 50%),
+    radial-gradient(ellipse at 55% 10%, rgba(251,191,36,0.1) 0%, transparent 40%),
+    radial-gradient(ellipse at 10% 80%, rgba(244,114,182,0.1) 0%, transparent 45%),
+    #07080f;
+  padding:80px 40px; position:relative; overflow:hidden;
+}
+.star-field {
+  position:absolute; inset:0; pointer-events:none;
+  background-image:
+    radial-gradient(1px 1px at 8% 12%,  rgba(255,255,255,0.45) 0%, transparent 100%),
+    radial-gradient(1px 1px at 22% 38%, rgba(255,255,255,0.3)  0%, transparent 100%),
+    radial-gradient(1px 1px at 38% 6%,  rgba(255,255,255,0.5)  0%, transparent 100%),
+    radial-gradient(1px 1px at 58% 22%, rgba(255,255,255,0.3)  0%, transparent 100%),
+    radial-gradient(2px 2px at 70% 55%, rgba(251,191,36,0.6)   0%, transparent 100%),
+    radial-gradient(1px 1px at 82% 18%, rgba(255,255,255,0.5)  0%, transparent 100%),
+    radial-gradient(1px 1px at 88% 78%, rgba(255,255,255,0.3)  0%, transparent 100%),
+    radial-gradient(1px 1px at 14% 72%, rgba(255,255,255,0.4)  0%, transparent 100%),
+    radial-gradient(1px 1px at 46% 88%, rgba(255,255,255,0.3)  0%, transparent 100%),
+    radial-gradient(2px 2px at 30% 55%, rgba(167,139,250,0.4)  0%, transparent 100%);
+}
+.hero-badge {
+  display:inline-flex; align-items:center; gap:8px;
+  background:rgba(99,102,241,0.12); border:1px solid rgba(99,102,241,0.3);
+  border-radius:100px; padding:6px 18px; font-size:12px; font-weight:700;
+  color:#a5b4fc; margin-bottom:32px; letter-spacing:1px;
+}
+.hero h1 {
+  font-size:64px; font-weight:900; line-height:1.05; margin-bottom:20px;
+  background:linear-gradient(135deg,#ffffff 0%,#fde68a 30%,#a78bfa 65%,#5eead4 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+}
+.hero-sub { font-size:17px; color:#64748b; max-width:680px; line-height:1.9; margin-bottom:48px; }
+.hero-pills { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
+.pill {
+  background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1);
+  border-radius:100px; padding:6px 16px; font-size:12px; font-weight:700; color:#94a3b8;
+}
+
+/* ── NAV ── */
+.sticky-nav {
+  position:sticky; top:0; z-index:100;
+  background:rgba(7,8,15,0.97); backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(255,255,255,0.05);
+  display:flex; justify-content:center; overflow-x:auto;
+}
+.sticky-nav a {
+  display:block; padding:14px 16px; font-size:11px; font-weight:700;
+  color:#334155; text-decoration:none; white-space:nowrap;
+  border-bottom:2px solid transparent; transition:all 0.2s; letter-spacing:.3px;
+}
+.sticky-nav a:hover { color:#a5b4fc; border-bottom-color:#6366f1; }
+
+/* ── WRAP ── */
+.wrap { padding:72px 40px; max-width:1080px; margin:0 auto; }
+.s-eyebrow { font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:2px; margin-bottom:10px; }
+.s-title { font-size:34px; font-weight:900; color:#f1f5f9; margin-bottom:10px; line-height:1.2; }
+.s-sub { font-size:14px; color:#64748b; margin-bottom:40px; max-width:700px; line-height:1.9; }
+
+/* ── PROPOSAL CARD ── */
+.proposal {
+  border-radius:20px; padding:36px; margin-bottom:32px; position:relative; overflow:hidden;
+}
+.proposal-header { display:flex; align-items:flex-start; gap:16px; margin-bottom:24px; }
+.proposal-icon { font-size:44px; flex-shrink:0; line-height:1; }
+.proposal-meta {}
+.proposal-label { font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:2px; margin-bottom:6px; }
+.proposal-title { font-size:22px; font-weight:900; color:#f1f5f9; margin-bottom:6px; line-height:1.2; }
+.proposal-tagline { font-size:14px; line-height:1.7; }
+
+.impact-row { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:20px 0; }
+.impact-item {
+  background:rgba(255,255,255,0.04); border-radius:10px; padding:14px;
+  border-left:3px solid; text-align:left;
+}
+.impact-item .ii-label { font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:1px; margin-bottom:4px; }
+.impact-item .ii-body { font-size:12px; color:#94a3b8; line-height:1.6; }
+
+.flow-block { margin:20px 0; }
+.flow-title { font-size:12px; font-weight:800; color:#94a3b8; text-transform:uppercase; letter-spacing:1px; margin-bottom:12px; }
+.flow-steps { display:flex; flex-direction:column; gap:0; }
+.flow-step { display:flex; gap:12px; }
+.flow-dot-wrap { display:flex; flex-direction:column; align-items:center; width:20px; flex-shrink:0; }
+.flow-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; margin-top:5px; }
+.flow-vline { flex:1; width:2px; background:rgba(255,255,255,0.06); min-height:14px; margin:2px 0; }
+.flow-content { flex:1; padding-bottom:14px; }
+.flow-step-name { font-size:13px; font-weight:800; color:#e2e8f0; margin-bottom:2px; }
+.flow-step-desc { font-size:12px; color:#64748b; line-height:1.6; }
+
+.mockup-block {
+  background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.07);
+  border-radius:14px; padding:20px 24px; margin:20px 0;
+}
+.mockup-title { font-size:11px; font-weight:800; color:#475569; text-transform:uppercase; letter-spacing:1px; margin-bottom:14px; }
+.mockup-chat { display:flex; flex-direction:column; gap:8px; }
+.mc-bubble {
+  max-width:80%; padding:10px 14px; border-radius:12px; font-size:13px; line-height:1.6;
+}
+.mc-bubble.user { align-self:flex-end; background:rgba(99,102,241,0.2); color:#c4b5fd; border-radius:12px 12px 2px 12px; }
+.mc-bubble.ip { align-self:flex-start; background:rgba(255,255,255,0.06); color:#e2e8f0; border-radius:12px 12px 12px 2px; }
+.mc-label { font-size:10px; font-weight:700; margin-bottom:4px; }
+
+.before-after { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:20px 0; }
+.ba-block { border-radius:12px; padding:18px; }
+.ba-block.before { background:rgba(239,68,68,0.06); border:1px solid rgba(239,68,68,0.15); }
+.ba-block.after { background:rgba(34,197,94,0.06); border:1px solid rgba(34,197,94,0.15); }
+.ba-label { font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; }
+.ba-label.before { color:#f87171; }
+.ba-label.after { color:#4ade80; }
+.ba-body { font-size:13px; color:#94a3b8; line-height:1.7; }
+
+.complexity-bar { display:flex; align-items:center; gap:12px; margin:16px 0; }
+.cb-label { font-size:11px; font-weight:800; color:#64748b; width:80px; flex-shrink:0; }
+.cb-track { flex:1; height:6px; background:rgba(255,255,255,0.06); border-radius:3px; overflow:hidden; }
+.cb-fill { height:100%; border-radius:3px; }
+.cb-text { font-size:11px; font-weight:700; width:60px; text-align:right; flex-shrink:0; }
+
+/* ── PROPOSAL COLOR THEMES ── */
+.p-yellow  { background:linear-gradient(135deg,rgba(251,191,36,0.07) 0%,rgba(251,191,36,0.03) 100%); border:1px solid rgba(251,191,36,0.18); }
+.p-teal    { background:linear-gradient(135deg,rgba(20,184,166,0.07) 0%,rgba(20,184,166,0.03) 100%); border:1px solid rgba(20,184,166,0.18); }
+.p-indigo  { background:linear-gradient(135deg,rgba(99,102,241,0.08) 0%,rgba(99,102,241,0.03) 100%); border:1px solid rgba(99,102,241,0.2); }
+.p-orange  { background:linear-gradient(135deg,rgba(249,115,22,0.07) 0%,rgba(249,115,22,0.03) 100%); border:1px solid rgba(249,115,22,0.18); }
+.p-pink    { background:linear-gradient(135deg,rgba(244,114,182,0.07) 0%,rgba(244,114,182,0.03) 100%); border:1px solid rgba(244,114,182,0.18); }
+
+/* ── PRIORITY TABLE ── */
+.priority-table { width:100%; border-collapse:collapse; margin-top:32px; }
+.priority-table th { background:rgba(255,255,255,0.04); color:#94a3b8; padding:12px 16px; text-align:left; font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.5px; }
+.priority-table td { padding:14px 16px; border-bottom:1px solid rgba(255,255,255,0.04); font-size:13px; color:#94a3b8; vertical-align:top; }
+.priority-table tr:last-child td { border-bottom:none; }
+.priority-table tr:hover td { background:rgba(255,255,255,0.02); }
+
+.tag { display:inline-block; border-radius:5px; padding:2px 9px; font-size:11px; font-weight:700; }
+.tag-high   { background:rgba(34,197,94,0.15);  color:#4ade80; }
+.tag-mid    { background:rgba(251,191,36,0.15);  color:#fbbf24; }
+.tag-low    { background:rgba(148,163,184,0.15); color:#94a3b8; }
+.tag-quick  { background:rgba(99,102,241,0.15);  color:#a5b4fc; }
+
+.footnote { font-size:11px; color:#334155; font-style:italic; margin-top:20px; }
+</style>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="../../assets/archive-report.css?v=20261014e">
+</head>
+<body>
+<div class="application-archive-note" role="note"><a href="../index.html#doc-E2">← 返回研究资料库</a><strong>Q3研究基础 · 原报告阅读副本</strong><p><b>叙事体验提案 · 2026.06.11</b></p><p>历史研究/设计提案；文中评分、预测、预算与排期属于当时的分析或假设，不作为本次已实现业绩。当前采用与状态以成果档案说明为准。</p><p>共鸣、参与度与表达门槛的效果属于假设；推荐、成长解锁、家长可见性和危机机制并非当前已实现能力。</p><small>原稿：E2_减压星球×产品体验设计提案.html</small></div>
+
+
+<section class="hero">
+  <div class="star-field"></div>
+  <div class="hero-badge">🪐 AI星球 · Doc 17 · 减压星球 × 产品体验设计提案</div>
+  <h1>世界观不只是<br>背景故事</h1>
+  <p class="hero-sub">减压星球 family 不应该只住在心理剧场里。<br>五个设计提案，让这套世界观渗透进 app 的每一个功能层——<br>从情绪打卡到危机预警，从勋章墙到私密日记，从认知训练到留存机制。</p>
+  <div class="hero-pills">
+    <span class="pill">🎭 情绪打卡重设计</span>
+    <span class="pill">🏆 成就叙事化</span>
+    <span class="pill">📓 私密情绪日记</span>
+    <span class="pill">🗺️ 脑之岛叙事层</span>
+    <span class="pill">🛡️ 软化危机信号</span>
+  </div>
+</section>
+
+<nav class="sticky-nav">
+  <a href="#p1">① 情绪打卡</a>
+  <a href="#p2">② 成就叙事</a>
+  <a href="#p3">③ 私密日记</a>
+  <a href="#p4">④ 脑之岛叙事</a>
+  <a href="#p5">⑤ 危机软化</a>
+  <a href="#summary">⑥ 优先级</a>
+</nav>
+
+<!-- ══════════════════════════════════════════
+     提案一：情绪打卡重设计
+═══════════════════════════════════════════ -->
+<section id="p1" style="background:#0a0c16; padding:72px 0;">
+<div class="wrap">
+  <div class="s-eyebrow" style="color:#fbbf24;">Proposal 01 · 情绪打卡重设计</div>
+  <div class="s-title">「今天你最像哪个邻居？」</div>
+  <div class="s-sub">把抽象的情绪 emoji 选择，变成选「一个和自己处境相似的角色」——从填表变成自我认知。</div>
+
+  <div class="proposal p-yellow">
+
+    <div class="proposal-header">
+      <div class="proposal-icon">🍐</div>
+      <div class="proposal-meta">
+        <div class="proposal-label" style="color:#fbbf24;">核心洞察</div>
+        <div class="proposal-title">情绪不是抽象的，是具体的处境</div>
+        <div class="proposal-tagline" style="color:#92400e;">「今天有点烦」→ 不如「今天有点像小炎，情绪来了就收不住」<br>选角色比选 emoji 门槛更低，共鸣更深，也更容易让吉塔说出对的话。</div>
+      </div>
+    </div>
+
+    <div class="before-after">
+      <div class="ba-block before">
+        <div class="ba-label before">现状 · 情绪 emoji 打卡</div>
+        <div class="ba-body">😊 😐 😔 😰 😤<br>五个抽象表情，学生对着它们想半天，然后随便点一个。打完了，什么都没发生。</div>
+      </div>
+      <div class="ba-block after">
+        <div class="ba-label after">升级 · 邻居视角打卡</div>
+        <div class="ba-body">「今天你最像哪个邻居？」<br>🍐 噗噗（压力很大）· 🦉 阿眠（睡不着焦虑）· 🦔 小刺（不想见人）· 🦥 拖拖（做不下去）· 🦁 小炎（情绪控制不住）· 🐰 皮皮（很在意别人眼光）<br><br>选完之后，对应的 IP 出来回应——不是「今天心情怎么样」，是「今天碰上什么了」。</div>
+      </div>
+    </div>
+
+    <div class="flow-block">
+      <div class="flow-title">交互流程</div>
+      <div class="flow-steps">
+        <div class="flow-step">
+          <div class="flow-dot-wrap"><div class="flow-dot" style="background:#fbbf24;"></div><div class="flow-vline"></div></div>
+          <div class="flow-content">
+            <div class="flow-step-name">打卡卡片展开</div>
+            <div class="flow-step-desc">首页情绪打卡卡片，6个邻居头像排成一排，下方显示名字和一句话状态描述。可以多选（「今天有点像噗噗也有点像阿眠」）。</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-dot-wrap"><div class="flow-dot" style="background:#fbbf24;"></div><div class="flow-vline"></div></div>
+          <div class="flow-content">
+            <div class="flow-step-name">IP 感知响应</div>
+            <div class="flow-step-desc">选了「小炎」→ 吉塔出来说：「情绪来得快，不是你的错。你现在愿意说说是什么引出来了吗？」<br>选了「阿眠」→ 吉塔说：「脑子停不下来的感觉，我懂。今天想试试睡前清空吗？」<br>每个邻居对应吉塔/小星的不同开场话，精准接住当下状态。</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-dot-wrap"><div class="flow-dot" style="background:#fbbf24;"></div><div class="flow-vline"></div></div>
+          <div class="flow-content">
+            <div class="flow-step-name">首页内容实时重排</div>
+            <div class="flow-step-desc">选了拖拖 → 首页推「试试番茄钟」+「罗素陪我拆任务」；选了阿眠 → 推「4-7-8呼吸法」+「睡前放松音频」。情绪驱动内容推荐，从选邻居那一刻开始生效。</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-dot-wrap"><div class="flow-dot" style="background:#fbbf24;"></div></div>
+          <div class="flow-content">
+            <div class="flow-step-name">邻居出现频率积累</div>
+            <div class="flow-step-desc">学生档案里记录「最近30天各邻居出现次数」，形成情绪模式图谱。家长端可见（模糊化）；心理老师端可见详细，用于早期识别。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mockup-block">
+      <div class="mockup-title">对话示例 · 学生选了「小炎」之后</div>
+      <div class="mockup-chat">
+        <div style="font-size:11px;color:#475569;margin-bottom:6px;">系统感知：学生今日选择了小炎（情绪爆发），吉塔响应</div>
+        <div class="mc-bubble ip"><div class="mc-label" style="color:#5eead4;">🐼 吉塔</div>今天情绪来得有点猛？不用解释，我就是想先问一下——你现在还在那个状态里，还是已经有点平了？</div>
+        <div class="mc-bubble user">还有点在</div>
+        <div class="mc-bubble ip"><div class="mc-label" style="color:#5eead4;">🐼 吉塔</div>好，那先别急着分析。能告诉我大概是什么让它出来的吗？一句话就行，或者随便说。</div>
+        <div class="mc-bubble user">和我妈吵架了，感觉她根本不听我说话</div>
+        <div class="mc-bubble ip"><div class="mc-label" style="color:#5eead4;">🐼 吉塔</div>「她不听」——这个感觉很重。不是因为你说错了，是因为被忽略了。那种难受，比吵架本身更难受。</div>
+      </div>
+    </div>
+
+    <div class="impact-row">
+      <div class="impact-item" style="border-color:#fbbf24;">
+        <div class="ii-label" style="color:#fbbf24;">留存影响</div>
+        <div class="ii-body">打卡从「填表」变成「被接住」，每日打卡的情感价值大幅提升，带动次日回访率</div>
+      </div>
+      <div class="impact-item" style="border-color:#fbbf24;">
+        <div class="ii-label" style="color:#fbbf24;">数据价值</div>
+        <div class="ii-body">邻居选择频率形成情绪模式档案，比单纯 emoji 数据更有心理画像价值</div>
+      </div>
+      <div class="impact-item" style="border-color:#fbbf24;">
+        <div class="ii-label" style="color:#fbbf24;">IP 激活</div>
+        <div class="ii-body">三主 IP 的差异化能力得到最高频的展示场景，世界观每天都在被感知</div>
+      </div>
+    </div>
+
+    <div class="complexity-bar">
+      <div class="cb-label">开发复杂度</div>
+      <div class="cb-track"><div class="cb-fill" style="width:30%;background:#4ade80;"></div></div>
+      <div class="cb-text" style="color:#4ade80;">低</div>
+    </div>
+    <div class="complexity-bar">
+      <div class="cb-label">产品价值</div>
+      <div class="cb-track"><div class="cb-fill" style="width:92%;background:#fbbf24;"></div></div>
+      <div class="cb-text" style="color:#fbbf24;">极高</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     提案二：成就叙事化
+═══════════════════════════════════════════ -->
+<section id="p2" style="background:#07080f; padding:72px 0;">
+<div class="wrap">
+  <div class="s-eyebrow" style="color:#5eead4;">Proposal 02 · 勋章墙叙事化</div>
+  <div class="s-title">解锁勋章 = 帮助了某个邻居</div>
+  <div class="s-sub">现在的勋章是功能性的——「完成3次AI对话」。升级后，每枚勋章背后是一个故事：你不只是在完成任务，你在帮某个邻居走过他的难题。</div>
+
+  <div class="proposal p-teal">
+
+    <div class="proposal-header">
+      <div class="proposal-icon">🏆</div>
+      <div class="proposal-meta">
+        <div class="proposal-label" style="color:#5eead4;">核心洞察</div>
+        <div class="proposal-title">进度变成关系，关系产生情感黏性</div>
+        <div class="proposal-tagline" style="color:#0f766e;">「连续打卡7天」是一个指标。<br>「连续7天，小刺终于第一次从泡泡里探出了头」是一个故事。<br>故事比数字更难忘，也更不舍得断掉。</div>
+      </div>
+    </div>
+
+    <div style="margin:24px 0;">
+      <div class="flow-title">勋章叙事对照表</div>
+      <table style="width:100%;border-collapse:collapse;font-size:13px;margin-top:8px;">
+        <tr style="background:rgba(255,255,255,0.04);">
+          <th style="padding:10px 14px;text-align:left;color:#64748b;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;">原始勋章描述</th>
+          <th style="padding:10px 14px;text-align:left;color:#64748b;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;">升级后叙事</th>
+          <th style="padding:10px 14px;text-align:left;color:#64748b;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;">关联邻居</th>
+        </tr>
+        <tr style="border-top:1px solid rgba(255,255,255,0.05);">
+          <td style="padding:12px 14px;color:#64748b;">完成3次AI对话</td>
+          <td style="padding:12px 14px;color:#e2e8f0;">噗噗的第一次倾诉——他终于说出了那件憋着的事</td>
+          <td style="padding:12px 14px;color:#fbbf24;">🍐 噗噗</td>
+        </tr>
+        <tr style="border-top:1px solid rgba(255,255,255,0.05);">
+          <td style="padding:12px 14px;color:#64748b;">连续打卡7天</td>
+          <td style="padding:12px 14px;color:#e2e8f0;">小刺探出头来了——她第一次在减压星球说了「你好」</td>
+          <td style="padding:12px 14px;color:#7dd3fc;">🦔 小刺</td>
+        </tr>
+        <tr style="border-top:1px solid rgba(255,255,255,0.05);">
+          <td style="padding:12px 14px;color:#64748b;">完成一次呼吸练习</td>
+          <td style="padding:12px 14px;color:#e2e8f0;">阿眠睡着了一次——他说这是他最近睡得最香的一觉</td>
+          <td style="padding:12px 14px;color:#a5b4fc;">🦉 阿眠</td>
+        </tr>
+        <tr style="border-top:1px solid rgba(255,255,255,0.05);">
+          <td style="padding:12px 14px;color:#64748b;">完成一次心理测评</td>
+          <td style="padding:12px 14px;color:#e2e8f0;">拖拖今天迈出了第一步——他说「开始了就没那么可怕了」</td>
+          <td style="padding:12px 14px;color:#86efac;">🦥 拖拖</td>
+        </tr>
+        <tr style="border-top:1px solid rgba(255,255,255,0.05);">
+          <td style="padding:12px 14px;color:#64748b;">完成10次脑之岛训练</td>
+          <td style="padding:12px 14px;color:#e2e8f0;">小炎学会了暂停三秒——他说上次没有先开口，等了一下，什么都不一样了</td>
+          <td style="padding:12px 14px;color:#fb923c;">🦁 小炎</td>
+        </tr>
+        <tr style="border-top:1px solid rgba(255,255,255,0.05);">
+          <td style="padding:12px 14px;color:#64748b;">使用解忧信箱</td>
+          <td style="padding:12px 14px;color:#e2e8f0;">皮皮抬起了耳朵——她写下了一件自己喜欢做的事，不是别人觉得她好看不好看的事</td>
+          <td style="padding:12px 14px;color:#f9a8d4;">🐰 皮皮</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="mockup-block">
+      <div class="mockup-title">解锁勋章的弹窗体验（升级后）</div>
+      <div style="background:rgba(20,184,166,0.08);border:1px solid rgba(20,184,166,0.2);border-radius:16px;padding:20px;text-align:center;max-width:320px;margin:0 auto;">
+        <div style="font-size:48px;margin-bottom:12px;">🦔</div>
+        <div style="font-size:16px;font-weight:900;color:#f1f5f9;margin-bottom:6px;">小刺探出头来了</div>
+        <div style="font-size:13px;color:#64748b;line-height:1.7;margin-bottom:16px;">你连续7天都来了。小刺看着你，今天第一次说了一声「你好」——她的刺，好像软了一点点。</div>
+        <div style="font-size:11px;color:#0d9488;background:rgba(20,184,166,0.12);border-radius:8px;padding:8px 12px;">解锁「小刺的第一声问好」纪念勋章 🦔</div>
+      </div>
+    </div>
+
+    <div class="impact-row">
+      <div class="impact-item" style="border-color:#5eead4;">
+        <div class="ii-label" style="color:#5eead4;">留存影响</div>
+        <div class="ii-body">「关系不能断」的心理比「任务打卡」更强力——断了7天等于「把小刺关回泡泡里了」</div>
+      </div>
+      <div class="impact-item" style="border-color:#5eead4;">
+        <div class="ii-label" style="color:#5eead4;">世界观渗透</div>
+        <div class="ii-body">每次解锁勋章就是一次接触世界观的机会，邻居们不再只活在心理剧场里</div>
+      </div>
+      <div class="impact-item" style="border-color:#5eead4;">
+        <div class="ii-label" style="color:#5eead4;">朋友圈价值</div>
+        <div class="ii-body">叙事化的勋章更值得分享——「我帮小刺探出头了」比「连续打卡7天」有得多</div>
+      </div>
+    </div>
+
+    <div class="complexity-bar">
+      <div class="cb-label">开发复杂度</div>
+      <div class="cb-track"><div class="cb-fill" style="width:20%;background:#4ade80;"></div></div>
+      <div class="cb-text" style="color:#4ade80;">极低</div>
+    </div>
+    <div class="complexity-bar">
+      <div class="cb-label">产品价值</div>
+      <div class="cb-track"><div class="cb-fill" style="width:85%;background:#5eead4;"></div></div>
+      <div class="cb-text" style="color:#5eead4;">高</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     提案三：私密情绪日记
+═══════════════════════════════════════════ -->
+<section id="p3" style="background:#0a0c16; padding:72px 0;">
+<div class="wrap">
+  <div class="s-eyebrow" style="color:#a78bfa;">Proposal 03 · 私密情绪日记</div>
+  <div class="s-title">噗噗的日记，也是你的日记</div>
+  <div class="s-sub">每期心理剧场结尾，噗噗翻开日记写下今天的事。这个动作是一个引导——你也可以写，不公开，不评分，只属于你自己。</div>
+
+  <div class="proposal p-indigo">
+
+    <div class="proposal-header">
+      <div class="proposal-icon">📓</div>
+      <div class="proposal-meta">
+        <div class="proposal-label" style="color:#a78bfa;">核心洞察</div>
+        <div class="proposal-title">积累下来的日记是最不舍得删掉的东西</div>
+        <div class="proposal-tagline" style="color:#4c1d95;">现在 app 没有私人记录功能。所有情绪数据都在系统里，但不在用户手里。<br>一本只属于自己的日记，是留存锚点中最难迁移的一个。</div>
+      </div>
+    </div>
+
+    <div class="flow-block">
+      <div class="flow-title">日记功能设计</div>
+      <div class="flow-steps">
+        <div class="flow-step">
+          <div class="flow-dot-wrap"><div class="flow-dot" style="background:#a78bfa;"></div><div class="flow-vline"></div></div>
+          <div class="flow-content">
+            <div class="flow-step-name">噗噗引导入口</div>
+            <div class="flow-step-desc">心理剧场每集结尾彩蛋：噗噗翻开日记，写下一句话。动画结束后弹出「你也写一写？」——点进去就是私密日记页面，不强制。</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-dot-wrap"><div class="flow-dot" style="background:#a78bfa;"></div><div class="flow-vline"></div></div>
+          <div class="flow-content">
+            <div class="flow-step-name">日记 = 真正的私密空间</div>
+            <div class="flow-step-desc">纯文字输入，无评分，无公开选项，无老师/家长可见权限。明确告知学生：「这里只有你能看」。<br>这是对《个人信息保护法》用户权利的主动落实，也是最能建立信任的设计决策。</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-dot-wrap"><div class="flow-dot" style="background:#a78bfa;"></div><div class="flow-vline"></div></div>
+          <div class="flow-content">
+            <div class="flow-step-name">情绪回顾：「上个月的你」</div>
+            <div class="flow-step-desc">每月第一天，小星出来说：「上个月你写了 X 篇日记，有一篇是——」然后摘取一段。<br>不是分析，不是报告，就是让学生和过去的自己重新见一面。</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-dot-wrap"><div class="flow-dot" style="background:#a78bfa;"></div></div>
+          <div class="flow-content">
+            <div class="flow-step-name">毕业礼：情绪成长集</div>
+            <div class="flow-step-desc">高三学生毕业时，可以导出自己的情绪日记集（PDF）——三年的记录，变成一本属于自己的成长档案。这是任何竞品都没有的留存时刻。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.2);border-radius:12px;padding:20px 24px;margin:20px 0;">
+      <div style="font-size:12px;font-weight:800;color:#a5b4fc;margin-bottom:10px;">⚠️ 与危机干预系统的边界</div>
+      <div style="font-size:13px;color:#64748b;line-height:1.8;">
+        日记内容<b style="color:#e2e8f0;">默认不进入危机检测</b>——这是用户信任的底线，不能破。<br>
+        例外：学生可以主动勾选「让吉塔看看这篇」，此时吉塔会在下次对话中提及，但不会通知老师/家长。<br>
+        唯有在 AI 对话中（而非日记）出现危机关键词，才触发三级干预流程。<br>
+        <span style="font-size:11px;color:#334155;">依据：《个人信息保护法》第十三条·知情同意原则</span>
+      </div>
+    </div>
+
+    <div class="impact-row">
+      <div class="impact-item" style="border-color:#a78bfa;">
+        <div class="ii-label" style="color:#a78bfa;">留存锚点</div>
+        <div class="ii-body">积累的日记是迁移成本最高的数据资产——删 app 就等于失去所有记录</div>
+      </div>
+      <div class="impact-item" style="border-color:#a78bfa;">
+        <div class="ii-label" style="color:#a78bfa;">信任建立</div>
+        <div class="ii-body">「真正的私密空间」是青少年愿意真实使用的前提，伪私密比没有更有害</div>
+      </div>
+      <div class="impact-item" style="border-color:#a78bfa;">
+        <div class="ii-label" style="color:#a78bfa;">情感峰值</div>
+        <div class="ii-body">毕业导出、月度回顾是产品生命周期里最高情感价值的时刻</div>
+      </div>
+    </div>
+
+    <div class="complexity-bar">
+      <div class="cb-label">开发复杂度</div>
+      <div class="cb-track"><div class="cb-fill" style="width:40%;background:#fbbf24;"></div></div>
+      <div class="cb-text" style="color:#fbbf24;">中</div>
+    </div>
+    <div class="complexity-bar">
+      <div class="cb-label">产品价值</div>
+      <div class="cb-track"><div class="cb-fill" style="width:95%;background:#a78bfa;"></div></div>
+      <div class="cb-text" style="color:#a78bfa;">极高</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     提案四：脑之岛叙事层
+═══════════════════════════════════════════ -->
+<section id="p4" style="background:#07080f; padding:72px 0;">
+<div class="wrap">
+  <div class="s-eyebrow" style="color:#fb923c;">Proposal 04 · 脑之岛叙事层</div>
+  <div class="s-title">迷雾森林叠加进脑之岛地图</div>
+  <div class="s-sub">脑之岛现在是认知训练地图，和心理健康没有情感连接。让迷雾森林作为一个叙事层叠加其上——完成训练，就是在为邻居们推开一扇新门。</div>
+
+  <div class="proposal p-orange">
+
+    <div class="proposal-header">
+      <div class="proposal-icon">🗺️</div>
+      <div class="proposal-meta">
+        <div class="proposal-label" style="color:#fb923c;">核心洞察</div>
+        <div class="proposal-title">同样是训练任务，叙事感完全不一样</div>
+        <div class="proposal-tagline" style="color:#7c2d12;">「完成注意力训练第3关」是一个功能指标。<br>「阿眠藏在迷雾里，完成这一关就能找到他」是一个探险。<br>内容没变，动机变了。</div>
+      </div>
+    </div>
+
+    <div class="flow-block">
+      <div class="flow-title">地图叙事层设计</div>
+      <div class="flow-steps">
+        <div class="flow-step">
+          <div class="flow-dot-wrap"><div class="flow-dot" style="background:#fb923c;"></div><div class="flow-vline"></div></div>
+          <div class="flow-content">
+            <div class="flow-step-name">迷雾区域叠加</div>
+            <div class="flow-step-desc">脑之岛地图边缘有一片「迷雾森林」区域，初始被迷雾覆盖。迷雾里隐约能看到发光的小屋轮廓——那就是邻居们的家。</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-dot-wrap"><div class="flow-dot" style="background:#fb923c;"></div><div class="flow-vline"></div></div>
+          <div class="flow-content">
+            <div class="flow-step-name">训练 = 驱散迷雾</div>
+            <div class="flow-step-desc">每完成一个认知训练模块，迷雾散去一块，露出小屋的一部分。完成全部该月训练，小屋完全亮起，门打开，邻居走出来——这就是本月「邻居解锁」动画。</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-dot-wrap"><div class="flow-dot" style="background:#fb923c;"></div><div class="flow-vline"></div></div>
+          <div class="flow-content">
+            <div class="flow-step-name">邻居家 = 训练成就展示</div>
+            <div class="flow-step-desc">点进邻居的小屋，可以看到：你帮他解锁的那一天的日期、当时的一句话、以及你在这个训练模块的成绩变化。「小屋」是叙事化的个人成就档案。</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-dot-wrap"><div class="flow-dot" style="background:#fb923c;"></div></div>
+          <div class="flow-content">
+            <div class="flow-step-name">罗素的解说旁白</div>
+            <div class="flow-step-desc">进入脑之岛时，罗素悬浮出现：「阿眠的小屋还差两个训练就能亮了，要去试试吗？」把罗素的「引导」角色和脑之岛任务自然绑定。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="impact-row">
+      <div class="impact-item" style="border-color:#fb923c;">
+        <div class="ii-label" style="color:#fb923c;">脑之岛问题解决</div>
+        <div class="ii-body">现有痛点：新用户进入不知道该干什么。叙事层提供了明确的动机：「去找到那个邻居」</div>
+      </div>
+      <div class="impact-item" style="border-color:#fb923c;">
+        <div class="ii-label" style="color:#fb923c;">功能串联</div>
+        <div class="ii-body">心理剧场（认识邻居）→ 脑之岛（解锁邻居）→ 勋章墙（纪念邻居）三个模块形成完整闭环</div>
+      </div>
+      <div class="impact-item" style="border-color:#fb923c;">
+        <div class="ii-label" style="color:#fb923c;">训练完成率</div>
+        <div class="ii-body">「还差两关就能找到阿眠」比进度条更有驱动力，预期提升训练完成率</div>
+      </div>
+    </div>
+
+    <div class="complexity-bar">
+      <div class="cb-label">开发复杂度</div>
+      <div class="cb-track"><div class="cb-fill" style="width:55%;background:#fbbf24;"></div></div>
+      <div class="cb-text" style="color:#fbbf24;">中高</div>
+    </div>
+    <div class="complexity-bar">
+      <div class="cb-label">产品价值</div>
+      <div class="cb-track"><div class="cb-fill" style="width:88%;background:#fb923c;"></div></div>
+      <div class="cb-text" style="color:#fb923c;">高</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     提案五：危机信号软化
+═══════════════════════════════════════════ -->
+<section id="p5" style="background:#0a0c16; padding:72px 0;">
+<div class="wrap">
+  <div class="s-eyebrow" style="color:#f9a8d4;">Proposal 05 · 危机信号软化</div>
+  <div class="s-title">用选邻居替代直接的心理问询</div>
+  <div class="s-sub">让学生主动承认「我情绪很糟糕」很难，门槛高，防御强。但说「今天我有点像小炎/阿眠」门槛低得多——数据价值却是一样的。</div>
+
+  <div class="proposal p-pink">
+
+    <div class="proposal-header">
+      <div class="proposal-icon">🛡️</div>
+      <div class="proposal-meta">
+        <div class="proposal-label" style="color:#f9a8d4;">核心洞察</div>
+        <div class="proposal-title">角色代入让敏感自我披露变得可能</div>
+        <div class="proposal-tagline" style="color:#831843;">「你有没有想过伤害自己？」会触发防御和否认。<br>「今天你最像哪个邻居」收集的是同一种信息，但方式完全不同。<br>行为模式比直接问卷更真实，也更有心理测量价值。</div>
+      </div>
+    </div>
+
+    <div class="flow-block">
+      <div class="flow-title">危机预警逻辑（后台）</div>
+      <div class="flow-steps">
+        <div class="flow-step">
+          <div class="flow-dot-wrap"><div class="flow-dot" style="background:#f9a8d4;"></div><div class="flow-vline"></div></div>
+          <div class="flow-content">
+            <div class="flow-step-name">第一层：邻居选择频率监测</div>
+            <div class="flow-step-desc">后台追踪：连续5天以上选择小炎（情绪失控）或阿眠（睡眠焦虑）→ 系统静默升级关注级别，不通知学生，吉塔在下次打卡时多问一句：「最近这种感觉持续多久了？」</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-dot-wrap"><div class="flow-dot" style="background:#f9a8d4;"></div><div class="flow-vline"></div></div>
+          <div class="flow-content">
+            <div class="flow-step-name">第二层：多信号叠加判断</div>
+            <div class="flow-step-desc">高风险邻居频繁出现 + AI对话中出现预警关键词 + 连续三天未打开 app（回避）→ 升级至 L2 预警，心理老师端出现黄色提醒。</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-dot-wrap"><div class="flow-dot" style="background:#f9a8d4;"></div></div>
+          <div class="flow-content">
+            <div class="flow-step-name">第三层：不等危机出现再干预</div>
+            <div class="flow-step-desc">传统做法是等到对话中出现「想消失」才介入，已经太晚。邻居选择模式是更早期的信号——在学生还没意识到自己需要帮助之前，系统就已经在关注了。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:rgba(244,114,182,0.07);border:1px solid rgba(244,114,182,0.2);border-radius:12px;padding:20px 24px;margin:20px 0;">
+      <div style="font-size:12px;font-weight:800;color:#f9a8d4;margin-bottom:12px;">邻居与情绪风险的对应关系</div>
+      <table style="width:100%;border-collapse:collapse;font-size:12px;">
+        <tr style="background:rgba(255,255,255,0.03);">
+          <th style="padding:8px 12px;text-align:left;color:#64748b;font-weight:700;">邻居</th>
+          <th style="padding:8px 12px;text-align:left;color:#64748b;font-weight:700;">对应心理主题</th>
+          <th style="padding:8px 12px;text-align:left;color:#64748b;font-weight:700;">连续出现 → 关注信号</th>
+          <th style="padding:8px 12px;text-align:left;color:#64748b;font-weight:700;">系统响应</th>
+        </tr>
+        <tr style="border-top:1px solid rgba(255,255,255,0.04);">
+          <td style="padding:8px 12px;color:#e2e8f0;">🦉 阿眠</td>
+          <td style="padding:8px 12px;color:#64748b;">睡眠焦虑</td>
+          <td style="padding:8px 12px;color:#fbbf24;">连续4天+</td>
+          <td style="padding:8px 12px;color:#64748b;">吉塔延伸对话 + 推送睡眠工具</td>
+        </tr>
+        <tr style="border-top:1px solid rgba(255,255,255,0.04);">
+          <td style="padding:8px 12px;color:#e2e8f0;">🦁 小炎</td>
+          <td style="padding:8px 12px;color:#64748b;">情绪失控</td>
+          <td style="padding:8px 12px;color:#fbbf24;">连续3天+</td>
+          <td style="padding:8px 12px;color:#64748b;">吉塔主动询问 + 排查是否有安全风险</td>
+        </tr>
+        <tr style="border-top:1px solid rgba(255,255,255,0.04);">
+          <td style="padding:8px 12px;color:#e2e8f0;">🦔 小刺</td>
+          <td style="padding:8px 12px;color:#64748b;">社交回避</td>
+          <td style="padding:8px 12px;color:#fbbf24;">连续5天+</td>
+          <td style="padding:8px 12px;color:#64748b;">心理老师端黄色提醒</td>
+        </tr>
+        <tr style="border-top:1px solid rgba(255,255,255,0.04);">
+          <td style="padding:8px 12px;color:#e2e8f0;">🍐 噗噗</td>
+          <td style="padding:8px 12px;color:#64748b;">压力积累</td>
+          <td style="padding:8px 12px;color:#ef4444;">连续7天+ 且无正向邻居</td>
+          <td style="padding:8px 12px;color:#64748b;">多信号叠加分析，必要时升 L2</td>
+        </tr>
+      </table>
+    </div>
+
+    <div style="background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.15);border-radius:10px;padding:16px 20px;margin-top:12px;font-size:13px;color:#94a3b8;line-height:1.8;">
+      <b style="color:#f87171;">⚠️ 重要说明</b>：邻居选择数据的使用需在用户协议中明确告知（「我们可能根据你的使用状态，为你提供额外的支持」），不能在用户不知情的情况下将选择行为用于风险判断。此设计需专业心理咨询顾问审核评估方案有效性。
+    </div>
+
+    <div class="impact-row" style="margin-top:20px;">
+      <div class="impact-item" style="border-color:#f9a8d4;">
+        <div class="ii-label" style="color:#f9a8d4;">干预时效</div>
+        <div class="ii-body">从「危机出现才发现」提前到「情绪模式异常早期识别」，干预窗口更宽</div>
+      </div>
+      <div class="impact-item" style="border-color:#f9a8d4;">
+        <div class="ii-label" style="color:#f9a8d4;">防御降低</div>
+        <div class="ii-body">学生不需要主动「求助」，角色代入让真实状态的表达成为自然行为</div>
+      </div>
+      <div class="impact-item" style="border-color:#f9a8d4;">
+        <div class="ii-label" style="color:#f9a8d4;">合规结合</div>
+        <div class="ii-body">邻居选择 + 对话关键词的多维信号比单一问卷更符合心理健康筛查的科学依据</div>
+      </div>
+    </div>
+
+    <div class="complexity-bar">
+      <div class="cb-label">开发复杂度</div>
+      <div class="cb-track"><div class="cb-fill" style="width:50%;background:#fbbf24;"></div></div>
+      <div class="cb-text" style="color:#fbbf24;">中</div>
+    </div>
+    <div class="complexity-bar">
+      <div class="cb-label">产品价值</div>
+      <div class="cb-track"><div class="cb-fill" style="width:96%;background:#f9a8d4;"></div></div>
+      <div class="cb-text" style="color:#f9a8d4;">极高</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     优先级汇总
+═══════════════════════════════════════════ -->
+<section id="summary" style="background:#0f172a; padding:72px 0;">
+<div class="wrap">
+  <div class="s-eyebrow" style="color:#94a3b8;">Priority Summary · 实施优先级</div>
+  <div class="s-title">五个提案的落地顺序</div>
+  <div class="s-sub">按开发成本低、产品价值高排序——前两个不需要新功能，只需要改文案和交互设计。</div>
+
+  <table class="priority-table">
+    <tr>
+      <th>提案</th>
+      <th>影响范围</th>
+      <th>开发成本</th>
+      <th>优先级</th>
+      <th>关键依赖</th>
+    </tr>
+    <tr>
+      <td style="color:#f1f5f9;font-weight:700;">② 成就叙事化</td>
+      <td>勋章墙 · 弹窗文案</td>
+      <td><span class="tag tag-high">极低</span> 改文案即可</td>
+      <td><span class="tag tag-quick">立即可做</span></td>
+      <td>无需新开发，只需要文案团队 + 世界观定稿</td>
+    </tr>
+    <tr>
+      <td style="color:#f1f5f9;font-weight:700;">① 情绪打卡重设计</td>
+      <td>首页打卡 · IP响应 · 内容推荐</td>
+      <td><span class="tag tag-high">低</span> 改交互组件</td>
+      <td><span class="tag tag-high">P0 · 高优</span></td>
+      <td>邻居角色形象定稿 · 吉塔/小星对应话术库</td>
+    </tr>
+    <tr>
+      <td style="color:#f1f5f9;font-weight:700;">③ 私密情绪日记</td>
+      <td>新功能 · 首页入口 · 月度回顾</td>
+      <td><span class="tag tag-mid">中</span> 新增功能模块</td>
+      <td><span class="tag tag-high">P0 · 高优</span></td>
+      <td>隐私协议更新 · 数据存储方案 · 导出功能</td>
+    </tr>
+    <tr>
+      <td style="color:#f1f5f9;font-weight:700;">⑤ 危机信号软化</td>
+      <td>后台算法 · 老师端预警</td>
+      <td><span class="tag tag-mid">中</span> 后台规则引擎</td>
+      <td><span class="tag tag-mid">P1 · 中优</span></td>
+      <td>心理咨询顾问审核 · 用户协议告知条款</td>
+    </tr>
+    <tr>
+      <td style="color:#f1f5f9;font-weight:700;">④ 脑之岛叙事层</td>
+      <td>脑之岛地图 · 解锁动画 · 邻居档案</td>
+      <td><span class="tag tag-low">中高</span> 地图改造+动画</td>
+      <td><span class="tag tag-mid">P1 · 中优</span></td>
+      <td>插画团队配合 · 脑之岛现有训练内容对齐</td>
+    </tr>
+  </table>
+
+  <div style="background:linear-gradient(135deg,rgba(99,102,241,0.1),rgba(20,184,166,0.06));border:1px solid rgba(99,102,241,0.2);border-radius:16px;padding:28px;margin-top:32px;">
+    <div style="font-size:14px;font-weight:800;color:#f1f5f9;margin-bottom:12px;">这五个提案共同指向一件事</div>
+    <div style="font-size:14px;color:#94a3b8;line-height:2;">
+      减压星球 family 不是内容部门的事，是产品架构的事。<br>
+      当邻居们出现在打卡里、勋章里、地图里、日记里、预警模型里——<br>
+      他们就不再是「心理剧场的角色」，而是整个 app 的<b style="color:#a78bfa;">情感骨架</b>。<br>
+      学生每天用这个 app，其实是在和这群人一起生活。<br>
+      那才是「不可替代的情感基础设施」真正的意思。
+    </div>
+  </div>
+
+  <p class="footnote" style="margin-top:20px;">本提案为产品设计原型，危机干预相关功能（提案⑤）需专业心理咨询顾问评审；私密日记功能（提案③）需法务确认数据处理合规方案。</p>
+</div>
+</section>
+
+<div style="background:#07080f; padding:48px; text-align:center; border-top:1px solid rgba(255,255,255,0.04);">
+  <div style="font-size:24px; margin-bottom:12px;">🪐</div>
+  <div style="font-size:13px; color:#1e293b; line-height:2.5;">
+    减压星球 × 产品体验设计提案 · Doc 17 · 2026.06.11<br>
+    五个提案均基于 Doc 16 减压星球世界观 · 功能延伸需结合 APK 现有技术能力评估<br>
+    危机干预设计参考 Doc 14 危机干预三级体系
+  </div>
+</div>
+
+
+<div style="text-align:center;padding:24px 0 16px;font-size:11px;color:#94a3b8;">署名已省略</div>
+</body>
+</html>

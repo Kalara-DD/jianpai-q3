@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>AI星球学生端 · 现有设计系统提取与问题诊断</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family:'PingFang SC','Noto Sans SC',sans-serif;
+  background:#fafbfc;
+  color:#1f2937;
+  line-height:1.6;
+  padding:40px 20px;
+}
+
+.container { max-width:1200px; margin:0 auto; }
+
+.header {
+  background:#fff;
+  border-radius:16px;
+  padding:40px;
+  margin-bottom:32px;
+  box-shadow:0 1px 3px rgba(0,0,0,0.05);
+}
+
+.header h1 {
+  font-size:32px;
+  font-weight:800;
+  color:#111827;
+  margin-bottom:12px;
+}
+
+.header .meta {
+  font-size:14px;
+  color:#6b7280;
+}
+
+.header .summary {
+  margin-top:20px;
+  padding:16px;
+  background:#fef3c7;
+  border-left:4px solid #f59e0b;
+  border-radius:8px;
+}
+
+.header .summary strong {
+  color:#92400e;
+}
+
+.section {
+  background:#fff;
+  border-radius:16px;
+  padding:32px;
+  margin-bottom:24px;
+  box-shadow:0 1px 3px rgba(0,0,0,0.05);
+}
+
+.section h2 {
+  font-size:24px;
+  font-weight:700;
+  color:#111827;
+  margin-bottom:20px;
+  padding-bottom:12px;
+  border-bottom:2px solid #e5e7eb;
+}
+
+.section h3 {
+  font-size:18px;
+  font-weight:600;
+  color:#374151;
+  margin:24px 0 12px;
+}
+
+/* 色彩提取展示 */
+.color-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(160px, 1fr));
+  gap:16px;
+  margin:16px 0;
+}
+
+.color-item {
+  border:1px solid #e5e7eb;
+  border-radius:12px;
+  overflow:hidden;
+}
+
+.color-block {
+  height:80px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#fff;
+  font-family:Monaco, monospace;
+  font-size:13px;
+  font-weight:600;
+  text-shadow:0 1px 2px rgba(0,0,0,0.3);
+}
+
+.color-info {
+  padding:12px;
+  background:#f9fafb;
+}
+
+.color-name {
+  font-size:13px;
+  font-weight:600;
+  color:#111827;
+  margin-bottom:4px;
+}
+
+.color-usage {
+  font-size:11px;
+  color:#6b7280;
+}
+
+/* 问题标注 */
+.issue {
+  background:#fef2f2;
+  border-left:4px solid #ef4444;
+  padding:12px 16px;
+  margin:12px 0;
+  border-radius:6px;
+}
+
+.issue-title {
+  font-size:14px;
+  font-weight:600;
+  color:#991b1b;
+  margin-bottom:4px;
+}
+
+.issue-desc {
+  font-size:13px;
+  color:#7f1d1d;
+}
+
+/* 数值表格 */
+.token-table {
+  width:100%;
+  border-collapse:collapse;
+  margin:16px 0;
+  font-size:13px;
+}
+
+.token-table th {
+  background:#f3f4f6;
+  padding:12px;
+  text-align:left;
+  font-weight:600;
+  color:#374151;
+  border-bottom:2px solid #d1d5db;
+}
+
+.token-table td {
+  padding:10px 12px;
+  border-bottom:1px solid #e5e7eb;
+}
+
+.token-table tr:hover {
+  background:#f9fafb;
+}
+
+.code {
+  font-family:Monaco, 'Courier New', monospace;
+  background:#f3f4f6;
+  padding:2px 6px;
+  border-radius:4px;
+  font-size:12px;
+  color:#1f2937;
+}
+
+.tag {
+  display:inline-block;
+  padding:2px 8px;
+  border-radius:12px;
+  font-size:11px;
+  font-weight:600;
+  margin-left:8px;
+}
+
+.tag.problem {
+  background:#fee2e2;
+  color:#991b1b;
+}
+
+.tag.inconsistent {
+  background:#fed7aa;
+  color:#9a3412;
+}
+
+.tag.missing {
+  background:#dbeafe;
+  color:#1e40af;
+}
+</style>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="../../assets/archive-report.css?v=20261014e">
+
+<!-- Mobile reading layout; original report content is preserved. -->
+<style id="report-mobile-layout">
+@media screen and (max-width:720px) {
+
+body { overflow-wrap: anywhere; }
+.container,.section,.card,.header,.page-header { min-width:0; max-width:100%; }
+.report-mobile-scroll { display:block !important; width:100%; max-width:100%; min-width:0; overflow-x:auto; overscroll-behavior-x:contain; margin:16px 0; padding-bottom:8px; border:1px solid #dce3ef; border-radius:8px; scrollbar-width:thin; }
+.report-mobile-scroll::before { content:attr(data-scroll-label); display:block; position:sticky; left:0; width:100%; padding:9px 12px; background:#f4f7fc; color:#5f6b7c; font:11px/1.6 'PingFang SC','Microsoft YaHei',sans-serif; text-align:left; }
+.report-mobile-scroll:focus-visible { outline:3px solid #3358df; outline-offset:3px; }
+.report-mobile-scroll>table { min-width:620px; margin:0; }
+.report-mobile-scroll th,.report-mobile-scroll td { overflow-wrap:normal; }
+
+body { padding:16px 12px; }
+.header { padding:26px 20px; }
+.header h1 { font-size:26px; }
+.section { padding:24px 18px; }
+.section h2 { font-size:22px; }
+.color-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+.color-item,.color-info,.issue { min-width:0; }
+.code { overflow-wrap:anywhere; }
+}
+</style>
+</head>
+<body>
+<div class="application-archive-note" role="note"><a href="../index.html#doc-B1">← 返回研究资料库</a><strong>Q3研究基础 · 原报告阅读副本</strong><p><b>设计系统诊断 · 原文 2025.06；收录批次 2026.06</b></p><p>历史研究/设计提案；文中评分、预测、预算与排期属于当时的分析或假设，不作为本次已实现业绩。当前采用与状态以成果档案说明为准。</p><p>原文标注“2025年6月”，与 202606 归档批次不一致，未擅自改写。此稿不是当前正式设计规范或可访问性验收结果。</p><small>原稿：B1_现有设计系统诊断（APK提取）.html</small></div>
+
+
+<div class="container">
+
+<div class="header">
+  <h1>AI星球学生端 · 现有设计系统提取与问题诊断</h1>
+  <div class="meta">基于 APK v1.0.2801 实际代码提取 | 2025年6月</div>
+
+  <div class="summary">
+    <strong>核心发现：</strong>产品使用浅蓝白色系，但缺乏统一的Design Token体系。色彩使用分散（品牌蓝有5+种色值），字号、间距无规律，组件状态定义不完整。需要建立规范化的设计系统。
+  </div>
+</div>
+
+<!-- 色彩系统提取 -->
+<div class="section">
+  <h2>一、色彩系统提取</h2>
+
+  <h3>1.1 品牌色（蓝色系）</h3>
+  <div class="color-grid">
+    <div class="color-item">
+      <div class="color-block" style="background:#368fff;">#368fff</div>
+      <div class="color-info">
+        <div class="color-name">蓝色-1</div>
+        <div class="color-usage">部分链接、按钮</div>
+      </div>
+    </div>
+
+    <div class="color-item">
+      <div class="color-block" style="background:#00baff;">#00baff</div>
+      <div class="color-info">
+        <div class="color-name">蓝色-2</div>
+        <div class="color-usage">AI对话气泡边框</div>
+      </div>
+    </div>
+
+    <div class="color-item">
+      <div class="color-block" style="background:#5990ff;">#5990ff</div>
+      <div class="color-info">
+        <div class="color-name">蓝色-3</div>
+        <div class="color-usage">导航激活态</div>
+      </div>
+    </div>
+
+    <div class="color-item">
+      <div class="color-block" style="background:#6aa5ec;">#6aa5ec</div>
+      <div class="color-info">
+        <div class="color-name">蓝色-4</div>
+        <div class="color-usage">渐变起始色</div>
+      </div>
+    </div>
+
+    <div class="color-item">
+      <div class="color-block" style="background:#5c79ff;">#5c79ff</div>
+      <div class="color-info">
+        <div class="color-name">蓝色-5</div>
+        <div class="color-usage">渐变终止色</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="issue">
+    <div class="issue-title">❌ 问题1：品牌色使用混乱</div>
+    <div class="issue-desc">
+      5种蓝色色值分散在代码中，没有主次之分，无法确定哪个是品牌主色。同一个「蓝色按钮」在不同页面可能使用不同色值。
+    </div>
+  </div>
+
+  <h3>1.2 功能色</h3>
+  <div class="color-grid">
+    <div class="color-item">
+      <div class="color-block" style="background:#ff543a;">#ff543a</div>
+      <div class="color-info">
+        <div class="color-name">错误/徽章红</div>
+        <div class="color-usage">角标、错误提示</div>
+      </div>
+    </div>
+
+    <div class="color-item">
+      <div class="color-block" style="background:#f29e8d; color:#1f2937;">#f29e8d</div>
+      <div class="color-info">
+        <div class="color-name">渐变橙</div>
+        <div class="color-usage">部分渐变背景</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="issue">
+    <div class="issue-title">❌ 问题2：功能色缺失</div>
+    <div class="issue-desc">
+      只有红色用于错误，缺少成功(绿)、警告(黄)、信息(蓝)的完整功能色体系。
+    </div>
+  </div>
+
+  <h3>1.3 中性色</h3>
+  <div class="report-mobile-scroll" style="display:contents" role="region" tabindex="0" aria-label="1.3 中性色 · 表格左右滑动查看" data-scroll-label="1.3 中性色 · 表格左右滑动查看"><table class="token-table">
+    <tr>
+      <th>色值</th>
+      <th>用途</th>
+      <th>状态</th>
+    </tr>
+    <tr>
+      <td><span class="code">#262626</span></td>
+      <td>正文文字</td>
+      <td><span class="tag problem">无层级</span></td>
+    </tr>
+    <tr>
+      <td><span class="code">#8c8c8c</span></td>
+      <td>辅助文字-1</td>
+      <td><span class="tag inconsistent">多个灰色</span></td>
+    </tr>
+    <tr>
+      <td><span class="code">#8e8e8e</span></td>
+      <td>辅助文字-2</td>
+      <td><span class="tag inconsistent">与上面仅差#020202</span></td>
+    </tr>
+    <tr>
+      <td><span class="code">#ffffff</span></td>
+      <td>白色背景</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td><span class="code">#f5f6f8</span></td>
+      <td>页面背景</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td><span class="code">#f2fbff</span></td>
+      <td>浅蓝背景</td>
+      <td>-</td>
+    </tr>
+  </table></div>
+
+  <div class="issue">
+    <div class="issue-title">❌ 问题3：灰阶色值随意</div>
+    <div class="issue-desc">
+      #8c8c8c 和 #8e8e8e 视觉上无法区分，属于重复定义。缺少完整的灰阶(50/100/200...900)，设计师每次都在「手动调灰色」。
+    </div>
+  </div>
+</div>
+
+<!-- 字体系统 -->
+<div class="section">
+  <h2>二、字体系统提取</h2>
+
+  <h3>2.1 字号提取（基于1rem=96px）</h3>
+  <div class="report-mobile-scroll" style="display:contents" role="region" tabindex="0" aria-label="2.1 字号提取（基于1rem=96px） · 表格左右滑动查看" data-scroll-label="2.1 字号提取（基于1rem=96px） · 表格左右滑动查看"><table class="token-table">
+    <tr>
+      <th>CSS值</th>
+      <th>换算px</th>
+      <th>用途</th>
+      <th>问题</th>
+    </tr>
+    <tr>
+      <td><span class="code">0.07813rem</span></td>
+      <td>7.5px</td>
+      <td>角标数字</td>
+      <td><span class="tag problem">过小，不符合WCAG</span></td>
+    </tr>
+    <tr>
+      <td><span class="code">0.125rem</span></td>
+      <td>12px</td>
+      <td>辅助文字</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td><span class="code">0.14583rem</span></td>
+      <td>14px</td>
+      <td>正文</td>
+      <td><span class="tag inconsistent">rem值不规整</span></td>
+    </tr>
+    <tr>
+      <td><span class="code">0.16667rem</span></td>
+      <td>16px</td>
+      <td>按钮、标题</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td><span class="code">0.1875rem</span></td>
+      <td>18px</td>
+      <td>大标题</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td><span class="code">0.21875rem</span></td>
+      <td>21px</td>
+      <td>页面标题</td>
+      <td><span class="tag inconsistent">21px偏怪</span></td>
+    </tr>
+  </table></div>
+
+  <div class="issue">
+    <div class="issue-title">❌ 问题4：字号体系不规范</div>
+    <div class="issue-desc">
+      • 字号选择随意（7.5px/14px/21px），不符合偶数规范<br>
+      • 缺少行高(line-height)、字重(font-weight)的配套定义<br>
+      • 没有响应式字号方案（iPad横屏应该放大）
+    </div>
+  </div>
+
+  <h3>2.2 字重提取</h3>
+  <div class="report-mobile-scroll" style="display:contents" role="region" tabindex="0" aria-label="2.2 字重提取 · 表格左右滑动查看" data-scroll-label="2.2 字重提取 · 表格左右滑动查看"><table class="token-table">
+    <tr>
+      <th>font-weight</th>
+      <th>用途</th>
+      <th>状态</th>
+    </tr>
+    <tr>
+      <td><span class="code">400 (Regular)</span></td>
+      <td>正文</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td><span class="code">500 (Medium)</span></td>
+      <td>次要强调</td>
+      <td><span class="tag missing">使用较少</span></td>
+    </tr>
+    <tr>
+      <td><span class="code">600 (Semibold)</span></td>
+      <td>导航激活</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td><span class="code">700 (Bold)</span></td>
+      <td>标题</td>
+      <td><span class="tag missing">未见使用</span></td>
+    </tr>
+  </table></div>
+</div>
+
+<!-- 间距与布局 -->
+<div class="section">
+  <h2>三、间距与布局系统提取</h2>
+
+  <h3>3.1 内边距提取（padding）</h3>
+  <div class="report-mobile-scroll" style="display:contents" role="region" tabindex="0" aria-label="3.1 内边距提取（padding） · 表格左右滑动查看" data-scroll-label="3.1 内边距提取（padding） · 表格左右滑动查看"><table class="token-table">
+    <tr>
+      <th>CSS值</th>
+      <th>换算px</th>
+      <th>用途</th>
+      <th>问题</th>
+    </tr>
+    <tr>
+      <td><span class="code">0.10417rem</span></td>
+      <td>10px</td>
+      <td>按钮内边距</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td><span class="code">0.15625rem</span></td>
+      <td>15px</td>
+      <td>卡片内边距-小</td>
+      <td><span class="tag inconsistent">非8倍数</span></td>
+    </tr>
+    <tr>
+      <td><span class="code">0.20833rem</span></td>
+      <td>20px</td>
+      <td>卡片内边距-标准</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td><span class="code">0.3125rem</span></td>
+      <td>30px</td>
+      <td>大容器边距</td>
+      <td><span class="tag inconsistent">不符合8pt网格</span></td>
+    </tr>
+  </table></div>
+
+  <h3>3.2 外边距提取（margin）</h3>
+  <div class="report-mobile-scroll" style="display:contents" role="region" tabindex="0" aria-label="3.2 外边距提取（margin） · 表格左右滑动查看" data-scroll-label="3.2 外边距提取（margin） · 表格左右滑动查看"><table class="token-table">
+    <tr>
+      <th>CSS值</th>
+      <th>换算px</th>
+      <th>用途</th>
+      <th>状态</th>
+    </tr>
+    <tr>
+      <td><span class="code">0.10417rem</span></td>
+      <td>10px</td>
+      <td>小元素间距</td>
+      <td><span class="tag inconsistent">10px不在8pt网格内</span></td>
+    </tr>
+    <tr>
+      <td><span class="code">0.125rem</span></td>
+      <td>12px</td>
+      <td>文字行间距</td>
+      <td><span class="tag inconsistent">12px不规整</span></td>
+    </tr>
+    <tr>
+      <td><span class="code">0.16667rem</span></td>
+      <td>16px</td>
+      <td>标准模块间距</td>
+      <td>✓ 符合8pt</td>
+    </tr>
+    <tr>
+      <td><span class="code">0.20833rem</span></td>
+      <td>20px</td>
+      <td>卡片间距</td>
+      <td><span class="tag inconsistent">20px不规整</span></td>
+    </tr>
+  </table></div>
+
+  <div class="issue">
+    <div class="issue-title">❌ 问题5：间距系统混乱</div>
+    <div class="issue-desc">
+      • 未使用统一的间距标准（8pt/4pt网格）<br>
+      • 出现大量非规整数值（10px/12px/15px/20px/30px），设计师每次都在「手动估算」<br>
+      • 缺少语义化命名（应该定义 space-xs/sm/md/lg/xl，而非直接写数值）
+    </div>
+  </div>
+</div>
+
+<!-- 圆角系统 -->
+<div class="section">
+  <h2>四、圆角系统提取</h2>
+
+  <h3>4.1 border-radius提取</h3>
+  <div class="report-mobile-scroll" style="display:contents" role="region" tabindex="0" aria-label="4.1 border-radius提取 · 表格左右滑动查看" data-scroll-label="4.1 border-radius提取 · 表格左右滑动查看"><table class="token-table">
+    <tr>
+      <th>CSS值</th>
+      <th>换算px</th>
+      <th>用途</th>
+      <th>状态</th>
+    </tr>
+    <tr>
+      <td><span class="code">0.02604rem</span></td>
+      <td>2.5px</td>
+      <td>标签边框</td>
+      <td><span class="tag problem">过小，视觉不明显</span></td>
+    </tr>
+    <tr>
+      <td><span class="code">0.05208rem</span></td>
+      <td>5px</td>
+      <td>按钮小圆角</td>
+      <td><span class="tag inconsistent">5px偏怪</span></td>
+    </tr>
+    <tr>
+      <td><span class="code">0.10417rem</span></td>
+      <td>10px</td>
+      <td>卡片圆角</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td><span class="code">0.15625rem</span></td>
+      <td>15px</td>
+      <td>大卡片圆角</td>
+      <td><span class="tag inconsistent">15px不规整</span></td>
+    </tr>
+    <tr>
+      <td><span class="code">50%</span></td>
+      <td>-</td>
+      <td>圆形头像、图标按钮</td>
+      <td>✓</td>
+    </tr>
+  </table></div>
+
+  <div class="issue">
+    <div class="issue-title">❌ 问题6：圆角数值随意</div>
+    <div class="issue-desc">
+      2.5px/5px/10px/15px 的圆角选择没有规律，应该采用阶梯式设计（如 4px/8px/12px/16px/24px），并根据组件大小自动匹配。
+    </div>
+  </div>
+</div>
+
+<!-- 阴影系统 -->
+<div class="section">
+  <h2>五、阴影系统提取</h2>
+
+  <h3>5.1 box-shadow提取</h3>
+  <div class="report-mobile-scroll" style="display:contents" role="region" tabindex="0" aria-label="5.1 box-shadow提取 · 表格左右滑动查看" data-scroll-label="5.1 box-shadow提取 · 表格左右滑动查看"><table class="token-table">
+    <tr>
+      <th>CSS值</th>
+      <th>用途</th>
+      <th>问题</th>
+    </tr>
+    <tr>
+      <td><span class="code">0 0.02083rem 0.05208rem rgba(0,0,0,.1)</span></td>
+      <td>2px 5px 轻阴影</td>
+      <td><span class="tag inconsistent">数值不规整</span></td>
+    </tr>
+    <tr>
+      <td><span class="code">0 0.05208rem 0.10417rem rgba(0,0,0,.15)</span></td>
+      <td>5px 10px 中等阴影</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td><span class="code">无统一定义</span></td>
+      <td>按压/弹窗层级阴影</td>
+      <td><span class="tag missing">缺少不同层级的阴影定义</span></td>
+    </tr>
+  </table></div>
+
+  <div class="issue">
+    <div class="issue-title">❌ 问题7：阴影层级不完整</div>
+    <div class="issue-desc">
+      只有2种阴影定义，缺少完整的层级体系（应该有 sm/md/lg/xl/2xl 五级），无法表达卡片的视觉层次（平铺卡片 vs 浮起卡片 vs 弹窗）。
+    </div>
+  </div>
+</div>
+
+<!-- 组件状态分析 -->
+<div class="section">
+  <h2>六、组件状态定义分析</h2>
+
+  <h3>6.1 按钮状态</h3>
+  <div class="report-mobile-scroll" style="display:contents" role="region" tabindex="0" aria-label="6.1 按钮状态 · 表格左右滑动查看" data-scroll-label="6.1 按钮状态 · 表格左右滑动查看"><table class="token-table">
+    <tr>
+      <th>状态</th>
+      <th>是否定义</th>
+      <th>问题</th>
+    </tr>
+    <tr>
+      <td>默认态 (default)</td>
+      <td>✓ 已定义</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>按压态 (active / :active)</td>
+      <td>❌ 未定义</td>
+      <td><span class="tag missing">手指点击无视觉反馈</span></td>
+    </tr>
+    <tr>
+      <td>禁用态 (disabled)</td>
+      <td>❌ 未定义</td>
+      <td><span class="tag missing">不可用状态无视觉区分</span></td>
+    </tr>
+    <tr>
+      <td>加载态 (loading)</td>
+      <td>❌ 未定义</td>
+      <td><span class="tag missing">提交后无loading样式</span></td>
+    </tr>
+  </table></div>
+
+  <h3>6.2 输入框状态</h3>
+  <div class="report-mobile-scroll" style="display:contents" role="region" tabindex="0" aria-label="6.2 输入框状态 · 表格左右滑动查看" data-scroll-label="6.2 输入框状态 · 表格左右滑动查看"><table class="token-table">
+    <tr>
+      <th>状态</th>
+      <th>是否定义</th>
+      <th>问题</th>
+    </tr>
+    <tr>
+      <td>默认态</td>
+      <td>✓ 已定义</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>聚焦态 (focus)</td>
+      <td>⚠️ 部分定义</td>
+      <td><span class="tag problem">边框变化不明显</span></td>
+    </tr>
+    <tr>
+      <td>错误态 (error)</td>
+      <td>✓ 已定义</td>
+      <td>使用红色边框</td>
+    </tr>
+    <tr>
+      <td>禁用态</td>
+      <td>❌ 未定义</td>
+      <td><span class="tag missing">缺少disabled样式</span></td>
+    </tr>
+    <tr>
+      <td>成功态 (success)</td>
+      <td>❌ 未定义</td>
+      <td><span class="tag missing">填写正确无视觉反馈</span></td>
+    </tr>
+  </table></div>
+
+  <div class="issue">
+    <div class="issue-title">❌ 问题8：交互状态定义严重不足</div>
+    <div class="issue-desc">
+      • 按钮缺少hover/active/disabled/loading状态，用户点击无反馈<br>
+      • 输入框缺少success/disabled状态<br>
+      • 卡片无hover效果，点击区域不明确<br>
+      • 缺少骨架屏(skeleton)、空状态(empty state)的设计
+    </div>
+  </div>
+</div>
+
+<!-- 图标系统 -->
+<div class="section">
+  <h2>七、图标系统提取</h2>
+
+  <h3>7.1 图标尺寸</h3>
+  <div class="report-mobile-scroll" style="display:contents" role="region" tabindex="0" aria-label="7.1 图标尺寸 · 表格左右滑动查看" data-scroll-label="7.1 图标尺寸 · 表格左右滑动查看"><table class="token-table">
+    <tr>
+      <th>尺寸</th>
+      <th>用途</th>
+      <th>状态</th>
+    </tr>
+    <tr>
+      <td>16px × 16px</td>
+      <td>文字内嵌图标</td>
+      <td>✓</td>
+    </tr>
+    <tr>
+      <td>20px × 20px</td>
+      <td>按钮图标</td>
+      <td>✓</td>
+    </tr>
+    <tr>
+      <td>24px × 24px</td>
+      <td>导航栏图标</td>
+      <td>✓</td>
+    </tr>
+    <tr>
+      <td>混乱的其他尺寸</td>
+      <td>18px/22px/26px等</td>
+      <td><span class="tag problem">尺寸不统一</span></td>
+    </tr>
+  </table></div>
+
+  <h3>7.2 图标风格</h3>
+  <p style="font-size:14px;color:#8e8e8e;margin:12px 0;">
+    • 使用了多种图标库混杂（部分使用IconFont，部分使用SVG，部分使用图片）<br>
+    • 线条粗细不一致（1px/1.5px/2px混用）<br>
+    • 填充样式不统一（outline线性图标 vs filled填充图标）
+  </p>
+
+  <div class="issue">
+    <div class="issue-title">❌ 问题9：图标体系混乱</div>
+    <div class="issue-desc">
+      建议统一使用一套图标库（推荐 Ant Design Icons 或 Lucide），保持线宽2px，优先使用outline风格，重要功能用filled强调。
+    </div>
+  </div>
+</div>
+
+<!-- 动效系统 -->
+<div class="section">
+  <h2>八、动效系统提取</h2>
+
+  <h3>8.1 过渡动画</h3>
+  <div class="report-mobile-scroll" style="display:contents" role="region" tabindex="0" aria-label="8.1 过渡动画 · 表格左右滑动查看" data-scroll-label="8.1 过渡动画 · 表格左右滑动查看"><table class="token-table">
+    <tr>
+      <th>CSS定义</th>
+      <th>时长</th>
+      <th>缓动</th>
+      <th>问题</th>
+    </tr>
+    <tr>
+      <td><span class="code">transition: all 0.3s</span></td>
+      <td>300ms</td>
+      <td>默认(ease)</td>
+      <td><span class="tag problem">缺少精细控制</span></td>
+    </tr>
+    <tr>
+      <td><span class="code">transition: all 0.2s</span></td>
+      <td>200ms</td>
+      <td>默认</td>
+      <td><span class="tag inconsistent">时长不统一</span></td>
+    </tr>
+  </table></div>
+
+  <div class="issue">
+    <div class="issue-title">❌ 问题10：动效规范缺失</div>
+    <div class="issue-desc">
+      • 全部使用 <code>transition: all</code>，性能差且可能产生意外效果<br>
+      • 缺少标准化的时长定义（应该是 fast:150ms / base:250ms / slow:350ms）<br>
+      • 缺少缓动曲线定义（应该区分 ease-in / ease-out / ease-in-out / spring）<br>
+      • 缺少关键动画（加载、切换、展开/折叠、弹出/消失）
+    </div>
+  </div>
+</div>
+
+<!-- 响应式断点 -->
+<div class="section">
+  <h2>九、响应式适配分析</h2>
+
+  <h3>9.1 iPad横屏适配</h3>
+  <div class="report-mobile-scroll" style="display:contents" role="region" tabindex="0" aria-label="9.1 iPad横屏适配 · 表格左右滑动查看" data-scroll-label="9.1 iPad横屏适配 · 表格左右滑动查看"><table class="token-table">
+    <tr>
+      <th>场景</th>
+      <th>当前状态</th>
+      <th>问题</th>
+    </tr>
+    <tr>
+      <td>字号缩放</td>
+      <td>固定rem值，不随屏幕缩放</td>
+      <td><span class="tag problem">横屏显示过小</span></td>
+    </tr>
+    <tr>
+      <td>布局适配</td>
+      <td>WebView固定宽度</td>
+      <td><span class="tag problem">两侧留白过大</span></td>
+    </tr>
+    <tr>
+      <td>图片资源</td>
+      <td>单一分辨率</td>
+      <td><span class="tag missing">缺少@2x/@3x资源</span></td>
+    </tr>
+  </table></div>
+
+  <div class="issue">
+    <div class="issue-title">❌ 问题11：iPad适配不足</div>
+    <div class="issue-desc">
+      当前设计按手机端1:1平移到iPad，未充分利用横屏空间。建议采用响应式布局（单列→双列），字号放大20%。
+    </div>
+  </div>
+</div>
+
+<!-- 总结与建议 -->
+<div class="section">
+  <h2>🎯 总结：现有设计系统的核心问题</h2>
+
+  <h3>严重问题（需立即修复）</h3>
+  <div style="display:flex;flex-direction:column;gap:12px;margin:16px 0;">
+    <div class="diag-item diag-fail">
+      <h4>1. 缺少统一的Design Token体系</h4>
+      <p>颜色/字号/间距都是直接写死在CSS中，开发和设计无法对齐，迭代时每次都在「手动重复定义」</p>
+    </div>
+    <div class="diag-item diag-fail">
+      <h4>2. 品牌色使用混乱</h4>
+      <p>5种蓝色分散在代码中，设计师无法确定哪个是主色，同一个按钮在不同页面用不同颜色</p>
+    </div>
+    <div class="diag-item diag-fail">
+      <h4>3. 组件状态定义不完整</h4>
+      <p>按钮/输入框缺少hover/disabled/loading等状态，用户交互无反馈，体验割裂</p>
+    </div>
+  </div>
+
+  <h3>次要问题（需逐步优化）</h3>
+  <div style="display:flex;flex-direction:column;gap:12px;margin:16px 0;">
+    <div class="diag-item diag-warn">
+      <h4>4. 字号/间距不规范</h4>
+      <p>出现7.5px/14px/21px等奇怪数值,未采用规整的阶梯（8pt网格或4pt网格）</p>
+    </div>
+    <div class="diag-item diag-warn">
+      <h4>5. 缺少语义化命名</h4>
+      <p>CSS中直接写 <code>color:#368fff</code>，而非 <code>color:var(--color-primary)</code>，无法批量替换主题色</p>
+    </div>
+    <div class="diag-item diag-warn">
+      <h4>6. iPad适配不足</h4>
+      <p>字号过小、布局未充分利用横屏空间</p>
+    </div>
+  </div>
+
+  <h3>下一步：建立规范化的设计系统</h3>
+  <p style="font-size:14px;line-height:1.7;color:#262626;margin:16px 0;">
+    基于以上诊断，需要建立一套<b>符合行业标准</b>的设计系统（参考多邻国Duolingo、阿里Ant Design的规范深度），包括：
+  </p>
+  <ul style="font-size:14px;line-height:1.8;color:#262626;padding-left:20px;margin:12px 0;">
+    <li>完整的色彩体系：主色50-900阶、功能色（成功/警告/错误/信息）、中性色50-900阶</li>
+    <li>规范的字体层级：6-8个层级，明确字号/行高/字重/字间距</li>
+    <li>统一的间距系统：8pt网格，定义4px/8px/16px/24px/32px/48px/64px</li>
+    <li>组件状态库：所有组件的default/hover/active/focus/disabled/error/loading状态</li>
+    <li>Design Token命名：采用CSS变量或SCSS变量，实现主题切换</li>
+    <li>动效规范：标准时长（150ms/250ms/350ms）和缓动曲线（ease-in-out/spring）</li>
+    <li>响应式断点：手机/iPad/桌面的适配规则</li>
+  </ul>
+
+  <div style="background:#e8f4fd;border-left:4px solid #368fff;padding:16px 20px;border-radius:0 8px 8px 0;margin-top:20px;">
+    <p style="font-size:14px;line-height:1.7;color:#1d4ed8;margin:0;">
+      <b>📋 接下来：</b>在《<a href="B2.html" style="color:#1d4ed8;">B2_升级设计系统规范v2.0</a>》中，将提供完整的、符合行业最高标准的设计系统规范，作为未来12个月迭代的设计依据。
+    </p>
+  </div>
+</div>
+
+</div>
+
+<div style="text-align:center;padding:24px 0 16px;font-size:11px;color:#94a3b8;">署名已省略</div>
+</body>
+</html>

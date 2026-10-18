@@ -1,0 +1,723 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Day01-07 · 竞品走查与三维基线整合表</title>
+  <style>
+    :root {
+      --ink: #202936;
+      --muted: #647184;
+      --line: #d8e0ea;
+      --soft: #f5f7fa;
+      --paper: #ffffff;
+      --blue: #2869c9;
+      --teal: #16847a;
+      --amber: #a56208;
+      --red: #b84343;
+      --green: #267552;
+      --violet: #6b5dbb;
+      --shadow: 0 10px 28px rgba(31, 41, 55, .08);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      line-height: 1.64;
+      background: #eef2f6;
+    }
+    main { max-width: 1160px; margin: 0 auto; padding: 42px 24px 76px; }
+    header { padding: 26px 0 20px; border-bottom: 1px solid var(--line); }
+    .eyebrow { color: var(--blue); font-size: 13px; font-weight: 800; }
+    h1 { margin: 8px 0 12px; font-size: 36px; line-height: 1.18; letter-spacing: 0; }
+    h2 { margin: 34px 0 14px; font-size: 24px; line-height: 1.25; }
+    h3 { margin: 0 0 8px; font-size: 17px; line-height: 1.34; }
+    p { margin: 8px 0; }
+    a { color: var(--blue); font-weight: 700; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .summary { max-width: 880px; color: var(--muted); font-size: 16px; }
+    .toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      margin: 18px 0 0;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255,255,255,.94);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+    .toolbar .left, .toolbar .right { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    button, label.file-btn {
+      min-height: 36px;
+      padding: 7px 12px;
+      border: 1px solid #c6d2e1;
+      border-radius: 7px;
+      background: #fff;
+      color: #243044;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    button.primary { border-color: var(--blue); background: var(--blue); color: #fff; }
+    button.warn { border-color: #d8b15f; background: #fff8ea; color: #7a4f05; }
+    button:hover, label.file-btn:hover { filter: brightness(.98); }
+    input[type="file"] { display: none; }
+    .status { color: var(--muted); font-size: 13px; }
+    .section, .card, .pain-card, .comp-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--paper);
+      box-shadow: 0 1px 0 rgba(255,255,255,.75);
+    }
+    .section { margin-top: 18px; padding: 22px; }
+    .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .card { padding: 18px; }
+    .card > .tag { margin-bottom: 9px; }
+    .card > .tag + h3 { margin-top: 6px; }
+    .card > h3 { clear: both; }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      color: var(--blue);
+      background: #e9f1fb;
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+    .tag.teal { color: var(--teal); background: #e7f6f3; }
+    .tag.amber { color: var(--amber); background: #fff2dd; }
+    .tag.red { color: var(--red); background: #fdecec; }
+    .tag.green { color: var(--green); background: #eaf6ef; }
+    .tag.violet { color: var(--violet); background: #efedff; }
+    .tag.gray { color: #526174; background: #edf2f7; }
+    .note {
+      margin: 12px 0;
+      padding: 13px 15px;
+      border-left: 4px solid var(--teal);
+      border-radius: 8px;
+      background: #edf8f6;
+      color: #315b56;
+    }
+    .warning { border-left-color: var(--red); background: #fff0f0; color: #783131; }
+    .mini { color: var(--muted); font-size: 13px; }
+    .source-list, .checklist, .comp-list, .pain-list { display: grid; gap: 12px; }
+    .source-row {
+      display: grid;
+      grid-template-columns: minmax(190px, 230px) minmax(0, 1fr) auto;
+      gap: 18px;
+      align-items: center;
+      padding: 16px 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfcfe;
+    }
+    .source-row strong { line-height: 1.35; }
+    .source-row .tag { justify-self: end; align-self: center; padding: 4px 10px; }
+    .checkitem {
+      display: grid;
+      grid-template-columns: 24px 1fr;
+      gap: 8px;
+      align-items: start;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfcfe;
+    }
+    .checkitem input { width: 18px; height: 18px; margin-top: 4px; }
+    .comp-card { padding: 16px; }
+    .comp-head {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .comp-head .title { min-width: 0; }
+    .comp-head > .tag { flex: 0 0 auto; margin-top: 2px; }
+    .pain-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: start;
+      margin-bottom: 16px;
+    }
+    .pain-head .title {
+      min-width: 0;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      column-gap: 12px;
+      row-gap: 4px;
+      align-items: start;
+    }
+    .pain-head .pain-id { grid-row: 1 / span 3; margin-top: 1px; }
+    .pain-head h3 { grid-column: 2; margin: 0; padding-top: 1px; font-size: 18px; line-height: 1.32; }
+    .pain-head .problem { grid-column: 2; margin: 2px 0 0; }
+    .pain-head .pill-row { grid-column: 2; margin-top: 8px; }
+    .pain-head > .tag { justify-self: end; align-self: start; margin-top: 2px; }
+    .pill-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+    .flow-pill { display: inline-flex; align-items: center; min-height: 24px; padding: 2px 8px; border-radius: 999px; background: #edf2f7; color: #44546a; font-size: 12px; font-weight: 800; }
+    .comp-grid { display: grid; grid-template-columns: 1.05fr 1fr 88px; gap: 12px; align-items: start; }
+    .field-group { display: grid; gap: 6px; }
+    .field-label { color: #344256; font-size: 13px; font-weight: 800; }
+    textarea, input[type="text"] {
+      width: 100%;
+      min-height: 36px;
+      padding: 8px 10px;
+      border: 1px solid #cfd9e6;
+      border-radius: 7px;
+      background: #fff;
+      color: var(--ink);
+      font: inherit;
+      font-size: 14px;
+      outline: none;
+    }
+    textarea { min-height: 88px; resize: vertical; }
+    input.score, input.ease { text-align: center; font-weight: 800; }
+    textarea:focus, input[type="text"]:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(40,105,201,.12);
+    }
+    .score-help { color: var(--muted); font-size: 12px; line-height: 1.5; }
+
+    .scale-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; margin: 12px 0; }
+    .scale-item { padding: 12px; border: 1px solid var(--line); border-radius: 8px; background: #fbfcfe; }
+    .scale-item b { display: block; margin-bottom: 4px; color: #263447; font-size: 15px; }
+    .scale-item span { display: block; color: var(--muted); font-size: 12px; line-height: 1.5; }
+    .score-strip {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+      margin: 12px 0;
+    }
+    .score-box {
+      min-width: 0;
+      padding: 10px;
+      border: 1px solid #d7e0eb;
+      border-radius: 8px;
+      background: #fbfcfe;
+    }
+    .score-box input { margin-top: 6px; }
+    .score-box small { display: block; min-height: 34px; color: var(--muted); font-size: 12px; line-height: 1.45; }
+    .pain-card { padding: 18px; }
+    .pain-id {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 46px;
+      min-height: 34px;
+      padding: 5px 10px;
+      border-radius: 8px;
+      background: #202936;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 900;
+      line-height: 1;
+    }
+    .pain-card .problem { color: #344256; font-size: 15px; line-height: 1.55; }
+    .decision-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    table { width: 100%; border-collapse: collapse; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: #fff; }
+    th, td { padding: 12px; border-bottom: 1px solid var(--line); border-right: 1px solid var(--line); text-align: left; vertical-align: top; font-size: 14px; }
+    th:last-child, td:last-child { border-right: 0; }
+    tr:last-child td { border-bottom: 0; }
+    th { background: var(--soft); color: #344256; font-weight: 800; }
+    @media (max-width: 980px) {
+      .grid, .grid.two, .decision-grid, .comp-grid, .score-strip, .scale-grid { grid-template-columns: 1fr; }
+      .source-row { grid-template-columns: 1fr; gap: 8px; align-items: start; }
+      .source-row .tag { justify-self: start; }
+      .pain-head { grid-template-columns: 1fr; gap: 8px; }
+      .pain-head > .tag { justify-self: start; margin-left: 58px; }
+      .toolbar { position: static; }
+      h1 { font-size: 30px; }
+      table { display: block; overflow-x: auto; }
+      .score-box small { min-height: 0; }
+    }
+    @media (max-width: 620px) {
+      main { padding: 28px 14px 56px; }
+      .section { padding: 18px 14px; }
+      .pain-card { padding: 16px 14px; }
+      .pain-head .title { column-gap: 10px; }
+      .pain-id { min-width: 42px; min-height: 32px; }
+      .pain-head > .tag { margin-left: 52px; }
+    }
+    @media print {
+      body { background: #fff; }
+      main { max-width: none; padding: 18px; }
+      .toolbar { display: none; }
+      .section, .card, .pain-card, .comp-card { box-shadow: none; break-inside: avoid; }
+    }
+  </style>
+
+<link rel="stylesheet" href="../../assets/archive-report.css?v=20261014e">
+<meta name="robots" content="noindex, nofollow">
+</head>
+<body>
+<div class="application-archive-note" role="note"><a href="../index.html#doc-workbench">← 返回研究资料库</a><p>研究工作台：将三份并行来源（三维评分参考、P0–P11基线工作表、竞品走查任务单）整合成一份主工作台。预填分是 AI 资料初判，不是学生实测；人工实机走查尚待完成与回填，源文件中的完成检查项未勾选。可填写、保存、导入和导出，用于形成 Flow A/B/C 的设计与验证依据。</p><small>原稿：Day01-07_竞品走查与三维基线整合表_可填写版.html</small></div>
+
+  <main>
+    <header>
+      <div class="eyebrow">Day 01-07 / 本周唯一主工具</div>
+      <h1>竞品走查与三维基线整合表</h1>
+      <p class="summary">这份表把 Claude 的“三维度体验基线估分表”、Codex 的“P0-P11 基线表”和“竞品 20 分钟走查任务单”合成一个工作台。本周只填这一份：先走查竞品，再把证据回填到 P0-P11 三维评分，最后得到 Flow A/B/C 的封版依据。</p>
+      <div class="toolbar">
+        <div class="left">
+          <button class="primary" id="saveBtn">保存本页填写内容</button>
+          <button id="exportBtn">导出 JSON</button>
+          <label class="file-btn" for="importFile">导入 JSON</label>
+          <input id="importFile" type="file" accept="application/json,.json">
+          <button id="printBtn">打印 / 存 PDF</button>
+        </div>
+        <div class="right">
+          <button class="warn" id="resetBtn">清空本页填写内容</button>
+          <span class="status" id="statusText">尚未保存</span>
+        </div>
+      </div>
+    </header>
+
+    <section class="section">
+      <h2>一、先说明：这些评分是什么</h2>
+      <div class="note">
+        P0-P11 里已经填上的“当前产品分”，不是乱写的占位，也不是学生实测结果。它是 Codex 基于你给过的产品分析报告 V1、线下易用性评估套装、当前 APK/痛点讨论、Flow A/B/C 封版判断做的初步诊断分，用来当本周讨论的起点。竞品参考分则基于 Claude 的竞品深度分析做了资料初判，也可以在实机走查后直接覆盖。
+      </div>
+      <div class="grid">
+        <article class="card">
+          <span class="tag teal">已预填</span>
+          <h3>当前产品初判分</h3>
+          <p>表示“目前版本大概率会在哪里卡”。它是分析判断，不是测试数据。</p>
+        </article>
+        <article class="card">
+          <span class="tag amber">已预填，可覆盖</span>
+          <h3>竞品参考分</h3>
+          <p>已先基于 Claude 深度分析做资料初判；你下载实机体验后再覆盖成自己的分。</p>
+        </article>
+        <article class="card">
+          <span class="tag violet">Day06-08 再定</span>
+          <h3>Demo 目标分</h3>
+          <p>等 Flow A/B/C 页面结构更清楚后再填，避免过早承诺。</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>二、这三个文件分别是什么</h2>
+      <div class="source-list">
+        <div class="source-row">
+          <strong>Claude：三维度体验基线估分表</strong>
+          <div>更像一个“星级评分看板”。价值是快速看到 P0-P11 的现状判断、竞品参照和 Demo 目标，但它偏展示与判断，不适合作为本周逐条记录走查证据的主表。</div>
+          <span class="tag violet">评分参考</span>
+        </div>
+        <div class="source-row">
+          <strong>Codex：Day01-07 三维度基线估分表</strong>
+          <div>更像一个“P0-P11 工作表”。价值是把问题拆到可理解性、流程连续性、情绪价值/信任感三维，并支持填写、保存、导出，但竞品走查过程不够完整。</div>
+          <span class="tag teal">已并入本表</span>
+        </div>
+        <div class="source-row">
+          <strong>Codex：Day03-05 竞品走查任务单</strong>
+          <div>更像一个“实机体验记录表”。价值是告诉你下载竞品后每个 App 怎么走、看什么、记什么，但它没有把观察直接沉淀到 P0-P11 与 Demo 目标里。</div>
+          <span class="tag amber">已并入本表</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>三、本周怎么用</h2>
+      <div class="grid">
+        <article class="card">
+          <span class="tag">Step 1</span>
+          <h3>先校准当前分</h3>
+          <p>打开 P0-P11 卡片，重点看 P1/P2/P3 的当前初判分。你不同意就直接改，别为了“保留我的判断”而迁就它。</p>
+        </article>
+        <article class="card">
+          <span class="tag teal">Step 2</span>
+          <h3>再做竞品实机走查</h3>
+          <p>深跑 Finch、Voidpet Garden、Headspace、How We Feel、Lightly、Pooca。每个 App 20-30 分钟，记录“降低压力、引导下一步、反馈机制、截图证据”。</p>
+        </article>
+        <article class="card">
+          <span class="tag amber">Step 3</span>
+          <h3>最后回填封版判断</h3>
+          <p>把竞品证据回填到 P0-P11 和 Flow A/B/C 判断里，形成 Day06-08 低保真可以直接开工的依据。</p>
+        </article>
+      </div>
+      <div class="note warning">不要为了填满表而体验所有竞品。本周真正要拿到的是 Flow A/B/C 的设计证据：Pad 首页怎么启动、AI 怎么接住、完成后怎么让学生愿意回来。</div>
+    </section>
+
+    <section class="section">
+      <h2>四、本周完成状态</h2>
+      <div class="checklist" data-save-group="weekly-checks">
+        <label class="checkitem"><input type="checkbox" data-field="check-current-apk"><span>已确认当前 APK 的 P0-P11 初始估分，尤其是 P1/P2/P3。</span></label>
+        <label class="checkitem"><input type="checkbox" data-field="check-finch"><span>已完成 Finch 走查，并记录低压力任务、奖励闭环、连续感。</span></label>
+        <label class="checkitem"><input type="checkbox" data-field="check-voidpet"><span>已完成 Voidpet Garden 走查，并记录情绪拟物、游戏化视觉、完成后可见变化。</span></label>
+        <label class="checkitem"><input type="checkbox" data-field="check-headspace"><span>已完成 Headspace 走查，并记录首屏导航、今日推荐、练习后反馈。</span></label>
+        <label class="checkitem"><input type="checkbox" data-field="check-howwefeel"><span>已完成 How We Feel 走查，并记录情绪词、颜色系统、低压力打卡。</span></label>
+        <label class="checkitem"><input type="checkbox" data-field="check-lightly-pooca"><span>已完成 Lightly / Pooca 走查，并记录 AI 接住、陪伴语气、边界风险。</span></label>
+        <label class="checkitem"><input type="checkbox" data-field="check-baseline"><span>已把竞品证据回填到三维基线表，能解释 Flow A/B/C 为什么这样做。</span></label>
+        <label class="checkitem"><input type="checkbox" data-field="check-freeze"><span>已确认 Day01-05 封版结论，可以进入 Day06-08 低保真页面结构。</span></label>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>五、竞品实机走查记录</h2>
+      <p class="mini">易用性分填 0-100；我已基于 Claude 深度分析与当前竞品池 V1.0 预填“资料初判”，你实机走查后可以直接覆盖。截图可以填文件名、相册编号或一句“第几屏”。</p>
+      <div class="scale-grid">
+        <div class="scale-item"><b>0-49</b><span>严重不可用：难以完成主路径，或明显制造焦虑/不信任。</span></div>
+        <div class="scale-item"><b>50-59</b><span>勉强可完成：能走通，但需要猜、找、忍耐，学生很可能退出。</span></div>
+        <div class="scale-item"><b>60-68</b><span>边缘可用：流程基本通，但认知负担明显，只能作为反面/谨慎参考。</span></div>
+        <div class="scale-item"><b>69-80</b><span>合格可用：主路径清楚，有少量卡点，可以局部借鉴。</span></div>
+        <div class="scale-item"><b>81-100</b><span>优秀到标杆：压力低、下一步清楚、反馈及时，是本轮重点参考。</span></div>
+      </div>
+      <div class="comp-list">
+        <article class="comp-card">
+          <div class="comp-head">
+            <div class="title"><h3>Finch</h3><div class="pill-row"><span class="flow-pill">Flow A</span><span class="flow-pill">Flow C</span><span class="flow-pill">P3/P8</span></div></div>
+            <span class="tag teal">陪伴任务闭环</span>
+          </div>
+          <div class="comp-grid">
+            <div class="field-group"><span class="field-label">必跑路径</span><textarea data-field="path-finch">首次打开 → 选择一个小目标/自我照顾任务 → 完成任务 → 奖励/成长反馈 → 再次打开</textarea></div>
+            <div class="field-group"><span class="field-label">重点观察</span><textarea data-field="observe-finch">它怎么做到低压力；完成反馈是否有情绪价值；再次打开时有没有连续感，而不是重新开始。</textarea></div>
+            <div class="field-group"><span class="field-label">易用性分</span><span class="mini">资料初判，可覆盖</span><input class="ease" data-field="ease-finch" type="text" inputmode="numeric" value="84" placeholder="0-100"></div>
+          </div>
+          <div class="decision-grid">
+            <div class="field-group"><span class="field-label">实机记录 / 截图证据</span><textarea data-field="evidence-finch" placeholder="记录任务、完成动画、奖励、回流入口"></textarea></div>
+            <div class="field-group"><span class="field-label">对 Demo 的启发</span><textarea data-field="insight-finch" placeholder="例如：1个小行动=1个即时反馈，不做复杂成长系统"></textarea></div>
+          </div>
+        </article>
+
+        <article class="comp-card">
+          <div class="comp-head">
+            <div class="title"><h3>Voidpet Garden</h3><div class="pill-row"><span class="flow-pill">Flow A</span><span class="flow-pill">Flow C</span><span class="flow-pill">P8/P9</span></div></div>
+            <span class="tag violet">情绪游戏化视觉</span>
+          </div>
+          <div class="comp-grid">
+            <div class="field-group"><span class="field-label">必跑路径</span><textarea data-field="path-voidpet">首次进入 → 情绪/角色互动 → 完成一个轻行动 → 看见世界变化 → 返回首页</textarea></div>
+            <div class="field-group"><span class="field-label">重点观察</span><textarea data-field="observe-voidpet">情绪如何被拟物化；互动反馈是否让人愿意靠近；完成后有没有可见变化，而不是只有文字成功提示。</textarea></div>
+            <div class="field-group"><span class="field-label">易用性分</span><span class="mini">实机后填写</span><input class="ease" data-field="ease-voidpet" type="text" inputmode="numeric" placeholder="0-100"></div>
+          </div>
+          <div class="decision-grid">
+            <div class="field-group"><span class="field-label">实机记录 / 截图证据</span><textarea data-field="evidence-voidpet" placeholder="记录情绪拟物、场景反馈、完成后变化"></textarea></div>
+            <div class="field-group"><span class="field-label">对 Demo 的启发</span><textarea data-field="insight-voidpet" placeholder="例如：把完成反馈变成首页/星球状态的一点变化"></textarea></div>
+          </div>
+        </article>
+
+        <article class="comp-card">
+          <div class="comp-head">
+            <div class="title"><h3>Headspace</h3><div class="pill-row"><span class="flow-pill">Flow A</span><span class="flow-pill">P1</span><span class="flow-pill">P2</span></div></div>
+            <span class="tag">首页组织标杆</span>
+          </div>
+          <div class="comp-grid">
+            <div class="field-group"><span class="field-label">必跑路径</span><textarea data-field="path-headspace">首次进入首页 → 今日推荐/意图入口 → 开始一个短练习 → 完成后反馈 → 返回首页</textarea></div>
+            <div class="field-group"><span class="field-label">重点观察</span><textarea data-field="observe-headspace">它怎么让用户第一眼知道先做什么；切换区域后主入口是否还在；练习后如何承接下一步。</textarea></div>
+            <div class="field-group"><span class="field-label">易用性分</span><span class="mini">资料初判，可覆盖</span><input class="ease" data-field="ease-headspace" type="text" inputmode="numeric" value="88" placeholder="0-100"></div>
+          </div>
+          <div class="decision-grid">
+            <div class="field-group"><span class="field-label">实机记录 / 截图证据</span><textarea data-field="evidence-headspace" placeholder="记录截图编号、页面顺序、最值得参考/最不适合照搬的点"></textarea></div>
+            <div class="field-group"><span class="field-label">对 Demo 的启发</span><textarea data-field="insight-headspace" placeholder="例如：首页不是功能列表，而是今日状态+主行动+推荐区"></textarea></div>
+          </div>
+        </article>
+
+        <article class="comp-card">
+          <div class="comp-head">
+            <div class="title"><h3>How We Feel</h3><div class="pill-row"><span class="flow-pill">Flow A</span><span class="flow-pill">P4</span><span class="flow-pill">P11</span></div></div>
+            <span class="tag amber">情绪打卡</span>
+          </div>
+          <div class="comp-grid">
+            <div class="field-group"><span class="field-label">必跑路径</span><textarea data-field="path-howwefeel">情绪词选择 → 记录心情/原因 → 查看轻洞察或策略 → 返回首页</textarea></div>
+            <div class="field-group"><span class="field-label">重点观察</span><textarea data-field="observe-howwefeel">情绪词和颜色如何降低表达压力；“说不清”或模糊状态是否被允许；打卡后是否有自然下一步。</textarea></div>
+            <div class="field-group"><span class="field-label">易用性分</span><span class="mini">资料初判，可覆盖</span><input class="ease" data-field="ease-howwefeel" type="text" inputmode="numeric" value="86" placeholder="0-100"></div>
+          </div>
+          <div class="decision-grid">
+            <div class="field-group"><span class="field-label">实机记录 / 截图证据</span><textarea data-field="evidence-howwefeel" placeholder="记录情绪词、颜色、原因分类、策略反馈"></textarea></div>
+            <div class="field-group"><span class="field-label">对 Demo 的启发</span><textarea data-field="insight-howwefeel" placeholder="例如：打卡不追求完整填写，先让学生安全表达一点点"></textarea></div>
+          </div>
+        </article>
+
+        <article class="comp-card">
+          <div class="comp-head">
+            <div class="title"><h3>Lightly</h3><div class="pill-row"><span class="flow-pill">Flow B</span><span class="flow-pill">P3</span><span class="flow-pill">P6</span></div></div>
+            <span class="tag teal">AI 反思</span>
+          </div>
+          <div class="comp-grid">
+            <div class="field-group"><span class="field-label">必跑路径</span><textarea data-field="path-lightly">输入一次情绪/事件 → AI 回应 → 生成反思/小结 → 选择下一步 → 再次打开</textarea></div>
+            <div class="field-group"><span class="field-label">重点观察</span><textarea data-field="observe-lightly">AI 是否先接住情绪；小结是否让用户更清楚自己；下一步是否轻、可执行、可退出。</textarea></div>
+            <div class="field-group"><span class="field-label">易用性分</span><span class="mini">实机后填写</span><input class="ease" data-field="ease-lightly" type="text" inputmode="numeric" placeholder="0-100"></div>
+          </div>
+          <div class="decision-grid">
+            <div class="field-group"><span class="field-label">实机记录 / 截图证据</span><textarea data-field="evidence-lightly" placeholder="记录AI回应、总结卡片、下一步、记忆/连续感"></textarea></div>
+            <div class="field-group"><span class="field-label">对 Demo 的启发</span><textarea data-field="insight-lightly" placeholder="例如：AI回应先复述，再给一个很小的选择"></textarea></div>
+          </div>
+        </article>
+
+        <article class="comp-card">
+          <div class="comp-head">
+            <div class="title"><h3>Pooca</h3><div class="pill-row"><span class="flow-pill">Flow B</span><span class="flow-pill">P5</span><span class="flow-pill">P6</span></div></div>
+            <span class="tag violet">AI 陪伴语气</span>
+          </div>
+          <div class="comp-grid">
+            <div class="field-group"><span class="field-label">必跑路径</span><textarea data-field="path-pooca">伙伴介绍 → 发起对话/打卡 → 情绪反馈 → 继续陪伴或小行动</textarea></div>
+            <div class="field-group"><span class="field-label">重点观察</span><textarea data-field="observe-pooca">角色是否让人愿意靠近；陪伴语气有没有越界；反馈是否有温度但不过度亲密。</textarea></div>
+            <div class="field-group"><span class="field-label">易用性分</span><span class="mini">实机后填写</span><input class="ease" data-field="ease-pooca" type="text" inputmode="numeric" placeholder="0-100"></div>
+          </div>
+          <div class="decision-grid">
+            <div class="field-group"><span class="field-label">实机记录 / 截图证据</span><textarea data-field="evidence-pooca" placeholder="记录角色文案、AI语气、反馈形式、边界风险"></textarea></div>
+            <div class="field-group"><span class="field-label">对 Demo 的启发</span><textarea data-field="insight-pooca" placeholder="例如：三IP选择页用场景和语气，而不是只给角色名"></textarea></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>六、P0-P11 三维基线估分</h2>
+      <p class="mini">评分规则：1=严重阻碍，2=明显费力，3=基本可用但不顺，4=顺畅，5=优秀。当前产品分是 Codex 初判；竞品参考分基于 Claude 深度分析初判；Demo 目标分先不预填。</p>
+      <div class="pain-list">
+        <article class="pain-card">
+          <div class="pain-head"><div class="title"><span class="pain-id">P0</span><h3>安全边界不够清楚</h3><p class="problem">未成年人安全、危机支持、AI 能力边界不够清楚。</p><div class="pill-row"><span class="flow-pill">Flow B</span><span class="flow-pill">安全红线</span></div></div><span class="tag red">优先审查</span></div>
+          <div class="score-strip"><div class="score-box"><small>当前可理解性<br>Codex 初判，可改</small><input class="score" data-field="p0-u" type="text" value="2"></div><div class="score-box"><small>当前连续性<br>Codex 初判，可改</small><input class="score" data-field="p0-c" type="text" value="2"></div><div class="score-box"><small>当前情绪/信任<br>Codex 初判，可改</small><input class="score" data-field="p0-e" type="text" value="2"></div><div class="score-box"><small>竞品参考分<br>资料初判，可改</small><input class="score" data-field="p0-comp" type="text" value="4.5" placeholder="1-5"></div><div class="score-box"><small>Demo 目标分<br>Day06-08 填</small><input class="score" data-field="p0-target" type="text" placeholder="待定"></div></div>
+          <textarea data-field="p0-note">重点看 Lightly/Pooca 的温和接住方式；安全边界参考 Woebot/Wysa 历史资料：AI 先安抚，再说明边界，再给可执行求助路径。</textarea>
+        </article>
+        <article class="pain-card">
+          <div class="pain-head"><div class="title"><span class="pain-id">P1</span><h3>首页首屏不知道该做什么</h3><p class="problem">首页首屏不知道现在该做什么，入口像功能集合。</p><div class="pill-row"><span class="flow-pill">Flow A</span><span class="flow-pill">Pad 首页</span></div></div><span class="tag">核心主线</span></div>
+          <div class="score-strip"><div class="score-box"><small>当前可理解性<br>Codex 初判，可改</small><input class="score" data-field="p1-u" type="text" value="2"></div><div class="score-box"><small>当前连续性<br>Codex 初判，可改</small><input class="score" data-field="p1-c" type="text" value="2"></div><div class="score-box"><small>当前情绪/信任<br>Codex 初判，可改</small><input class="score" data-field="p1-e" type="text" value="2"></div><div class="score-box"><small>竞品参考分<br>资料初判，可改</small><input class="score" data-field="p1-comp" type="text" value="4.5" placeholder="1-5"></div><div class="score-box"><small>Demo 目标分<br>Day06-08 填</small><input class="score" data-field="p1-target" type="text" placeholder="待定"></div></div>
+          <textarea data-field="p1-note">Flow A 已升级为 Pad 首页启动中枢：今日状态主卡、AI伙伴侧栏、今日推荐、成长反馈、次级入口。</textarea>
+        </article>
+        <article class="pain-card">
+          <div class="pain-head"><div class="title"><span class="pain-id">P2</span><h3>核心入口缺少持续可见性</h3><p class="problem">切换 Tab 或模块后，核心 AI/情绪入口容易消失。</p><div class="pill-row"><span class="flow-pill">Flow A</span><span class="flow-pill">Flow B</span></div></div><span class="tag">导航连续</span></div>
+          <div class="score-strip"><div class="score-box"><small>当前可理解性<br>Codex 初判，可改</small><input class="score" data-field="p2-u" type="text" value="2"></div><div class="score-box"><small>当前连续性<br>Codex 初判，可改</small><input class="score" data-field="p2-c" type="text" value="1"></div><div class="score-box"><small>当前情绪/信任<br>Codex 初判，可改</small><input class="score" data-field="p2-e" type="text" value="2"></div><div class="score-box"><small>竞品参考分<br>资料初判，可改</small><input class="score" data-field="p2-comp" type="text" value="4" placeholder="1-5"></div><div class="score-box"><small>Demo 目标分<br>Day06-08 填</small><input class="score" data-field="p2-target" type="text" placeholder="待定"></div></div>
+          <textarea data-field="p2-note">观察 Headspace/Finch/Pooca：核心行动或 AI 入口是否在不同页面保持可见，用户是否能自然回到今日任务。</textarea>
+        </article>
+        <article class="pain-card">
+          <div class="pain-head"><div class="title"><span class="pain-id">P3</span><h3>AI对话缺少记忆感</h3><p class="problem">有历史对话记录，但存在两个子问题：①对话开头无记忆钩子（通用打招呼，不引用上次内容）；②切换IP后对话混排，三个IP头像出现在同一对话框中。</p><div class="pill-row"><span class="flow-pill">Flow A</span><span class="flow-pill">Flow B</span><span class="flow-pill">Flow C</span></div></div><span class="tag teal">留存关键</span></div>
+          <div class="score-strip"><div class="score-box"><small>当前可理解性<br>Codex 初判，可改</small><input class="score" data-field="p3-u" type="text" value="2"></div><div class="score-box"><small>当前连续性<br>Codex 初判，可改</small><input class="score" data-field="p3-c" type="text" value="1"></div><div class="score-box"><small>当前情绪/信任<br>Codex 初判，可改</small><input class="score" data-field="p3-e" type="text" value="2"></div><div class="score-box"><small>竞品参考分<br>资料初判，可改</small><input class="score" data-field="p3-comp" type="text" value="4.5" placeholder="1-5"></div><div class="score-box"><small>Demo 目标分<br>Day06-08 填</small><input class="score" data-field="p3-target" type="text" placeholder="待定"></div></div>
+          <textarea data-field="p3-note">学习 Lightly/Pooca/Finch 的连续感；Replika 只作可控记忆边界参考，未成年人场景避免成人化关系绑定。</textarea>
+        </article>
+        <article class="pain-card">
+          <div class="pain-head"><div class="title"><span class="pain-id">P4</span><h3>情绪打卡有表达负担</h3><p class="problem">情绪打卡如果过细或过早，会增加表达负担。</p><div class="pill-row"><span class="flow-pill">Flow A</span><span class="flow-pill">情绪打卡</span></div></div><span class="tag amber">减压入口</span></div>
+          <div class="score-strip"><div class="score-box"><small>当前可理解性<br>Codex 初判，可改</small><input class="score" data-field="p4-u" type="text" value="3"></div><div class="score-box"><small>当前连续性<br>Codex 初判，可改</small><input class="score" data-field="p4-c" type="text" value="2"></div><div class="score-box"><small>当前情绪/信任<br>Codex 初判，可改</small><input class="score" data-field="p4-e" type="text" value="3"></div><div class="score-box"><small>竞品参考分<br>资料初判，可改</small><input class="score" data-field="p4-comp" type="text" value="4.5" placeholder="1-5"></div><div class="score-box"><small>Demo 目标分<br>Day06-08 填</small><input class="score" data-field="p4-target" type="text" placeholder="待定"></div></div>
+          <textarea data-field="p4-note">参考 How We Feel/Daylio/天天豆：先低成本表达心情，再渐进补充原因，不把打卡做成问卷。</textarea>
+        </article>
+        <article class="pain-card">
+          <div class="pain-head"><div class="title"><span class="pain-id">P5</span><h3>IP/角色价值不够清楚</h3><p class="problem">IP/角色价值不够清楚，用户不知道为什么要选择它们。</p><div class="pill-row"><span class="flow-pill">Flow B</span><span class="flow-pill">三 IP</span></div></div><span class="tag violet">角色策略</span></div>
+          <div class="score-strip"><div class="score-box"><small>当前可理解性<br>Codex 初判，可改</small><input class="score" data-field="p5-u" type="text" value="2"></div><div class="score-box"><small>当前连续性<br>Codex 初判，可改</small><input class="score" data-field="p5-c" type="text" value="2"></div><div class="score-box"><small>当前情绪/信任<br>Codex 初判，可改</small><input class="score" data-field="p5-e" type="text" value="3"></div><div class="score-box"><small>竞品参考分<br>资料初判，可改</small><input class="score" data-field="p5-comp" type="text" value="4" placeholder="1-5"></div><div class="score-box"><small>Demo 目标分<br>Day06-08 填</small><input class="score" data-field="p5-target" type="text" placeholder="待定"></div></div>
+          <textarea data-field="p5-note">三 IP 不只做视觉角色，要承担不同陪伴方式：倾听、梳理、行动支持。</textarea>
+        </article>
+        <article class="pain-card">
+          <div class="pain-head"><div class="title"><span class="pain-id">P6</span><h3>AI 对话没有先接住情绪</h3><p class="problem">AI 对话容易直接给建议，缺少“先接住”的情绪顺序。</p><div class="pill-row"><span class="flow-pill">Flow B</span><span class="flow-pill">AI回应</span></div></div><span class="tag red">体验核心</span></div>
+          <div class="score-strip"><div class="score-box"><small>当前可理解性<br>Codex 初判，可改</small><input class="score" data-field="p6-u" type="text" value="2"></div><div class="score-box"><small>当前连续性<br>Codex 初判，可改</small><input class="score" data-field="p6-c" type="text" value="2"></div><div class="score-box"><small>当前情绪/信任<br>Codex 初判，可改</small><input class="score" data-field="p6-e" type="text" value="2"></div><div class="score-box"><small>竞品参考分<br>资料初判，可改</small><input class="score" data-field="p6-comp" type="text" value="4" placeholder="1-5"></div><div class="score-box"><small>Demo 目标分<br>Day06-08 填</small><input class="score" data-field="p6-target" type="text" placeholder="待定"></div></div>
+          <textarea data-field="p6-note">参考 Lightly/Pooca：先确认情绪，再给一小步选择；安全边界用 Woebot/Wysa 历史资料复核。</textarea>
+        </article>
+        <article class="pain-card">
+          <div class="pain-head"><div class="title"><span class="pain-id">P7</span><h3>功能层级让稳定路径变弱</h3><p class="problem">功能入口与内容层级多，学生不容易形成稳定路径。</p><div class="pill-row"><span class="flow-pill">Flow A</span><span class="flow-pill">信息架构</span></div></div><span class="tag">首页组织</span></div>
+          <div class="score-strip"><div class="score-box"><small>当前可理解性<br>Codex 初判，可改</small><input class="score" data-field="p7-u" type="text" value="2"></div><div class="score-box"><small>当前连续性<br>Codex 初判，可改</small><input class="score" data-field="p7-c" type="text" value="2"></div><div class="score-box"><small>当前情绪/信任<br>Codex 初判，可改</small><input class="score" data-field="p7-e" type="text" value="2"></div><div class="score-box"><small>竞品参考分<br>资料初判，可改</small><input class="score" data-field="p7-comp" type="text" value="4" placeholder="1-5"></div><div class="score-box"><small>Demo 目标分<br>Day06-08 填</small><input class="score" data-field="p7-target" type="text" placeholder="待定"></div></div>
+          <textarea data-field="p7-note">Pad 首页要用“主行动 + 推荐 + 次级入口”组织，而不是平铺全部功能。</textarea>
+        </article>
+        <article class="pain-card">
+          <div class="pain-head"><div class="title"><span class="pain-id">P8</span><h3>完成反馈太弱或太晚</h3><p class="problem">数据反馈来得太晚或太抽象，用户感受不到自己完成了什么。</p><div class="pill-row"><span class="flow-pill">Flow C</span><span class="flow-pill">轻闭环</span></div></div><span class="tag teal">反馈设计</span></div>
+          <div class="score-strip"><div class="score-box"><small>当前可理解性<br>Codex 初判，可改</small><input class="score" data-field="p8-u" type="text" value="3"></div><div class="score-box"><small>当前连续性<br>Codex 初判，可改</small><input class="score" data-field="p8-c" type="text" value="2"></div><div class="score-box"><small>当前情绪/信任<br>Codex 初判，可改</small><input class="score" data-field="p8-e" type="text" value="2"></div><div class="score-box"><small>竞品参考分<br>资料初判，可改</small><input class="score" data-field="p8-comp" type="text" value="4.5" placeholder="1-5"></div><div class="score-box"><small>Demo 目标分<br>Day06-08 填</small><input class="score" data-field="p8-target" type="text" placeholder="待定"></div></div>
+          <textarea data-field="p8-note">参考 Finch/Voidpet Garden/Elevate：完成后立即给轻反馈，强调“刚刚这一步有用”，不要先推复杂成长体系。</textarea>
+        </article>
+        <article class="pain-card">
+          <div class="pain-head"><div class="title"><span class="pain-id">P9</span><h3>视觉和交互反馈不够稳定</h3><p class="problem">视觉和交互反馈不够稳定，影响 Pad 端质感与可信度。</p><div class="pill-row"><span class="flow-pill">全局</span><span class="flow-pill">高保真</span></div></div><span class="tag gray">质感问题</span></div>
+          <div class="score-strip"><div class="score-box"><small>当前可理解性<br>Codex 初判，可改</small><input class="score" data-field="p9-u" type="text" value="3"></div><div class="score-box"><small>当前连续性<br>Codex 初判，可改</small><input class="score" data-field="p9-c" type="text" value="2"></div><div class="score-box"><small>当前情绪/信任<br>Codex 初判，可改</small><input class="score" data-field="p9-e" type="text" value="3"></div><div class="score-box"><small>竞品参考分<br>资料初判，可改</small><input class="score" data-field="p9-comp" type="text" value="4.5" placeholder="1-5"></div><div class="score-box"><small>Demo 目标分<br>Day06-08 填</small><input class="score" data-field="p9-target" type="text" placeholder="待定"></div></div>
+          <textarea data-field="p9-note">走查时截取竞品的按钮反馈、完成态、加载态、空状态，作为高保真质感参考。</textarea>
+        </article>
+        <article class="pain-card">
+          <div class="pain-head"><div class="title"><span class="pain-id">P10</span><h3>测试任务与主线映射不清</h3><p class="problem">测试任务与产品主线之间缺少清楚映射，后续数据难比较。</p><div class="pill-row"><span class="flow-pill">测试工具</span><span class="flow-pill">数据对比</span></div></div><span class="tag amber">研究设计</span></div>
+          <div class="score-strip"><div class="score-box"><small>当前可理解性<br>Codex 初判，可改</small><input class="score" data-field="p10-u" type="text" value="2"></div><div class="score-box"><small>当前连续性<br>Codex 初判，可改</small><input class="score" data-field="p10-c" type="text" value="2"></div><div class="score-box"><small>当前情绪/信任<br>Codex 初判，可改</small><input class="score" data-field="p10-e" type="text" value="2"></div><div class="score-box"><small>竞品参考分<br>资料初判，可改</small><input class="score" data-field="p10-comp" type="text" value="不适用" placeholder="1-5"></div><div class="score-box"><small>Demo 目标分<br>Day06-08 填</small><input class="score" data-field="p10-target" type="text" placeholder="待定"></div></div>
+          <textarea data-field="p10-note">本表就是为了解决这个问题：实机证据、三维评分、Flow 封版放在同一张表。P10 是研究工具问题，不直接打竞品参考分。</textarea>
+        </article>
+        <article class="pain-card">
+          <div class="pain-head"><div class="title"><span class="pain-id">P11</span><h3>实现边界容易扩大</h3><p class="problem">实现边界不清，容易把 Demo 做成过大版本。</p><div class="pill-row"><span class="flow-pill">交付范围</span><span class="flow-pill">20天Demo</span></div></div><span class="tag red">范围控制</span></div>
+          <div class="score-strip"><div class="score-box"><small>当前可理解性<br>Codex 初判，可改</small><input class="score" data-field="p11-u" type="text" value="3"></div><div class="score-box"><small>当前连续性<br>Codex 初判，可改</small><input class="score" data-field="p11-c" type="text" value="2"></div><div class="score-box"><small>当前情绪/信任<br>Codex 初判，可改</small><input class="score" data-field="p11-e" type="text" value="3"></div><div class="score-box"><small>竞品参考分<br>资料初判，可改</small><input class="score" data-field="p11-comp" type="text" value="不适用" placeholder="1-5"></div><div class="score-box"><small>Demo 目标分<br>Day06-08 填</small><input class="score" data-field="p11-target" type="text" placeholder="待定"></div></div>
+          <textarea data-field="p11-note">20天只做 Flow A/B 高保真，Flow C 轻闭环；地图、商店、完整成长体系不进入本轮。P11 是交付范围问题，不直接打竞品参考分。</textarea>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>七、Flow A/B/C 封版判断</h2>
+      <div class="grid two">
+        <article class="card">
+          <span class="tag">Flow A</span>
+          <h3>Pad 首页启动中枢</h3>
+          <p>要验证的不只是“打卡能不能完成”，而是学生打开平板后能否快速理解今天该做什么，并从首页自然进入情绪、AI、推荐行动与完成反馈。</p>
+          <textarea data-field="flow-a-decision" placeholder="填：Flow A 需要保留/调整/删除的页面节点与理由"></textarea>
+        </article>
+        <article class="card">
+          <span class="tag teal">Flow B</span>
+          <h3>AI 伙伴接住情绪</h3>
+          <p>要验证 AI 是否像安全、可信、会倾听的支持者，而不是任务客服或聊天玩具。关键是情绪确认、下一步选择、安全边界。</p>
+          <textarea data-field="flow-b-decision" placeholder="填：Flow B 角色、对话顺序、安全边界的封版判断"></textarea>
+        </article>
+        <article class="card">
+          <span class="tag amber">Flow C</span>
+          <h3>完成反馈轻闭环</h3>
+          <p>要验证一次小行动完成后，学生是否获得“我刚刚做成了一点点”的反馈，并能自然回到首页或下一次行动。</p>
+          <textarea data-field="flow-c-decision" placeholder="填：Flow C 完成态、奖励反馈、回流方式的封版判断"></textarea>
+        </article>
+        <article class="card">
+          <span class="tag red">安全边界</span>
+          <h3>未成年人适用性</h3>
+          <p>AI 记忆、角色亲密度、危机表达、求助建议必须优先过安全判断。可以学竞品机制，但不能照搬成人陪伴产品的关系模型。</p>
+          <textarea data-field="safety-decision" placeholder="填：本轮 Demo 必须规避的表达、机制和误导风险"></textarea>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>八、带到 Day06-08 的设计输入</h2>
+      <table>
+        <thead>
+          <tr><th>输入项</th><th>结论</th><th>证据来源</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>首页怎么改</td><td><textarea data-field="input-home" placeholder="例如：首屏改为今日状态主卡 + AI伙伴侧栏 + 今日推荐，不再平铺入口"></textarea></td><td><textarea data-field="source-home" placeholder="来自 Headspace/Voidpet/Finch/当前APK/P1-P2"></textarea></td></tr>
+          <tr><td>情绪打卡怎么走</td><td><textarea data-field="input-checkin" placeholder="例如：3步内完成，先情绪再原因，可跳过细节"></textarea></td><td><textarea data-field="source-checkin" placeholder="来自 Daylio/How We Feel/P4"></textarea></td></tr>
+          <tr><td>AI 对话怎么接</td><td><textarea data-field="input-ai" placeholder="例如：先复述情绪，再给2-3个下一步选择，不直接说教"></textarea></td><td><textarea data-field="source-ai" placeholder="来自 Lightly/Pooca/P0/P6；Woebot/Wysa 仅作安全资料"></textarea></td></tr>
+          <tr><td>完成反馈怎么呈现</td><td><textarea data-field="input-finish" placeholder="例如：完成后给一句确认 + 一个轻奖励 + 返回首页的连续提示"></textarea></td><td><textarea data-field="source-finish" placeholder="来自 Finch/Voidpet/Elevate/P3/P8"></textarea></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section" style="margin-top: 32px; border-left: 4px solid var(--blue);">
+      <h2 style="margin-top: 0;">本周封版摘要 <span style="font-size:14px; font-weight:400; color:var(--muted);">走查完填，开会直接用</span></h2>
+      <p style="color:var(--muted); font-size:14px; margin-bottom:20px;">不要从表里捞结论——走查结束后在这里写三句话，就是你开会要说的东西。</p>
+
+      <div class="grid" style="margin-bottom: 20px;">
+        <article class="card">
+          <span class="tag" style="background:var(--blue);color:#fff;">结论 1</span>
+          <h3 style="margin-top:10px;">Flow A 首页启动</h3>
+          <textarea data-field="summary-flow-a" rows="3" placeholder="竞品给了我们什么证据？我们的首页应该怎么改？" style="width:100%; margin-top:8px; padding:8px; border:1px solid var(--line); border-radius:6px; font:inherit; font-size:14px; resize:vertical;"></textarea>
+        </article>
+        <article class="card">
+          <span class="tag" style="background:var(--teal);color:#fff;">结论 2</span>
+          <h3 style="margin-top:10px;">Flow B AI 伙伴</h3>
+          <textarea data-field="summary-flow-b" rows="3" placeholder="竞品怎么接住用户？我们的 AI 对话应该怎么做？" style="width:100%; margin-top:8px; padding:8px; border:1px solid var(--line); border-radius:6px; font:inherit; font-size:14px; resize:vertical;"></textarea>
+        </article>
+        <article class="card">
+          <span class="tag" style="background:var(--amber);color:#fff;">结论 3</span>
+          <h3 style="margin-top:10px;">Flow C 完成反馈</h3>
+          <textarea data-field="summary-flow-c" rows="3" placeholder="竞品怎么给轻闭环？我们应该抄什么、不抄什么？" style="width:100%; margin-top:8px; padding:8px; border:1px solid var(--line); border-radius:6px; font:inherit; font-size:14px; resize:vertical;"></textarea>
+        </article>
+      </div>
+
+      <div class="decision-grid" style="margin-bottom: 20px;">
+        <article class="card">
+          <span class="tag" style="background:var(--red);color:#fff;">需要拍板</span>
+          <h3 style="margin-top:10px;">哪些问题还没有答案？</h3>
+          <textarea data-field="summary-decisions" rows="4" placeholder="列出 2-3 个必须由你决定的问题，AI 无法替你判断的那种。&#10;例如：Flow B 要不要加记忆功能？首页卡片数量定几个？" style="width:100%; margin-top:8px; padding:8px; border:1px solid var(--line); border-radius:6px; font:inherit; font-size:14px; resize:vertical;"></textarea>
+        </article>
+        <article class="card">
+          <span class="tag" style="background:var(--green);color:#fff;">下一步</span>
+          <h3 style="margin-top:10px;">Day06-08 开工前要做什么？</h3>
+          <textarea data-field="summary-next" rows="4" placeholder="本周走查之后，进入低保真之前，还差什么？&#10;例如：确认 Flow A 首页卡片结构、对齐 Flow B 安全边界口径" style="width:100%; margin-top:8px; padding:8px; border:1px solid var(--line); border-radius:6px; font:inherit; font-size:14px; resize:vertical;"></textarea>
+        </article>
+      </div>
+
+      <div class="note" style="background:#f0f4ff; border-color:#b8caee;">走查完成后，把这一节截图或复制出去，就是给 Codex / Claude 的下一轮任务简报。不需要另写交接文档。</div>
+    </section>
+  </main>
+
+  <script>
+    const STORAGE_KEY = 'ai_planet_day01_07_integrated_competitor_baseline_v2_comp_pool';
+    const statusText = document.getElementById('statusText');
+    const fields = () => Array.from(document.querySelectorAll('[data-field]'));
+
+    function fieldValue(el) {
+      if (el.type === 'checkbox') return el.checked;
+      return el.value;
+    }
+
+    function setFieldValue(el, value) {
+      if (el.type === 'checkbox') {
+        el.checked = Boolean(value);
+      } else {
+        el.value = value || '';
+      }
+    }
+
+    function collectData() {
+      const data = { updatedAt: new Date().toISOString(), fields: {} };
+      fields().forEach(el => { data.fields[el.dataset.field] = fieldValue(el); });
+      return data;
+    }
+
+    function applyData(data) {
+      if (!data || !data.fields) return;
+      fields().forEach(el => {
+        if (Object.prototype.hasOwnProperty.call(data.fields, el.dataset.field)) {
+          setFieldValue(el, data.fields[el.dataset.field]);
+        }
+      });
+      statusText.textContent = data.updatedAt ? `已载入：${new Date(data.updatedAt).toLocaleString()}` : '已载入';
+    }
+
+    function saveData() {
+      const data = collectData();
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      statusText.textContent = `已保存：${new Date(data.updatedAt).toLocaleString()}`;
+    }
+
+    function loadData() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+      try { applyData(JSON.parse(raw)); } catch (e) { statusText.textContent = '本地保存读取失败'; }
+    }
+
+    document.getElementById('saveBtn').addEventListener('click', saveData);
+    document.getElementById('printBtn').addEventListener('click', () => window.print());
+    document.getElementById('exportBtn').addEventListener('click', () => {
+      const data = collectData();
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `减压星球_竞品走查与三维基线_${new Date().toISOString().slice(0,10)}.json`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      statusText.textContent = '已导出 JSON';
+    });
+    document.getElementById('importFile').addEventListener('change', event => {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const data = JSON.parse(reader.result);
+          applyData(data);
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+          statusText.textContent = '已导入并保存';
+        } catch (e) {
+          statusText.textContent = '导入失败：文件不是有效 JSON';
+        }
+      };
+      reader.readAsText(file);
+    });
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      if (!confirm('确定清空本页已填写内容吗？这不会删除导出的 JSON 文件。')) return;
+      localStorage.removeItem(STORAGE_KEY);
+      fields().forEach(el => {
+        if (el.type === 'checkbox') el.checked = false;
+        else el.value = el.defaultValue || '';
+      });
+      statusText.textContent = '已清空本页填写内容';
+    });
+    fields().forEach(el => {
+      el.addEventListener('input', () => { statusText.textContent = '有未保存修改'; });
+      el.addEventListener('change', () => { statusText.textContent = '有未保存修改'; });
+    });
+    loadData();
+  </script>
+</body>
+</html>

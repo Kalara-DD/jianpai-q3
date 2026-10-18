@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>AI星球 · 补充深度分析</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'PingFang SC','Noto Sans SC',sans-serif; background:#f7f8fc; color:#2d3142; line-height:1.7; }
+
+.page-header { background:linear-gradient(135deg,#2d3142 0%,#3b4cca 100%); color:#fff; padding:48px 0 36px; text-align:center; }
+.page-header h1 { font-size:26px; margin-bottom:8px; }
+.page-header p { font-size:14px; opacity:0.75; }
+
+.toc { max-width:960px; margin:28px auto 0; padding:0 24px; display:flex; flex-wrap:wrap; gap:10px; }
+.toc a { background:#fff; border-radius:20px; padding:6px 16px; font-size:13px; color:#3b4cca; text-decoration:none; box-shadow:0 2px 8px rgba(0,0,0,0.07); }
+.toc a:hover { background:#3b4cca; color:#fff; }
+
+.container { max-width:960px; margin:0 auto; padding:32px 24px 80px; }
+.section { background:#fff; border-radius:16px; padding:32px; margin-bottom:28px; box-shadow:0 2px 12px rgba(0,0,0,0.06); }
+.section h2 { font-size:20px; margin-bottom:6px; display:flex; align-items:center; gap:8px; }
+.section-meta { font-size:13px; color:#999; margin-bottom:24px; padding-bottom:16px; border-bottom:2px solid #f0f0f0; }
+.section h3 { font-size:15px; font-weight:700; color:#3b4cca; margin:22px 0 10px; }
+
+.tag { display:inline-block; border-radius:4px; padding:2px 9px; font-size:11px; font-weight:700; margin-right:5px; }
+.tag-red { background:#fff0f0; color:#e03131; }
+.tag-orange { background:#fff4e6; color:#e67700; }
+.tag-green { background:#ebfbee; color:#2f9e44; }
+.tag-blue { background:#e7f5ff; color:#1971c2; }
+.tag-purple { background:#f3f0ff; color:#6741d9; }
+
+.source-link { font-size:11px; color:#748ffc; margin-top:8px; display:block; }
+.source-link a { color:#748ffc; text-decoration:underline; }
+
+/* 用户分层卡片 */
+.grade-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin:16px 0; }
+.grade-card { border-radius:12px; padding:20px; }
+.grade-card h4 { font-size:15px; font-weight:700; margin-bottom:10px; }
+.grade-card ul { padding-left:16px; }
+.grade-card li { font-size:13px; margin-bottom:5px; color:#444; }
+.gc-primary { background:#fff9db; border-top:4px solid #ffd43b; }
+.gc-junior { background:#e6fcf5; border-top:4px solid #38d9a9; }
+.gc-senior { background:#e7f5ff; border-top:4px solid #4dabf7; }
+
+/* 竞品对比表 */
+table { width:100%; border-collapse:collapse; font-size:13px; margin:12px 0; }
+th { background:#f0f4ff; color:#3b4cca; padding:11px 14px; text-align:left; font-size:12px; font-weight:700; }
+td { padding:10px 14px; border-bottom:1px solid #f2f2f2; color:#444; vertical-align:top; }
+tr:last-child td { border-bottom:none; }
+tr:hover td { background:#fafbff; }
+.score-dot { display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:4px; }
+.dot-strong { background:#2f9e44; }
+.dot-mid { background:#f08c00; }
+.dot-weak { background:#e03131; }
+
+/* 建议卡片 */
+.rec-list { display:flex; flex-direction:column; gap:10px; margin:14px 0; }
+.rec-item { background:#f7f8fc; border-radius:10px; padding:14px 16px; border-left:4px solid #748ffc; }
+.rec-item .rt { font-size:14px; font-weight:700; color:#3b4cca; margin-bottom:4px; }
+.rec-item .rd { font-size:13px; color:#555; }
+
+.insight-box { background:#f0f4ff; border-radius:10px; padding:16px 20px; margin:12px 0; font-size:13px; color:#3b4cca; border-left:4px solid #3b4cca; }
+
+.pros-cons { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:14px 0; }
+.pros { background:#f4fce3; border-radius:10px; padding:16px; border-left:4px solid #74c069; }
+.cons { background:#fff5f5; border-radius:10px; padding:16px; border-left:4px solid #ff6b6b; }
+.pros h4 { color:#2f9e44; margin-bottom:8px; font-size:13px; }
+.cons h4 { color:#e03131; margin-bottom:8px; font-size:13px; }
+ul li { font-size:13px; margin-bottom:5px; color:#444; }
+
+.comp-card { background:#f7f8fc; border-radius:10px; padding:16px; margin-bottom:14px; border-left:4px solid #748ffc; }
+.comp-card h4 { font-size:14px; font-weight:700; color:#3b4cca; margin-bottom:6px; }
+.comp-card .comp-meta { font-size:11px; color:#999; margin-bottom:10px; }
+.comp-card .comp-feature { font-size:13px; color:#555; margin-bottom:4px; }
+</style>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="../../assets/archive-report.css?v=20261014e">
+<style id="archive-narrow-layout">.archive-narrow-table { display:contents; }
+@media screen and (max-width:720px) {
+ .archive-narrow-table { display:block; max-width:100%; overflow-x:auto; }
+ .archive-narrow-table > table { min-width:650px; }
+ .sticky-nav { justify-content:flex-start; }
+ .sticky-nav a { flex:0 0 auto; }
+.grade-grid,.pros-cons { grid-template-columns:minmax(0,1fr); } .section { padding:24px 20px; }
+}</style>
+</head>
+<body>
+<div class="application-archive-note" role="note"><a href="../index.html#doc-A3">← 返回研究资料库</a><strong>Q3研究基础 · 原报告阅读副本</strong><p><b>设计推演 · 2026.06 批次</b></p><p>历史研究/设计提案；文中评分、预测、预算与排期属于当时的分析或假设，不作为本次已实现业绩。当前采用与状态以成果档案说明为准。</p><p>年龄特征来自理论推演；家校披露、分层呈现及商业机制均不代表已上线能力。</p><small>原稿：A3_补充深度分析（用户分层·家校协同·商业模式）.html</small></div>
+
+
+<div class="page-header">
+  <h1>AI星球 · 补充深度分析</h1>
+  <p>用户分层 · 家长小程序 & 家校协同 · 竞品对比 · 商业模式 · 体验规范</p>
+</div>
+
+<div class="toc">
+  <a href="#s1">① 用户分层设计</a>
+  <a href="#s2">② 家长小程序 & 家校协同</a>
+  <a href="#s3">③ 竞品对比</a>
+  <a href="#s4">④ 商业模式分析</a>
+  <a href="#s5">⑤ 体验设计基础规范</a>
+</div>
+
+<div class="container">
+
+  <!-- ① 用户分层 -->
+  <div class="section" id="s1">
+    <h2>👥 用户分层设计</h2>
+    <div class="section-meta">目标用户横跨小学高年级～高中生（约10-18岁），认知发展、情绪特征、使用诉求差异极大</div>
+
+    <h3>三阶段心理发展特征与产品适配对比</h3>
+    <div class="grade-grid">
+      <div class="grade-card gc-primary">
+        <h4>🌱 小学高年级（10-12岁）</h4>
+        <ul>
+          <li><b>心理特征：</b>规则意识建立期，对游戏化、奖励反馈高度敏感</li>
+          <li><b>主要诉求：</b>探索兴趣、结交朋友、减少学习焦虑</li>
+          <li><b>认知能力：</b>抽象思维尚在发展，不适合大量文字报告</li>
+          <li><b>AI星球适配：</b>换装/角色/脑之岛游戏化训练对他们吸引力最强，勋章墙的成就反馈有效；生涯规划、选科内容完全不适用</li>
+          <li><b>缺失：</b>无年级过滤机制，会看到与自己无关甚至有压力的内容</li>
+        </ul>
+      </div>
+      <div class="grade-card gc-junior">
+        <h4>🌿 初中生（12-15岁）</h4>
+        <ul>
+          <li><b>心理特征：</b>身份认同危机期，同伴关系为第一优先，对权威开始质疑</li>
+          <li><b>主要诉求：</b>被理解、倾诉、探索自我、缓解人际压力</li>
+          <li><b>认知能力：</b>开始具备抽象思维，可以理解测评报告</li>
+          <li><b>AI星球适配：</b>吉塔（心愈AI）、小星（通用AI对话）、心理测评是最核心功能；心理剧场视频内容贴近这个年龄的表达方式；朋友圈社交需求与年龄匹配。注：「知心姐姐」是科大讯飞×知心姐姐公益品牌的联名课件内容，非AI功能。</li>
+          <li><b>缺失：</b>人际关系困扰工具（校园霸凌、友情问题）几乎没有</li>
+        </ul>
+      </div>
+      <div class="grade-card gc-senior">
+        <h4>🌳 高中生（15-18岁）</h4>
+        <ul>
+          <li><b>心理特征：</b>压力峰值期，成就动机强，对未来高度焦虑</li>
+          <li><b>主要诉求：</b>高考规划、缓解压力、生涯方向确认</li>
+          <li><b>认知能力：</b>成人水平，能处理复杂信息</li>
+          <li><b>AI星球适配：</b>选科、生涯探索、志愿填报是最核心功能，压力报告、焦虑处理盒高度契合</li>
+          <li><b>缺失：</b>考前/考后专项情绪支持流程不完整</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>当前问题：无年级分层过滤</h3>
+    <div class="insight-box">
+      <b>基于APK代码分析：</b>代码中存在 <code>gradeCode / phaseName / phaseCode</code> 字段，说明系统已采集年级信息，但功能入口层面没有做内容过滤。一个四年级学生注册后，首页会看到「3+1+2选科分析」「志愿填报指导」等完全超出其认知范围的内容，造成困惑和无效曝光。
+    </div>
+
+    <h3>优化建议</h3>
+    <div class="rec-list">
+      <div class="rec-item">
+        <div class="rt">① 首页内容按年级动态过滤</div>
+        <div class="rd">利用已有的 gradeCode/phaseCode 数据，对不适合当前年龄段的功能模块做隐藏或"暂未开放"提示，而不是一股脑全部呈现。</div>
+      </div>
+      <div class="rec-item">
+        <div class="rt">② 设立三套内容视图（小学/初中/高中）</div>
+        <div class="rd">AI对话的引导语、测评问题、报告呈现方式均应差异化。同样是"心理测评"，小学版应图文化、游戏化；高中版可以完整呈现专业量表。</div>
+      </div>
+      <div class="rec-item">
+        <div class="rt">③ 初中生专项：人际关系模块</div>
+        <div class="rd">初中阶段最大的心理压力来源是同伴关系（校园霸凌、友情裂变、喜欢同学），但产品几乎没有针对性工具，是高价值的功能空白。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ② 家长视角 -->
+  <div class="section" id="s2">
+    <h2>👨‍👩‍👧 家长视角 & 家校协同</h2>
+    <div class="section-meta">学习机部署在校内，学生只能在学校使用；家长端是独立的微信小程序，核心功能是心理健康监测与预警通知</div>
+
+    <h3>产品使用场景确认</h3>
+    <div class="insight-box">
+      <b>学生端（学习机App）：</b>仅限校内使用，设备不出校。使用时段固定（课间/自习/心理课），每次使用时间有限。<br><br>
+      <b>家长端（微信小程序）：</b>独立存在，已开发上线。家长在家通过微信访问，主要职能是接收学校心理健康数据、查看孩子状态、接收危机预警。<br><br>
+      这意味着两端的使用场景完全分离——学生在校用，家长在家看，本质上是一套<b>学校→家长的信息通报系统</b>，而不是亲子共同使用的产品。
+    </div>
+
+    <h3>核心矛盾：隐私 vs 知情权</h3>
+    <div class="pros-cons">
+      <div class="pros">
+        <h4>✅ 学生隐私保护（倾向性）</h4>
+        <ul>
+          <li>学生在校使用时有"私人空间"感，是愿意真实表达的前提</li>
+          <li>若学生知道家长能看到所有内容，会停止真实表达</li>
+          <li>心理咨询有保密原则，AI对话内容不应对外透露</li>
+          <li>初高中生自我边界意识强，过度监控会引发对抗情绪</li>
+        </ul>
+      </div>
+      <div class="cons">
+        <h4>⚠️ 家长知情权（倾向性）</h4>
+        <ul>
+          <li>极端情绪（自伤意念）必须让家长知道并及时介入</li>
+          <li>未成年人监护责任在家长，学校有告知义务</li>
+          <li>家长是产品的间接用户，对产品的信任影响采购续费</li>
+          <li>家长若完全不知道孩子在学校用什么，容易产生不信任</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>分级隐私模型建议</h3>
+    <div class="rec-list">
+      <div class="rec-item">
+        <div class="rt">第1级：自动推送给家长（默认开启，不可关闭）</div>
+        <div class="rd">本周使用天数、完成测评数量、整体情绪健康指数趋势（只显示"稳定/有些波动/需关注"三级，不显示具体内容）。让家长知道孩子有在使用、整体状态如何。</div>
+      </div>
+      <div class="rec-item">
+        <div class="rt">第2级：学生主动开启分享（需学生同意）</div>
+        <div class="rd">具体测评报告摘要、生涯规划选科建议。学生在App内可一键发送给家长，作为亲子沟通切入点，由学生主导而非家长查看，保护学生的主动性。</div>
+      </div>
+      <div class="rec-item" style="border-color:#e03131;">
+        <div class="rt" style="color:#e03131;">第3级：危机强制通知（不可关闭，最高优先级）</div>
+        <div class="rd">AI对话或测评触发危机关键词/高风险评分时，小程序立即向家长推送预警，同时通知学校心理老师。预警内容不包含具体对话记录，只说明"检测到需要关注的情绪信号"并附操作指引。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ③ 竞品对比 -->
+  <div class="section" id="s3">
+    <h2>⚔️ 竞品对比分析</h2>
+    <div class="section-meta">本节已整合至独立的竞品深度分析文档，避免多处分散重复</div>
+
+    <div class="insight-box" style="display:flex;align-items:flex-start;gap:16px;">
+      <div style="font-size:32px;flex-shrink:0;line-height:1;">📊</div>
+      <div>
+        <div style="font-size:14px;font-weight:800;color:#3b4cca;margin-bottom:6px;">详细竞品分析 → 18_竞品深度分析.html</div>
+        <div style="font-size:13px;color:#555;line-height:1.9;">
+          六大竞品深度剖析(Headspace / Finch / 壹心理 / 简单心理 / 朝夕&林间 / 字节腾讯系)<br>
+          十维功能矩阵对比 · 战略定位四象限 · 真正威胁来自优秀C端产品而非大厂 · 三大护城河分析
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ④ 商业模式 -->
+  <div class="section" id="s4">
+    <h2>💰 商业模式分析</h2>
+    <div class="section-meta">基于APK代码中的权限常量分析</div>
+
+    <h3>商业模式判断：以 B 端（学校）采购为核心</h3>
+    <div class="insight-box">
+      <b>代码证据：</b>APK中发现三种 <code>appAuth</code> 权限常量：<br>
+      &bull; <b>ONLY_MENTAL（=1）</b>：仅开放心理健康模块<br>
+      &bull; <b>ONLY_CAREER（=2）</b>：仅开放生涯规划模块<br>
+      &bull; <b>ONLY_AI_SCREENING（=3）</b>：仅开放AI心理筛查<br>
+      &bull; <b>完整版</b>：学习机预装，随硬件销售<br><br>
+      这是典型的 <b>SaaS 分包销售模型</b>，学校按需采购模块，而非学生直接付费。
+    </div>
+
+    <h3>B端销售策略推测</h3>
+    <div class="archive-narrow-table" tabindex="0" role="region" aria-label="研究表格，可横向滚动"><table>
+      <tr><th>权限模式</th><th>目标客户</th><th>应用场景</th><th>价格定位（推测）</th></tr>
+      <tr>
+        <td>ONLY_MENTAL</td>
+        <td>学校心理老师</td>
+        <td>日常心理健康筛查与监测</td>
+        <td>基础版，学校年费</td>
+      </tr>
+      <tr>
+        <td>ONLY_CAREER</td>
+        <td>学校生涯教师</td>
+        <td>高中选科指导与志愿填报</td>
+        <td>高级版，按学生数计费</td>
+      </tr>
+      <tr>
+        <td>ONLY_AI_SCREENING</td>
+        <td>区教育局</td>
+        <td>大规模心理健康普查</td>
+        <td>批量采购，政府项目</td>
+      </tr>
+      <tr>
+        <td>完整版</td>
+        <td>学校（配合学习机）</td>
+        <td>全功能使用</td>
+        <td>硬件捆绑销售</td>
+      </tr>
+    </table></div>
+    <p style="font-size:12px;color:#999;margin-top:8px;">注：价格为推测，无公开数据</p>
+  </div>
+
+  <!-- ⑤ 体验设计基础规范 -->
+  <div class="section" id="s5">
+    <h2>🎨 体验设计基础规范</h2>
+    <div class="section-meta">面向常规小初高中生的视觉与交互基础规范建议</div>
+
+    <h3>当前能力（基于APK分析）</h3>
+    <div class="pros">
+      <h4>✅ 已有能力</h4>
+      <ul>
+        <li><b>语音识别与合成：</b>科大讯飞底层 ISE/TTS 能力，AI对话天然支持语音输入输出</li>
+        <li><b>视频日记录制：</b>提供非文字表达出口，降低使用门槛</li>
+        <li><b>图文结合测评：</b>emoji 选择和图文并排设计，视觉辨识度高</li>
+      </ul>
+    </div>
+
+    <h3>缺失功能建议</h3>
+    <div class="rec-list">
+      <div class="rec-item">
+        <div class="rt">① 字体大小与暗黑模式</div>
+        <div class="rd">在"个人中心 → 设置"增加字体大小（小/中/大）和跟随系统的暗黑模式切换，成本低但覆盖面广，对晚间高频使用场景改善明显。</div>
+      </div>
+      <div class="rec-item">
+        <div class="rt">② 信息不依赖颜色单一传达</div>
+        <div class="rd">测评结果的等级标注（如"情绪偏低"）需在颜色之外同时配文字标签或图标，保证信息传达不依赖色彩辨识（男性色弱比例约8%）。</div>
+      </div>
+      <div class="rec-item">
+        <div class="rt">③ WebView 页面字号统一</div>
+        <div class="rd">WebView 内的文字内容（报告、文章）需在 HTML 层面设置合适的基准字号（建议正文不低于 15px），避免与原生页面的字号割裂感。</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div style="text-align:center;padding:24px 0 16px;font-size:11px;color:#94a3b8;">署名已省略</div>
+</body>
+</html>

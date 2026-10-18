@@ -1,0 +1,696 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI星球 20天优化Demo · Day 03-05 竞品分析整合定稿版</title>
+  <style>
+    :root {
+      --ink: #1d2433;
+      --muted: #647083;
+      --line: #dfe6ef;
+      --soft: #f6f8fb;
+      --blue: #2f70d0;
+      --green: #2f8f6b;
+      --amber: #b97817;
+      --red: #c84d4d;
+      --violet: #6f56c9;
+      --card: #ffffff;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      line-height: 1.68;
+      background: #eef2f6;
+    }
+
+    .page {
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    aside {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 28px 22px;
+      border-right: 1px solid var(--line);
+      background: #fff;
+      overflow: auto;
+    }
+
+    aside h1 {
+      margin: 0 0 8px;
+      font-size: 18px;
+      line-height: 1.35;
+    }
+
+    aside p {
+      margin: 0 0 20px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    nav a {
+      display: block;
+      padding: 9px 10px;
+      color: #435063;
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    nav a:hover { background: var(--soft); color: var(--blue); }
+
+    main {
+      padding: 42px 52px 72px;
+      max-width: 1280px;
+    }
+
+    .hero {
+      margin-bottom: 24px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .eyebrow {
+      margin-bottom: 10px;
+      color: var(--blue);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: .02em;
+    }
+
+    .hero h2 {
+      margin: 0 0 12px;
+      font-size: 34px;
+      line-height: 1.22;
+    }
+
+    h2 {
+      margin: 34px 0 14px;
+      font-size: 25px;
+      line-height: 1.36;
+    }
+
+    h3 {
+      margin: 22px 0 10px;
+      font-size: 17px;
+    }
+
+    .summary {
+      max-width: 940px;
+      color: var(--muted);
+      font-size: 17px;
+    }
+
+    .section {
+      margin: 26px 0;
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .section h2:first-child { margin-top: 0; }
+
+    .callout {
+      margin: 18px 0;
+      padding: 16px 18px;
+      border-left: 4px solid var(--blue);
+      border-radius: 8px;
+      background: #eef5ff;
+    }
+
+    .callout strong { display: block; margin-bottom: 4px; }
+    .callout.green { border-left-color: var(--green); background: #edf8f2; }
+    .callout.amber { border-left-color: var(--amber); background: #fff7e8; }
+    .callout.red { border-left-color: var(--red); background: #fff1f1; }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin: 16px 0;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin: 16px 0;
+    }
+
+    .card {
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--card);
+    }
+
+    .card h3 { margin-top: 0; }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      margin: 0 6px 8px 0;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      background: #eaf1fb;
+      color: var(--blue);
+    }
+
+    .tag.green { background: #e9f5ef; color: var(--green); }
+    .tag.amber { background: #fff4de; color: var(--amber); }
+    .tag.red { background: #fdeeee; color: var(--red); }
+    .tag.violet { background: #f0edff; color: var(--violet); }
+
+    table {
+      width: 100%;
+      margin: 14px 0 24px;
+      border-collapse: collapse;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      font-size: 14px;
+    }
+
+    th, td {
+      padding: 11px 12px;
+      vertical-align: top;
+      border-bottom: 1px solid var(--line);
+      border-right: 1px solid var(--line);
+      text-align: left;
+    }
+
+    th {
+      color: #334155;
+      background: #f7f9fc;
+      font-weight: 700;
+    }
+
+    tr:last-child td { border-bottom: 0; }
+    th:last-child, td:last-child { border-right: 0; }
+
+    .flow {
+      margin: 26px 0;
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .flow-head {
+      margin-bottom: 16px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .flow-head h2 { margin: 0 0 8px; }
+
+    .path {
+      margin: 10px 0 0;
+      padding: 12px 14px;
+      border-radius: 8px;
+      background: var(--soft);
+      font-weight: 700;
+    }
+
+    ul, ol { padding-left: 20px; }
+    a { color: var(--blue); }
+    code { padding: 1px 5px; border-radius: 4px; background: #f1f5f9; }
+    .small { color: var(--muted); font-size: 13px; }
+    .strong { font-weight: 700; }
+
+    @media (max-width: 1020px) {
+      .page { display: block; }
+      aside { position: static; height: auto; }
+      main { padding: 28px 18px 56px; }
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+      .hero h2 { font-size: 28px; }
+      table { font-size: 13px; }
+      th, td { padding: 10px; }
+    }
+
+    @media print {
+      body { background: #fff; }
+      .page { display: block; }
+      aside { display: none; }
+      main { max-width: none; padding: 0; }
+      .section, .flow, .card, table { break-inside: avoid; }
+    }
+  </style>
+
+<link rel="stylesheet" href="../../assets/archive-report.css?v=20261014e">
+<meta name="robots" content="noindex, nofollow">
+<style id="archive-reading-layout">
+.archive-horizontal { max-width:100%; }
+.archive-horizontal:focus-visible { outline:3px solid #3358df; outline-offset:3px; }
+@media (max-width:880px) {
+ .archive-horizontal { overflow-x:auto; overscroll-behavior-x:contain; }
+ .archive-horizontal > table { min-width:650px; }
+ .sticky-nav { justify-content:flex-start; }
+ .sticky-nav a { flex:0 0 auto; }
+ 
+}
+@media print { .archive-horizontal { overflow:visible; } }
+</style>
+</head>
+<body>
+<div class="application-archive-note" role="note"><a href="../index.html#doc-flow-synthesis">← 返回研究资料库</a><p>Q3 研究整合：将竞品机制转为 Flow A/B/C 的页面、文案与验证输入。竞品细节仍待人工复核；这是设计方案依据，非学生实测、非已上线能力。</p><small>原稿：Day03-05_竞品分析整合定稿版.html</small></div>
+
+  <div class="page">
+    <aside>
+      <h1>Day 03-05<br>竞品整合定稿</h1>
+      <p>整合 Claude Code 与 Codex 输出</p>
+      <nav>
+        <a href="#final">定稿结论</a>
+        <a href="#roles">资料分工</a>
+        <a href="#pool">竞品池</a>
+        <a href="#principles">设计策略</a>
+        <a href="#flow-a">Flow A</a>
+        <a href="#flow-b">Flow B</a>
+        <a href="#flow-c">Flow C</a>
+        <a href="#avoid">不照搬清单</a>
+        <a href="#use">后续怎么用</a>
+        <a href="#sources">来源与关联文件</a>
+      </nav>
+    </aside>
+
+    <main>
+      <section class="hero" id="final">
+        <div class="eyebrow">AI星球 / 减压星球 · 20天优化Demo</div>
+        <h2>Day 03-05 · 竞品分析整合定稿版</h2>
+        <p class="summary">本文件整合 Claude Code 与 Codex 的竞品分析成果。最终结构以 Flow A/B/C 为主，因为本阶段目标不是完成一份泛竞品报告，而是为 20 天 demo 的页面设计、交互文案和测试验证提供统一依据。</p>
+      </section>
+
+      <section class="callout">
+        <strong>最终结论</strong>
+        本轮竞品分析采用“Flow 主结构 + 竞品机制分层”的方式：用 Headspace、How We Feel、Voidpet Garden、Finch 解决 Pad 首页启动中枢、低压力情绪开始和可见反馈；用 Lightly、Pooca 补足 AI 接住、反思小结和陪伴语气；用 Gemini、Replika、Woebot/Wysa 历史资料校准 AI 记忆、安全边界和未成年人适用性；用 Elevate、Buda、MindPal、Daylio/天天豆补充短任务与打卡执行细节。所有竞品机制最终都必须回到 Flow A/B/C，不再新增平行主线。
+      </section>
+
+      <section class="section" id="roles">
+        <h2>1. 两套材料如何分工</h2>
+        <div class="archive-horizontal" tabindex="0" role="region" aria-label="研究表格，可横向滚动"><table>
+          <thead>
+            <tr>
+              <th>材料类型</th>
+              <th>主要价值</th>
+              <th>在本定稿中的位置</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Claude Code 策略稿</td>
+              <td>洞察强，适合回答“为什么要这样设计”。例如 Replika 的记忆、Finch 的奖励绑定、Headspace 的首页主CTA。</td>
+              <td>作为“补充洞察层”进入各 Flow。</td>
+            </tr>
+            <tr>
+              <td>Claude Code 深度分析</td>
+              <td>更适合后续画原型时查具体流程、状态、文案、反馈细节。</td>
+              <td>作为 Day 6-8 低保真和 Day 9-13 高保真的执行素材。</td>
+            </tr>
+            <tr>
+              <td>Codex Flow 分析</td>
+              <td>按 Flow A/B/C 组织，更适合 20 天 demo 的范围、页面结构和测试指标。</td>
+              <td>作为本定稿的主骨架。</td>
+            </tr>
+            <tr>
+              <td>人工竞品体验记录</td>
+              <td>补充真实手感：首次打开是否有压力、文案是否自然、反馈是否真有价值。</td>
+              <td>作为 Day 1-5 最终封版前的校验，不改变主结构。</td>
+            </tr>
+          </tbody>
+        </table></div>
+      </section>
+
+      <section class="section" id="pool">
+        <h2>2. 竞品池 V1.0 定稿</h2>
+        <div class="archive-horizontal" tabindex="0" role="region" aria-label="研究表格，可横向滚动"><table>
+          <thead>
+            <tr>
+              <th>层级</th>
+              <th>竞品/标杆</th>
+              <th>用于哪个 Flow</th>
+              <th>学什么</th>
+              <th>不学什么</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>深跑</td>
+              <td>Finch</td>
+              <td>Flow A、Flow C</td>
+              <td>陪伴任务闭环：小行动、低压力完成、伙伴反馈、奖励来源清楚。</td>
+              <td>不照搬重宠物养成、强 streak、复杂商店和过度低幼视觉。</td>
+            </tr>
+            <tr>
+              <td>深跑</td>
+              <td>Voidpet Garden</td>
+              <td>Flow A、Flow C</td>
+              <td>情绪拟物、游戏化界面、完成后世界发生可见变化。</td>
+              <td>不扩成完整游戏、地图、收集和长期养成系统。</td>
+            </tr>
+            <tr>
+              <td>深跑</td>
+              <td>Headspace</td>
+              <td>Flow A</td>
+              <td>首页是答案不是菜单；首屏一个主行动；内容推荐服务当前状态。</td>
+              <td>不照搬成人冥想产品的冷静距离感和课程库结构。</td>
+            </tr>
+            <tr>
+              <td>深跑</td>
+              <td>How We Feel</td>
+              <td>Flow A</td>
+              <td>情绪词、颜色系统、允许说不清，降低情绪表达门槛。</td>
+              <td>不做过重情绪矩阵，不让低年级用户被词汇卡住。</td>
+            </tr>
+            <tr>
+              <td>深跑</td>
+              <td>Lightly</td>
+              <td>Flow B</td>
+              <td>AI 反思式回应：接住表达、生成小结、给温和下一步。</td>
+              <td>不输出长咨询报告，不把学生推向复杂自我分析。</td>
+            </tr>
+            <tr>
+              <td>深跑</td>
+              <td>Pooca</td>
+              <td>Flow B</td>
+              <td>新一代 AI best friend 的亲和语气、视觉靠近感和轻陪伴反馈。</td>
+              <td>不学过度亲密、关系依赖和边界不清的陪伴承诺。</td>
+            </tr>
+            <tr>
+              <td>选看</td>
+              <td>Buda / Selfcare Buddy、Elevate、Ahead</td>
+              <td>Flow B、Flow C</td>
+              <td>Buda 看伙伴陪伴；Elevate 看短训练结果解释；Ahead 看情绪教育和短练习。</td>
+              <td>只补充执行细节，不推翻深跑 6 个的主口径。</td>
+            </tr>
+            <tr>
+              <td>快速参考</td>
+              <td>Daylio、天天豆、MindPal</td>
+              <td>Flow A、Flow C</td>
+              <td>Daylio/天天豆看低成本打卡与本土语气；MindPal 看脑训练即时反馈。</td>
+              <td>不作为视觉主标杆，不用它们扩大 demo 范围。</td>
+            </tr>
+            <tr>
+              <td>边界参考</td>
+              <td>Gemini、Replika、Woebot/Wysa 历史资料</td>
+              <td>Flow B、安全边界</td>
+              <td>Gemini 看通用 AI 缺少什么结构；Replika 看可控记忆；Woebot/Wysa 看安全转介历史资料。</td>
+              <td>Woebot/Wysa 不作为现役实机主线；Replika 不学成人情感关系。</td>
+            </tr>
+          </tbody>
+        </table></div>
+      </section>
+
+      <section class="section" id="principles">
+        <h2>3. 6 条设计策略定稿</h2>
+        <div class="grid-3">
+          <div class="card">
+            <span class="tag">01</span>
+            <h3>首页是答案，不是菜单</h3>
+            <p>首屏只给一个主行动。未打卡时先问状态，已打卡后给一个与状态相关的下一步。</p>
+          </div>
+          <div class="card">
+            <span class="tag">02</span>
+            <h3>允许说不清</h3>
+            <p>情绪表达必须低压力，“说不清”是合法状态，不是异常输入。</p>
+          </div>
+          <div class="card">
+            <span class="tag green">03</span>
+            <h3>AI要接住，也要收束</h3>
+            <p>AI先回应感受，再把用户带到继续聊、练习、记录或安全支持。</p>
+          </div>
+          <div class="card">
+            <span class="tag green">04</span>
+            <h3>记忆要可控</h3>
+            <p>AI可以记得轻量情绪历史，但必须让学生知道记住了什么，并能不记或删除。</p>
+          </div>
+          <div class="card">
+            <span class="tag amber">05</span>
+            <h3>完成必须被看见</h3>
+            <p>训练、打卡、对话做完后要被首页、AI或成长记录接住，避免模块孤岛。</p>
+          </div>
+          <div class="card">
+            <span class="tag red">06</span>
+            <h3>安全边界先于情绪承诺</h3>
+            <p>不能承诺绝对保密。要温和说明：大多数分享被尊重，明确危险时优先保护安全。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="flow" id="flow-a">
+        <div class="flow-head">
+          <span class="tag">Flow A</span>
+          <span class="tag violet">必做 / 高保真</span>
+          <h2>Pad 首页启动中枢</h2>
+          <p class="path">Pad首页 → 今日状态主卡 → 情绪打卡 → AI接住 → 今日推荐/功能分流 → 小行动 → 首页回流</p>
+        </div>
+
+        <div class="archive-horizontal" tabindex="0" role="region" aria-label="研究表格，可横向滚动"><table>
+          <thead>
+            <tr>
+              <th>主参考</th>
+              <th>补充参考</th>
+              <th>降低压力</th>
+              <th>引导下一步</th>
+              <th>反馈机制</th>
+              <th>Demo 落地</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Headspace、How We Feel、Voidpet Garden</td>
+              <td>Finch、Daylio/天天豆</td>
+              <td>用“今天感觉怎么样”作为主入口，同时让 Pad 首页保留 AI、推荐、成长和功能探索空间；允许说不清。</td>
+              <td>先用主卡承接状态，再把其他功能包装成“今日相关”的 1 个主推荐 + 1-2 个次级推荐。</td>
+              <td>AI先复述状态，再解释为什么推荐这个小行动；首页回流后展示今日已记录、AI已接住、推荐待完成或已完成。</td>
+              <td>做 Pad 首页五区结构：今日状态主卡、AI伙伴侧栏、今日推荐区、成长反馈条、次级功能入口；未打卡/已打卡/完成后三态都要有。</td>
+            </tr>
+          </tbody>
+        </table></div>
+
+        <div class="callout">
+          <strong>Flow A 定稿判断</strong>
+          Flow A 不再定义为单一情绪打卡链路，而是 Pad 首页启动中枢。新版首页应该主行动清楚、信息承载丰富：用“状态识别”作为第一步，让 AI 伙伴成为承接者，让今日推荐把脑之岛、放松训练、记录等功能组织成和用户状态有关的下一步。
+        </div>
+      </section>
+
+      <section class="flow" id="flow-b">
+        <div class="flow-head">
+          <span class="tag green">Flow B</span>
+          <span class="tag violet">必做 / 高保真</span>
+          <h2>AI伙伴路径</h2>
+          <p class="path">全局AI入口 → 三IP选择/切换 → 对话回应 → 轻量记忆 → 安全边界 → 下一步建议</p>
+        </div>
+
+        <div class="archive-horizontal" tabindex="0" role="region" aria-label="研究表格，可横向滚动"><table>
+          <thead>
+            <tr>
+              <th>主参考</th>
+              <th>补充参考</th>
+              <th>降低压力</th>
+              <th>引导下一步</th>
+              <th>反馈机制</th>
+              <th>Demo 落地</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Lightly、Pooca</td>
+              <td>Gemini、Replika；Woebot/Wysa/988 只作安全边界资料</td>
+              <td>用“找谁更适合现在的我”替代“请选择AI角色”；允许只点预设话题，不强迫输入长文本。</td>
+              <td>小星陪伴，吉塔稳定，罗素拆解；每轮对话后给继续聊/练习/记录/找支持。</td>
+              <td>轻量记忆钩子 + 可控记忆 + 温和能力边界说明。</td>
+              <td>三IP选择页加入场景标签和语气示例；对话页做 2-3 轮脚本；记忆提示必须可记/不记/删除。</td>
+            </tr>
+          </tbody>
+        </table></div>
+
+        <h3>三 IP 工作流定稿</h3>
+        <div class="archive-horizontal" tabindex="0" role="region" aria-label="研究表格，可横向滚动"><table>
+          <thead>
+            <tr>
+              <th>IP</th>
+              <th>角色定位</th>
+              <th>回复结构</th>
+              <th>下一步</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>小星</td>
+              <td>陪伴型入口，适合“说不清”“想被陪陪”。</td>
+              <td>接纳 + 陪伴 + 轻问题。</td>
+              <td>继续说一句 / 记录今天状态。</td>
+            </tr>
+            <tr>
+              <td>吉塔</td>
+              <td>情绪稳定与安全支持，适合焦虑、难过、紧绷。</td>
+              <td>确认感受 + 身体稳定 + 安全边界。</td>
+              <td>呼吸练习 / 找可信成年人 / 安全支持。</td>
+            </tr>
+            <tr>
+              <td>罗素</td>
+              <td>结构化分析，适合学习压力、选择困难、目标混乱。</td>
+              <td>复述问题 + 拆小 + 形成一步计划。</td>
+              <td>列计划 / 做训练 / 记录下一步。</td>
+            </tr>
+          </tbody>
+        </table></div>
+
+        <div class="callout green">
+          <strong>Flow B 定稿判断</strong>
+          AI伙伴的竞争力不是“像真人”或“更会聊天”，而是学生能感到：它知道我现在该找谁，它记得一点点我的状态，它知道什么时候应该找更安全的支持。
+        </div>
+      </section>
+
+      <section class="flow" id="flow-c">
+        <div class="flow-head">
+          <span class="tag amber">Flow C</span>
+          <span class="tag violet">条件做 / 轻闭环</span>
+          <h2>完成反馈路径</h2>
+          <p class="path">脑之岛/测评/放松训练 → 结果解释 → 奖励来源 → 成长记录 → AI回应</p>
+        </div>
+
+        <div class="archive-horizontal" tabindex="0" role="region" aria-label="研究表格，可横向滚动"><table>
+          <thead>
+            <tr>
+              <th>主参考</th>
+              <th>补充参考</th>
+              <th>降低压力</th>
+              <th>引导下一步</th>
+              <th>反馈机制</th>
+              <th>Demo 落地</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Finch、Voidpet Garden、Elevate</td>
+              <td>Buda / Selfcare Buddy、MindPal 选看</td>
+              <td>结果不排名、不诊断、不说能力差，只说“今天练到了什么”。</td>
+              <td>完成后引导查看成长记录、让 AI 回应、明天做 1 分钟也可以。</td>
+              <td>奖励必须说明来源；IP 要说一句“我看见你完成了”。</td>
+              <td>只做轻闭环：完成页 + 结果解释 + 奖励来源 + 成长记录 + AI回应 + 首页回流。</td>
+            </tr>
+          </tbody>
+        </table></div>
+
+        <div class="callout amber">
+          <strong>Flow C 定稿判断</strong>
+          完成反馈不是“完成了 + 得分 + 奖励”，而是“我知道自己刚才做了什么、这有什么意义、它被谁看见了”。Flow C 不做完整脑之岛和完整商店，只验证完成被看见。
+        </div>
+      </section>
+
+      <section class="section" id="avoid">
+        <h2>7. 明确不照搬清单</h2>
+        <div class="archive-horizontal" tabindex="0" role="region" aria-label="研究表格，可横向滚动"><table>
+          <thead>
+            <tr>
+              <th>竞品来源</th>
+              <th>不照搬什么</th>
+              <th>原因</th>
+              <th>替代方案</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Replika / Pooca</td>
+              <td>成人情感伴侣关系、过度亲密称呼、拟人依赖。</td>
+              <td>未成年人产品要控制依恋和边界风险。</td>
+              <td>只保留可控记忆、亲和语气和清楚退出。</td>
+            </tr>
+            <tr>
+              <td>Woebot / Wysa / Rootd / MindShift</td>
+              <td>老旧视觉、成人心理工具式问卷、临床化或免责条款式表达。</td>
+              <td>它们不适合作为本轮视觉与流程主标杆，只保留安全流程资料价值。</td>
+              <td>安全边界用温和保护说明，实机主线看 Lightly / Pooca。</td>
+            </tr>
+            <tr>
+              <td>Finch / Voidpet Garden</td>
+              <td>重养成、复杂商店、收集压力、需要长期运营的完整世界系统。</td>
+              <td>20 天 demo 只验证 2-3 条核心 Flow，不能变成完整游戏系统。</td>
+              <td>保留“完成被看见”和“世界轻微变化”。</td>
+            </tr>
+            <tr>
+              <td>Daylio / 天天豆</td>
+              <td>强打卡、空洞统计、为了数据而要求用户解释清楚。</td>
+              <td>减压产品不能制造新的任务压力。</td>
+              <td>做低压力表达：说不清也可以，趋势等数据积累后再出现。</td>
+            </tr>
+            <tr>
+              <td>Elevate / MindPal / Ahead</td>
+              <td>排名、分数压迫、能力贴标签、课程化说教。</td>
+              <td>学生会把训练误解成考试和评价。</td>
+              <td>把结果转译成成长语言：今天练习了专注、放松或表达。</td>
+            </tr>
+          </tbody>
+        </table></div>
+      </section>
+
+      <section class="section" id="use">
+        <h2>8. 后续怎么用</h2>
+        <div class="archive-horizontal" tabindex="0" role="region" aria-label="研究表格，可横向滚动"><table>
+          <thead>
+            <tr>
+              <th>场景</th>
+              <th>用这份定稿的哪一段</th>
+              <th>如果需要细节，再看</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Day 1-5 封版</td>
+              <td>最终结论、竞品池定稿、6条设计策略。</td>
+              <td>Day01-05 封版检查表。</td>
+            </tr>
+            <tr>
+              <td>Day 6-8 画低保真</td>
+              <td>Flow A/B/C 的 Demo 落地列。</td>
+              <td>竞品池 V1.0 走查任务单 + Claude 历史深度分析。</td>
+            </tr>
+            <tr>
+              <td>讨论 AI 记忆</td>
+              <td>Flow B、三IP工作流、不照搬 Replika。</td>
+              <td>Lightly / Pooca 实机记录 + Replika 边界参考。</td>
+            </tr>
+            <tr>
+              <td>讨论首页</td>
+              <td>Flow A、Pad 首页中枢、首页是答案不是菜单。</td>
+              <td>Headspace、How We Feel、Voidpet Garden、Daylio/天天豆 相关拆解。</td>
+            </tr>
+            <tr>
+              <td>讨论完成反馈</td>
+              <td>Flow C、完成必须被看见。</td>
+              <td>Finch、Voidpet Garden、Elevate、Buda / MindPal 相关拆解。</td>
+            </tr>
+          </tbody>
+        </table></div>
+      </section>
+
+      <section class="section" id="sources">
+        <h2>9. 来源与关联文件</h2>
+        <p>本定稿整合以下本地资料，不覆盖原文件：</p>
+        <ul>
+          <li><code>00_竞品分析与设计策略.html</code></li>
+          <li><code>05_竞品Flow参考清单.html</code></li>
+          <li><code>核心竞品洞察汇总.html</code></li>
+          <li><code>Day03-05_竞品分析成果_Codex视角.html</code></li>
+          <li><code>Day03-05_竞品20分钟走查任务单_可填写版.html</code></li>
+        </ul>
+        <p class="small">说明：本文件是面向 20 天 demo 的整合定稿，竞品真实性和具体体验细节仍建议通过人工安装体验复核。</p>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

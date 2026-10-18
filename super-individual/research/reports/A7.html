@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI星球 · AI对话流程真实用户路径图</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', sans-serif; background: #f4f6fb; color: #1e293b; line-height: 1.6; }
+
+  .page-header { background: linear-gradient(135deg,#1e3a5f 0%,#2563eb 60%,#7c3aed 100%); color: #fff; padding: 48px 40px 40px; text-align: center; }
+  .page-header h1 { font-size: 28px; font-weight: 700; letter-spacing: 1px; margin-bottom: 10px; }
+  .page-header .subtitle { font-size: 14px; opacity: 0.8; margin-bottom: 20px; }
+  .badges { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+  .badge { background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.3); border-radius: 20px; padding: 5px 14px; font-size: 13px; font-weight: 500; }
+
+  .container { max-width: 1200px; margin: 0 auto; padding: 32px 20px 60px; }
+
+  .card { background: #fff; border-radius: 18px; box-shadow: 0 2px 16px rgba(30,58,95,0.08); padding: 28px 32px; margin-bottom: 32px; overflow: hidden; position: relative; }
+  .card::after { content: ''; display: block; clear: both; }
+
+  .intro-card { border-left: 5px solid #2563eb; }
+  .intro-card h2 { font-size: 16px; color: #2563eb; margin-bottom: 10px; }
+  .intro-card p { font-size: 14px; color: #475569; line-height: 1.8; }
+
+  .flow-section { clear: both; }
+  .flow-header { display: flex; align-items: flex-start; gap: 18px; margin-bottom: 20px; }
+  .flow-num { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 800; color: #fff; flex-shrink: 0; margin-top: 2px; }
+  .flow-num-1 { background: #2563eb; }
+  .flow-num-2 { background: #0d9488; }
+  .flow-num-3 { background: #7c3aed; }
+  .flow-num-4 { background: #d97706; }
+  .flow-num-5 { background: #dc2626; }
+  .flow-title { font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 4px; }
+  .flow-subtitle { font-size: 13px; color: #64748b; }
+  .screenshot-ref { font-size: 11px; background: #f1f5f9; color: #475569; padding: 2px 8px; border-radius: 4px; font-family: monospace; margin-top: 4px; display: inline-block; }
+
+  .flow-diagram { display: flex; flex-wrap: wrap; align-items: center; gap: 0; margin: 18px 0; clear: both; }
+  .flow-node { display: inline-flex; align-items: center; justify-content: center; padding: 8px 14px; border-radius: 10px; font-size: 12.5px; font-weight: 500; text-align: center; max-width: 140px; min-width: 80px; line-height: 1.4; position: relative; flex-shrink: 0; }
+  .fn-user { background: #dbeafe; color: #1e40af; border: 1.5px solid #93c5fd; }
+  .fn-system { background: #ede9fe; color: #5b21b6; border: 1.5px solid #c4b5fd; }
+  .fn-api { background: #ccfbf1; color: #0f766e; border: 1.5px solid #5eead4; }
+  .fn-decision { background: #fef3c7; color: #92400e; border: 1.5px solid #fcd34d; clip-path: polygon(10% 0%,90% 0%,100% 50%,90% 100%,10% 100%,0% 50%); padding: 8px 18px; }
+  .fn-special { background: #fdf4ff; color: #7e22ce; border: 1.5px solid #d8b4fe; }
+  .fn-end { background: #f0fdf4; color: #166534; border: 1.5px solid #86efac; }
+  .arrow { font-size: 18px; color: #94a3b8; padding: 0 4px; flex-shrink: 0; }
+  .tag-key { background: #ef4444; color: #fff; font-size: 10px; padding: 1px 5px; border-radius: 3px; position: absolute; top: -8px; right: -4px; font-weight: 700; white-space: nowrap; }
+
+  .branch-wrap { margin: 10px 0 10px 20px; padding: 14px 18px; background: #f8fafc; border-left: 3px solid #e2e8f0; border-radius: 0 10px 10px 0; clear: both; }
+  .branch-label { font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 8px; }
+
+  .note-box { background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 10px; padding: 14px 18px; margin-top: 14px; font-size: 13px; color: #0c4a6e; clear: both; }
+  .note-box strong { color: #0369a1; }
+  .note-box.green { background: #f0fdf4; border-color: #bbf7d0; color: #14532d; }
+  .note-box.green strong { color: #15803d; }
+
+  .section-title { font-size: 17px; font-weight: 700; color: #1e293b; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; margin-bottom: 16px; }
+
+  .screenshot-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin-top: 16px; }
+  .screenshot-item { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px; }
+  .screenshot-item h4 { font-size: 13px; font-weight: 700; color: #0f172a; margin-bottom: 8px; }
+  .screenshot-item ul { padding-left: 16px; font-size: 12px; color: #475569; line-height: 1.8; }
+
+  .footer { text-align: center; font-size: 12px; color: #94a3b8; padding: 24px; margin-top: 20px; border-top: 1px solid #e2e8f0; }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 12px; padding: 16px 20px; background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0; margin: 16px 0; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #475569; }
+  .legend-box { width: 36px; height: 20px; border-radius: 4px; border: 1.5px solid; flex-shrink: 0; }
+</style>
+
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="../../assets/archive-report.css?v=20261014e">
+</head>
+<body>
+<div class="application-archive-note" role="note"><a href="../index.html#doc-A7">← 返回研究资料库</a><strong>Q3研究基础 · 原报告阅读副本</strong><p><b>现状路径诊断 · 2026.06.17</b></p><p>历史研究/设计提案；文中评分、预测、预算与排期属于当时的分析或假设，不作为本次已实现业绩。当前采用与状态以成果档案说明为准。</p><p>实机路径描述与后续验证建议并存；危机触发语句属于测试示例，不是实际学生披露或临床有效性证明。</p><small>原稿：A7_AI对话功能现状分析_真实路径图.html</small></div>
+
+
+<div class="page-header">
+  <h1>AI星球 · AI对话流程真实用户路径图</h1>
+  <div class="subtitle">基于实际APP截图 · 完整路径 + 关键节点 + 决策分支</div>
+  <div class="badges">
+    <span class="badge">8条核心路径</span>
+    <span class="badge">真实截图验证</span>
+    <span class="badge">易用性评测范围</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- 概述 -->
+  <div class="card intro-card">
+    <h2>关于本文档</h2>
+    <p>本文档基于 <strong>真实APP截图</strong>（ai对话流程.png + 01.1_AI会话文件夹13张截图）梳理实际AI对话模块的用户流程。所有路径、节点、分支均有截图证据支撑，<strong>不含任何设计提案或构想内容</strong>。专为易用性评测提供准确的测试范围参考。</p>
+  </div>
+
+  <!-- 节点图例 -->
+  <div class="card">
+    <div class="section-title">节点图例</div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-box" style="background:#dbeafe;border-color:#93c5fd;"></div><span>用户操作</span></div>
+      <div class="legend-item"><div class="legend-box" style="background:#ede9fe;border-color:#c4b5fd;"></div><span>系统响应</span></div>
+      <div class="legend-item"><div class="legend-box" style="background:#ccfbf1;border-color:#5eead4;"></div><span>API/后端</span></div>
+      <div class="legend-item"><div class="legend-box" style="background:#fef3c7;border-color:#fcd34d;clip-path:polygon(10% 0%,90% 0%,100% 50%,90% 100%,10% 100%,0% 50%);"></div><span>决策分支</span></div>
+      <div class="legend-item"><div class="legend-box" style="background:#fdf4ff;border-color:#d8b4fe;"></div><span>特殊功能</span></div>
+      <div class="legend-item"><div class="legend-box" style="background:#f0fdf4;border-color:#86efac;"></div><span>流程结束</span></div>
+    </div>
+  </div>
+
+  <!-- 截图来源说明 -->
+  <div class="card">
+    <div class="section-title">截图来源说明</div>
+    <div class="screenshot-grid">
+      <div class="screenshot-item">
+        <h4>ai对话流程.png（6屏拼图）</h4>
+        <ul>
+          <li>左上：首页对话入口 + 小星问候</li>
+          <li>左下：小星对话内容 + 深入话题链接</li>
+          <li>中上：吉塔对话场景</li>
+          <li>中下：换装/换声音界面</li>
+          <li>右侧3屏：IP切换界面（小星/罗素/吉塔选择）</li>
+        </ul>
+      </div>
+      <div class="screenshot-item">
+        <h4>01.1_AI会话文件夹（13张）</h4>
+        <ul>
+          <li>00.首页_主页面1屏.jpg</li>
+          <li>01.对话1/2/3：语音输入、文本输入</li>
+          <li>02.1对话设置.png</li>
+          <li>02.2人物选择1/2/3.jpg</li>
+          <li>03.对话4_对话气泡进入聊愈室.jpg</li>
+          <li>04.1/2人物换装_提示/详情</li>
+          <li>首页tag心理计划_进入独立对话模块.jpg</li>
+        </ul>
+      </div>
+      <div class="screenshot-item">
+        <h4>ai对话L2.docx（5张实测截图）<span style="background:#fee2e2;color:#991b1b;font-size:10px;padding:1px 5px;border-radius:3px;font-weight:700;margin-left:6px;">新增</span></h4>
+        <ul>
+          <li>截图1：「以下为新对话」tag + 吉塔欢快情绪响应</li>
+          <li>截图2：触发词「想死」→ 吉塔L1柔性对话（肢体语言前缀）</li>
+          <li>截图3：L1续接 + 小星系统安全卡片 + 12356热线</li>
+          <li>截图4：右上角设置下拉菜单（清空聊天记录 / 切换聊天对象）+ 记录持久化对话</li>
+          <li>截图5：「以下为聊愈室总结」tag + 小星总结语 → 「以下为新对话」tag</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLOW 1: 对话入口 -->
+  <div class="card">
+    <div class="flow-header">
+      <div class="flow-num flow-num-1">1</div>
+      <div>
+        <div class="flow-title">对话入口路径 <span style="background:#fef3c7;color:#92400e;font-size:11px;padding:2px 6px;border-radius:4px;font-weight:600;margin-left:6px;">P0 必测</span></div>
+        <div class="flow-subtitle">从首页进入AI对话的主要路径</div>
+        <div><span class="screenshot-ref">00.首页_主页面1屏.jpg</span> <span class="screenshot-ref">ai对话流程.png左上</span></div>
+      </div>
+    </div>
+    <div class="flow-diagram">
+      <div class="flow-node fn-user" style="position:relative;">打开App首页<span class="tag-key">起点</span></div><div class="arrow">→</div>
+      <div class="flow-node fn-system" style="position:relative;">小星悬浮卡片<br><span style="font-size:10px">"Hi，今天感觉怎么样？"</span><span style="position:absolute;top:-10px;right:-10px;background:#f59e0b;color:#fff;font-size:9px;padding:2px 5px;border-radius:3px;font-weight:700;white-space:nowrap;">观察点</span></div><div class="arrow">→</div>
+      <div class="flow-node fn-user">点击卡片</div><div class="arrow">→</div>
+      <div class="flow-node fn-end">进入对话界面</div>
+    </div>
+    <div class="note-box green">
+      <strong>截图证据：</strong>00.首页_主页面1屏.jpg显示首页左侧有打卡卡片，中间有小星悬浮卡片对话引导。ai对话流程.png左上屏确认了小星说"Hi，今天感觉怎么样？"的引导语。底部有6个Tab：首页/探索/脑之岛/任务/咨询/朋友圈，但截图中未明确显示从「咨询」Tab进入对话的路径。
+    </div>
+    <div class="note-box" style="background:#fffbeb;border-color:#fde68a;color:#78350f;margin-top:8px;">
+      <strong>🔍 易用性评测重点：</strong><br>
+      ✓ 成功标准：15秒内找到小星卡片并点击<br>
+      ✓ 观察维度：视线扫描路径、是否遗漏卡片、首次进入的犹豫时长
+    </div>
+  </div>
+
+  <!-- FLOW 2: 语音输入对话 -->
+  <div class="card">
+    <div class="flow-header">
+      <div class="flow-num flow-num-2">2</div>
+      <div>
+        <div class="flow-title">语音输入对话流程 <span style="background:#fef3c7;color:#92400e;font-size:11px;padding:2px 6px;border-radius:4px;font-weight:600;margin-left:6px;">P0 必测</span></div>
+        <div class="flow-subtitle">按住说话 → 识别 → AI回复</div>
+        <div><span class="screenshot-ref">01.对话1_语音.jpg</span> <span class="screenshot-ref">01.对话1_语音_输入中.png</span></div>
+      </div>
+    </div>
+    <div class="flow-diagram">
+      <div class="flow-node fn-user">进入对话界面</div><div class="arrow">→</div>
+      <div class="flow-node fn-user" style="position:relative;">按住底部<br>语音按钮<span class="tag-key">关键</span><span style="position:absolute;top:-10px;right:-10px;background:#f59e0b;color:#fff;font-size:9px;padding:2px 5px;border-radius:3px;font-weight:700;white-space:nowrap;">观察点</span></div><div class="arrow">→</div>
+      <div class="flow-node fn-system">麦克风激活<br><span style="font-size:10px">波形动画</span></div><div class="arrow">→</div>
+      <div class="flow-node fn-user">说话</div><div class="arrow">→</div>
+      <div class="flow-node fn-user">松开</div>
+    </div>
+    <div class="flow-diagram">
+      <div class="flow-node fn-api">语音识别</div><div class="arrow">→</div>
+      <div class="flow-node fn-system">IP生成回复</div><div class="arrow">→</div>
+      <div class="flow-node fn-system">语音+文字<br>同步显示</div><div class="arrow">→</div>
+      <div class="flow-node fn-decision">用户可以<br>继续/切换/退出</div>
+    </div>
+    <div style="margin-top:10px;display:flex;gap:14px;flex-wrap:wrap;">
+      <div class="branch-wrap" style="flex:1;min-width:140px;border-left-color:#2563eb;">
+        <div class="branch-label" style="color:#2563eb;">▶ 路径A：继续语音对话</div>
+        <div class="flow-diagram">
+          <div class="flow-node fn-user">再次按住<br>说话</div>
+        </div>
+      </div>
+      <div class="branch-wrap" style="flex:1;min-width:140px;border-left-color:#7c3aed;">
+        <div class="branch-label" style="color:#7c3aed;">▶ 路径B：切换文本输入</div>
+        <div class="flow-diagram">
+          <div class="flow-node fn-user">点击键盘<br>图标</div><div class="arrow">→</div>
+          <div class="flow-node fn-end">转Flow 3</div>
+        </div>
+      </div>
+      <div class="branch-wrap" style="flex:1;min-width:120px;border-left-color:#94a3b8;">
+        <div class="branch-label" style="color:#64748b;">▶ 路径C：退出对话</div>
+        <div class="flow-diagram">
+          <div class="flow-node fn-user">返回首页</div>
+        </div>
+      </div>
+    </div>
+    <div class="note-box green">
+      <strong>截图证据：</strong>01.对话1_语音_输入中.png显示按住说话时的波形动画效果，IP角色（小星）在画面中央，底部有紫色圆形按钮（按住说话）。
+    </div>
+    <div class="note-box" style="background:#fffbeb;border-color:#fde68a;color:#78350f;margin-top:8px;">
+      <strong>🔍 易用性评测重点：</strong><br>
+      ✓ 成功标准：第一次按住说话成功识别<br>
+      ✓ 观察维度：是否理解「按住」交互模式、松开时机把握、是否误以为是点击
+    </div>
+  </div>
+
+  <!-- FLOW 3: 文本输入对话 -->
+  <div class="card flow-section">
+    <div class="flow-header">
+      <div class="flow-num flow-num-3">3</div>
+      <div>
+        <div class="flow-title">文本输入对话流程 <span style="background:#fef3c7;color:#92400e;font-size:11px;padding:2px 6px;border-radius:4px;font-weight:600;margin-left:6px;">P0 必测</span></div>
+        <div class="flow-subtitle">切换输入模式 → 键盘输入 → 发送</div>
+        <div><span class="screenshot-ref">01.对话2_文本输入.jpg</span> <span class="screenshot-ref">01.对话3_文本输入_唤起键盘.png</span></div>
+      </div>
+    </div>
+    <div class="flow-diagram">
+      <div class="flow-node fn-user">在对话界面</div><div class="arrow">→</div>
+      <div class="flow-node fn-user">点击切换图标</div><div class="arrow">→</div>
+      <div class="flow-node fn-system" style="position:relative;">键盘弹起<br><span style="font-size:10px">IP缩小</span><span style="position:absolute;top:-10px;right:-10px;background:#f59e0b;color:#fff;font-size:9px;padding:2px 5px;border-radius:3px;font-weight:700;white-space:nowrap;">观察点</span></div><div class="arrow">→</div>
+      <div class="flow-node fn-user">输入文字</div>
+    </div>
+    <div class="flow-diagram">
+      <div class="flow-node fn-user">点击发送</div><div class="arrow">→</div>
+      <div class="flow-node fn-system">IP生成回复</div><div class="arrow">→</div>
+      <div class="flow-node fn-decision">继续输入<br>点链接<br>切换/退出</div>
+    </div>
+    <div style="margin-top:10px;display:flex;gap:14px;flex-wrap:wrap;">
+      <div class="branch-wrap" style="flex:1;min-width:140px;border-left-color:#2563eb;">
+        <div class="branch-label" style="color:#2563eb;">▶ 路径A：继续文本对话</div>
+        <div class="flow-diagram">
+          <div class="flow-node fn-user">继续输入<br>文字</div>
+        </div>
+      </div>
+      <div class="branch-wrap" style="flex:1;min-width:160px;border-left-color:#0d9488;">
+        <div class="branch-label" style="color:#0d9488;">▶ 路径B：点击深入话题</div>
+        <div class="flow-diagram">
+          <div class="flow-node fn-user" style="position:relative;">点击蓝色<br>文字链接<span style="position:absolute;top:-10px;right:-10px;background:#f59e0b;color:#fff;font-size:9px;padding:2px 5px;border-radius:3px;font-weight:700;white-space:nowrap;">观察点</span></div><div class="arrow">→</div>
+          <div class="flow-node fn-system">展开主题<br>详情</div>
+        </div>
+      </div>
+      <div class="branch-wrap" style="flex:1;min-width:140px;border-left-color:#7c3aed;">
+        <div class="branch-label" style="color:#7c3aed;">▶ 路径C：切换语音输入</div>
+        <div class="flow-diagram">
+          <div class="flow-node fn-user">点击麦克风<br>图标</div><div class="arrow">→</div>
+          <div class="flow-node fn-end">转Flow 2</div>
+        </div>
+      </div>
+      <div class="branch-wrap" style="flex:1;min-width:120px;border-left-color:#94a3b8;">
+        <div class="branch-label" style="color:#64748b;">▶ 路径D：退出对话</div>
+        <div class="flow-diagram">
+          <div class="flow-node fn-user">返回首页</div>
+        </div>
+      </div>
+    </div>
+    <div class="note-box green">
+      <strong>截图证据：</strong>01.对话3_文本输入_唤起键盘.png显示键盘弹起后，IP角色仍在上方但缩小，底部是输入框+发送按钮。ai对话流程.png左下屏显示小星的长文本回复中包含3个蓝色可点击链接（深入话题）。
+    </div>
+    <div class="note-box" style="background:#fffbeb;border-color:#fde68a;color:#78350f;margin-top:8px;">
+      <strong>🔍 易用性评测重点：</strong><br>
+      ✓ 成功标准：找到切换图标并成功发送消息<br>
+      ✓ 观察维度：IP缩小是否引起困惑（"IP消失了？"）、蓝色链接的可发现性
+    </div>
+  </div>
+
+  <!-- FLOW 4: IP切换流程 -->
+  <div class="card flow-section">
+    <div class="flow-header">
+      <div class="flow-num flow-num-4">4</div>
+      <div>
+        <div class="flow-title">IP切换流程 <span style="background:#fef3c7;color:#92400e;font-size:11px;padding:2px 6px;border-radius:4px;font-weight:600;margin-left:6px;">P0 必测</span></div>
+        <div class="flow-subtitle">小星🤍 / 吉塔🐼 / 罗素🐳 三选一</div>
+        <div><span class="screenshot-ref">02.1对话设置.png</span> <span class="screenshot-ref">02.2人物选择1/2/3.jpg</span> <span class="screenshot-ref">ai对话流程.png右侧3屏</span></div>
+      </div>
+    </div>
+    <div class="flow-diagram">
+      <div class="flow-node fn-user">在对话界面</div><div class="arrow">→</div>
+      <div class="flow-node fn-user">点击右上角<br>设置按钮</div><div class="arrow">→</div>
+      <div class="flow-node fn-system">弹出IP选择</div><div class="arrow">→</div>
+      <div class="flow-node fn-user" style="position:relative;">浏览3个IP<span class="tag-key">关键</span><span style="position:absolute;top:-10px;right:-10px;background:#f59e0b;color:#fff;font-size:9px;padding:2px 5px;border-radius:3px;font-weight:700;white-space:nowrap;">观察点</span></div>
+    </div>
+    <div class="flow-diagram">
+      <div class="flow-node fn-user">选择目标IP</div><div class="arrow">→</div>
+      <div class="flow-node fn-user">点击「切换陪聊」</div><div class="arrow">→</div>
+      <div class="flow-node fn-system">IP切换完成</div><div class="arrow">→</div>
+      <div class="flow-node fn-end">返回对话界面<br><span style="font-size:10px">可继续对话</span></div>
+    </div>
+    <div class="note-box green">
+      <strong>截图证据：</strong>ai对话流程.png右侧3屏展示了完整的IP选择界面。每个IP有独立介绍页：小星（白色棉花糖+星星天线）、罗素（蓝色鲸鱼夹着书）、吉塔（熊猫抱着爱心）。每页底部有蓝色「切换陪聊」按钮。02.2人物选择1/2/3.jpg也验证了这个流程。<br><br>
+      <strong>⚑ 补充（来自L2截图4）：</strong>对话界面右上角为下拉菜单（非独立页面），含「切换聊天对象」和「清空聊天记录」两个选项。「切换聊天对象」即触发IP选择流程；「清空聊天记录」清空当前对话框全部历史。
+    </div>
+    <div class="note-box" style="background:#fffbeb;border-color:#fde68a;color:#78350f;margin-top:8px;">
+      <strong>🔍 易用性评测重点：</strong><br>
+      ✓ 成功标准：30秒内找到设置入口并完成切换<br>
+      ✓ 观察维度：是否理解三个IP的性格差异（通用陪伴/情绪疗愈/生涯规划）、浏览时长
+    </div>
+  </div>
+
+  <!-- FLOW 5: 聊愈室触发 -->
+  <div class="card flow-section">
+    <div class="flow-header">
+      <div class="flow-num flow-num-5">5</div>
+      <div>
+        <div class="flow-title">聊愈室触发 → 详情页完整流程 <span style="background:#dbeafe;color:#1e40af;font-size:11px;padding:2px 6px;border-radius:4px;font-weight:600;margin-left:6px;">P1 建议测</span></div>
+        <div class="flow-subtitle">对话气泡特殊入口 → 沉浸式客厅场景 · 支持形象/声音切换</div>
+        <div>
+          <span class="screenshot-ref">03.对话4_对话气泡进入聊愈室.jpg</span>
+          <span class="screenshot-ref">03.对话4_聊愈室详情页/首页.png</span>
+          <span class="screenshot-ref">03.对话4_聊愈室详情页/形象-01.png</span>
+          <span class="screenshot-ref">03.对话4_聊愈室详情页/切换声音.png</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="font-size:12px;font-weight:700;color:#475569;margin:14px 0 6px;">第一段：触发入口</div>
+    <div class="flow-diagram">
+      <div class="flow-node fn-user">与IP对话中</div><div class="arrow">→</div>
+      <div class="flow-node fn-system" style="position:relative;">人物头上冒出<br>【进入聊愈室】按钮<span class="tag-key">触发</span><span style="position:absolute;top:-10px;right:-10px;background:#f59e0b;color:#fff;font-size:9px;padding:2px 5px;border-radius:3px;font-weight:700;white-space:nowrap;">观察点</span></div><div class="arrow">→</div>
+      <div class="flow-node fn-user">点击按钮</div><div class="arrow">→</div>
+      <div class="flow-node fn-special">进入聊愈室<br>详情页</div>
+    </div>
+
+    <div style="font-size:12px;font-weight:700;color:#475569;margin:14px 0 6px;">第二段：详情页落地（沉浸式客厅背景）</div>
+    <div class="flow-diagram">
+      <div class="flow-node fn-system">小星出现<br><span style="font-size:10px">客厅场景</span></div><div class="arrow">→</div>
+      <div class="flow-node fn-system">引导语气泡<br><span style="font-size:10px">「说出"切换声音"<br>"切换形象"」</span></div><div class="arrow">→</div>
+      <div class="flow-node fn-decision">开始聊天<br>or<br>查看资源</div>
+    </div>
+    <div style="margin-top:10px;display:flex;gap:14px;flex-wrap:wrap;">
+      <div class="branch-wrap" style="flex:2;min-width:260px;border-left-color:#2563eb;">
+        <div class="branch-label" style="color:#2563eb;">▶ 路径A：直接开始聊天</div>
+        <div class="flow-diagram">
+          <div class="flow-node fn-user">点击「开始聊天」</div><div class="arrow">→</div>
+          <div class="flow-node fn-system">进入对话<br><span style="font-size:10px">语音唤起「请开始说话」</span></div><div class="arrow">→</div>
+          <div class="flow-node fn-end">正常对话流程</div>
+        </div>
+      </div>
+      <div class="branch-wrap" style="flex:1;min-width:160px;border-left-color:#0d9488;">
+        <div class="branch-label" style="color:#0d9488;">▶ 路径B：查看疗愈资源</div>
+        <div class="flow-diagram">
+          <div class="flow-node fn-user">点击「查看资源」</div><div class="arrow">→</div>
+          <div class="flow-node fn-user">查看推荐<br>疗愈资源</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="font-size:12px;font-weight:700;color:#475569;margin:14px 0 6px;">第三段：对话中的个性化设置</div>
+    <div style="display:flex;gap:14px;flex-wrap:wrap;">
+      <div class="branch-wrap" style="flex:1;min-width:240px;border-left-color:#7c3aed;">
+        <div class="branch-label" style="color:#7c3aed;">▶ 切换形象（右上角「形象」按钮 / 语音指令）</div>
+        <div class="flow-diagram">
+          <div class="flow-node fn-system" style="position:relative;">弹出形象面板<span style="position:absolute;top:-10px;right:-10px;background:#f59e0b;color:#fff;font-size:9px;padding:2px 5px;border-radius:3px;font-weight:700;white-space:nowrap;">观察点</span></div><div class="arrow">→</div>
+          <div class="flow-node fn-user">选择IP<br><span style="font-size:10px">云朵小星<br>蓝色鲸鱼<br>胖嘟嘟熊猫</span></div><div class="arrow">→</div>
+          <div class="flow-node fn-user">点击「选好了」</div><div class="arrow">→</div>
+          <div class="flow-node fn-system">场景中IP<br>即时更换</div>
+        </div>
+      </div>
+      <div class="branch-wrap" style="flex:1;min-width:240px;border-left-color:#d97706;">
+        <div class="branch-label" style="color:#d97706;">▶ 切换声音（右上角「声音」按钮 / 语音指令）</div>
+        <div class="flow-diagram">
+          <div class="flow-node fn-system" style="position:relative;">弹出声音面板<span style="position:absolute;top:-10px;right:-10px;background:#f59e0b;color:#fff;font-size:9px;padding:2px 5px;border-radius:3px;font-weight:700;white-space:nowrap;">观察点</span></div><div class="arrow">→</div>
+          <div class="flow-node fn-user">选择声线<br><span style="font-size:10px">温柔姐姐<br>邻家女孩<br>活泼男孩<br>可爱妹妹</span></div><div class="arrow">→</div>
+          <div class="flow-node fn-user">点击「选好了」</div><div class="arrow">→</div>
+          <div class="flow-node fn-system">IP声音<br>即时更换</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="font-size:12px;font-weight:700;color:#475569;margin:14px 0 6px;">第四段：退出</div>
+    <div class="flow-diagram">
+      <div class="flow-node fn-user" style="position:relative;">点击左上角<br>「结束对话」<span class="tag-key">退出</span></div><div class="arrow">→</div>
+      <div class="flow-node fn-system">系统插入标签<br>「以下为聊愈室总结」</div><div class="arrow">→</div>
+      <div class="flow-node fn-end">返回普通对话界面</div>
+    </div>
+
+    <div class="note-box" style="margin-top:14px;">
+      <strong>触发条件（截图推断）：</strong>03.对话4_对话气泡进入聊愈室.jpg 显示按钮出现在IP人物头顶上方，触发时机推测：① 检测到负向情绪/困扰表达；② emotionScore 达到阈值（APK字段推断）。吉塔🐼为主要触发场景。
+    </div>
+    <div class="note-box green" style="margin-top:8px;">
+      <strong>截图证据（详情页）：</strong>03.对话4_聊愈室详情页/ 共7张截图证实：① 沉浸式客厅背景，小星居中；② 「开始聊天」蓝色主按钮 + 「查看资源」；③ 右上角「形象」「声音」双圆形切换按钮；④ 形象面板：云朵小星/蓝色鲸鱼/胖嘟嘟熊猫三选一；⑤ 声音面板：温柔姐姐/邻家女孩/活泼男孩/可爱妹妹四选一；⑥ 语音唤起气泡「请开始说话，将在这里显示文字」；⑦ 「结束对话」在左上角。均含水印「内容由AI生成 仅供参考」。
+    </div>
+    <div class="note-box" style="margin-top:8px;">
+      <strong>⚠️ 无固定入口：</strong>截图中未发现聊愈室的底部Tab或首页固定入口，确认为<strong>情境化被动触发</strong>机制——仅在对话中满足条件时，才由系统主动弹出入口按钮。
+    </div>
+    <div class="note-box" style="background:#fffbeb;border-color:#fde68a;color:#78350f;margin-top:8px;">
+      <strong>🔍 易用性评测重点：</strong><br>
+      ✓ 成功标准：注意到按钮并主动点击进入<br>
+      ✓ 观察维度：<br>
+      &nbsp;&nbsp;• 聊愈室气泡按钮的视觉辨识度（能否与普通气泡区分？）<br>
+      &nbsp;&nbsp;• 进入后场景沉浸感（客厅背景是否产生情境转换感知？）<br>
+      &nbsp;&nbsp;• 右上角两个圆形按钮的可发现性（是否易找？）<br>
+      &nbsp;&nbsp;• 语音指令"切换形象""切换声音"的可发现性（用户是否会主动尝试？）
+    </div>
+  </div>
+
+  <!-- FLOW 6: 换装流程 -->
+  <div class="card flow-section">
+    <div class="flow-header">
+      <div class="flow-num" style="background:#16a34a;">6</div>
+      <div>
+        <div class="flow-title">人物换装 + 换声音流程 <span style="background:#dbeafe;color:#1e40af;font-size:11px;padding:2px 6px;border-radius:4px;font-weight:600;margin-left:6px;">P1 建议测</span></div>
+        <div class="flow-subtitle">解锁提示 → 换装详情 → 确认应用</div>
+        <div><span class="screenshot-ref">04.1人物换装_提示.png</span> <span class="screenshot-ref">04.2人物换装_详情.jpg</span> <span class="screenshot-ref">ai对话流程.png中下</span></div>
+      </div>
+    </div>
+    <div class="flow-diagram">
+      <div class="flow-node fn-system" style="position:relative;">触发换装解锁<br><span style="font-size:10px">成就/打卡达标</span><span style="position:absolute;top:-10px;right:-10px;background:#f59e0b;color:#fff;font-size:9px;padding:2px 5px;border-radius:3px;font-weight:700;white-space:nowrap;">观察点</span></div><div class="arrow">→</div>
+      <div class="flow-node fn-system">弹出提示Modal</div><div class="arrow">→</div>
+      <div class="flow-node fn-decision">查看换装<br>or<br>稍后处理</div>
+    </div>
+    <div style="margin-top:12px;display:flex;gap:16px;flex-wrap:wrap;">
+      <div class="branch-wrap" style="flex:1;min-width:280px;border-left-color:#16a34a;">
+        <div class="branch-label" style="color:#16a34a;">▶ 路径A：立即查看并换装</div>
+        <div class="flow-diagram">
+          <div class="flow-node fn-user">点击「查看」</div><div class="arrow">→</div>
+          <div class="flow-node fn-system">进入换装详情页<br><span style="font-size:10px">声音/服饰Tab</span></div><div class="arrow">→</div>
+          <div class="flow-node fn-user">选择服饰/声音</div><div class="arrow">→</div>
+          <div class="flow-node fn-user">确认更换</div><div class="arrow">→</div>
+          <div class="flow-node fn-system">IP外观更新</div><div class="arrow">→</div>
+          <div class="flow-node fn-end">返回对话</div>
+        </div>
+      </div>
+      <div class="branch-wrap" style="flex:1;min-width:180px;border-left-color:#94a3b8;">
+        <div class="branch-label" style="color:#64748b;">▶ 路径B：稍后处理</div>
+        <div class="flow-diagram">
+          <div class="flow-node fn-user">关闭弹窗</div><div class="arrow">→</div>
+          <div class="flow-node fn-end">继续对话</div>
+        </div>
+      </div>
+    </div>
+    <div class="note-box green">
+      <strong>截图证据：</strong>ai对话流程.png中下屏显示换装界面有两个Tab：「声音」和「服饰」，可以选择眼镜、帽子等配件。04.1人物换装_提示.png显示解锁提示弹窗，04.2人物换装_详情.jpg显示完整的换装选择界面（多件衣服可选，已解锁/未解锁状态区分）。
+    </div>
+    <div class="note-box" style="background:#fffbeb;border-color:#fde68a;color:#78350f;margin-top:8px;">
+      <strong>🔍 易用性评测重点：</strong><br>
+      ✓ 成功标准：找到解锁的服饰并成功更换<br>
+      ✓ 观察维度：换装弹窗的打断感（是否觉得被打扰？）、已解锁/未解锁状态是否清晰
+    </div>
+  </div>
+
+  <!-- FLOW 7: 对话记录管理 -->
+  <div class="card flow-section">
+    <div class="flow-header">
+      <div class="flow-num" style="background:#0891b2;">7</div>
+      <div>
+        <div class="flow-title">对话记录管理流程 <span style="background:#dbeafe;color:#1e40af;font-size:11px;padding:2px 6px;border-radius:4px;font-weight:600;margin-left:6px;">P1 建议测</span></div>
+        <div class="flow-subtitle">会话标签隔断 · 跨IP记录混录 · 持久化存储 · 主动清空</div>
+        <div><span class="screenshot-ref">ai对话L2截图4</span> <span class="screenshot-ref">ai对话L2截图5</span></div>
+      </div>
+    </div>
+
+    <div style="font-size:12px;font-weight:700;color:#475569;margin:14px 0 6px;">第一段：会话标签隔断机制</div>
+    <div class="flow-diagram">
+      <div class="flow-node fn-user">开始新一轮对话<br><span style="font-size:10px">重开App / 重新进入</span></div><div class="arrow">→</div>
+      <div class="flow-node fn-api">后端判断为<br>新会话</div><div class="arrow">→</div>
+      <div class="flow-node fn-special" style="position:relative;">插入标签<br>「以下为新对话」<span style="position:absolute;top:-10px;right:-10px;background:#f59e0b;color:#fff;font-size:9px;padding:2px 5px;border-radius:3px;font-weight:700;white-space:nowrap;">观察点</span></div><div class="arrow">→</div>
+      <div class="flow-node fn-system">显示在对话气泡列表中<br><span style="font-size:10px">无时间戳，类豆包设计</span></div>
+    </div>
+    <div style="margin-top:8px;" class="note-box">
+      <strong>两种标签（L2截图证据）：</strong>「以下为新对话」——新会话起点分隔线；「以下为聊愈室总结」——结束聊愈室时由小星自动总结并插入，见Flow 5退出节点。两类标签均<strong>无时间戳</strong>，仅作隔断标记。
+    </div>
+
+    <div style="font-size:12px;font-weight:700;color:#475569;margin:14px 0 6px;">第二段：跨IP记录混录</div>
+    <div class="flow-diagram">
+      <div class="flow-node fn-user">当前IP：吉塔<br>对话若干轮</div><div class="arrow">→</div>
+      <div class="flow-node fn-user">右上角菜单<br>→「切换聊天对象」</div><div class="arrow">→</div>
+      <div class="flow-node fn-user">选择小星</div><div class="arrow">→</div>
+      <div class="flow-node fn-system" style="position:relative;">对话框保留所有历史<br><span style="font-size:10px">吉塔+小星头像混排</span><span class="tag-key">⚠️</span></div><div class="arrow">→</div>
+      <div class="flow-node fn-end">继续与小星对话</div>
+    </div>
+    <div class="note-box" style="background:#fff7ed;border-color:#fed7aa;color:#7c2d12;margin-top:8px;">
+      <strong>⚠️ 设计隐患：</strong>切换IP不清空记录，导致对话列表出现不同IP头像混排的视觉跳跃。用户可能困惑「谁在回我话？」。AI本身无跨会话记忆（P3痛点），但界面上的记录物理持久——记录存在≠AI记得，造成认知错位风险。
+    </div>
+
+    <div style="font-size:12px;font-weight:700;color:#475569;margin:14px 0 6px;">第三段：主动清空记录</div>
+    <div class="flow-diagram">
+      <div class="flow-node fn-user">点击右上角<br>下拉菜单</div><div class="arrow">→</div>
+      <div class="flow-node fn-user">选择<br>「清空聊天记录」</div><div class="arrow">→</div>
+      <div class="flow-node fn-decision">确认弹窗<br>（推断）</div>
+    </div>
+    <div style="margin-top:10px;display:flex;gap:14px;flex-wrap:wrap;">
+      <div class="branch-wrap" style="flex:1;min-width:200px;border-left-color:#dc2626;">
+        <div class="branch-label" style="color:#dc2626;">▶ 路径A：确认清空</div>
+        <div class="flow-diagram">
+          <div class="flow-node fn-api">清空当前对话框<br>全部历史</div><div class="arrow">→</div>
+          <div class="flow-node fn-end">对话框归零</div>
+        </div>
+      </div>
+      <div class="branch-wrap" style="flex:1;min-width:160px;border-left-color:#94a3b8;">
+        <div class="branch-label" style="color:#64748b;">▶ 路径B：取消</div>
+        <div class="flow-diagram">
+          <div class="flow-node fn-end">记录不变</div>
+        </div>
+      </div>
+    </div>
+    <div class="note-box green" style="margin-top:8px;">
+      <strong>截图证据：</strong>ai对话L2截图4 确认右上角为下拉菜单，包含「清空聊天记录」和「切换聊天对象」两项。截图5 显示「以下为聊愈室总结」→小星总结语→「以下为新对话」的完整标签序列，证实记录持久化存储且标签视觉连续。
+    </div>
+    <div class="note-box" style="background:#fffbeb;border-color:#fde68a;color:#78350f;margin-top:8px;">
+      <strong>🔍 易用性评测重点：</strong><br>
+      ✓ 成功标准：用户能找到清空入口并理解操作后果<br>
+      ✓ 观察维度：<br>
+      &nbsp;&nbsp;• 用户是否注意到「以下为新对话」标签的隔断意图？<br>
+      &nbsp;&nbsp;• 跨IP混排头像是否造成「谁在回我话」困惑？<br>
+      &nbsp;&nbsp;• 是否主动尝试清空记录？清空前是否犹豫（数据丢失担忧）？
+    </div>
+  </div>
+
+  <!-- FLOW 8: 极端情绪词 → L1危机响应 -->
+  <div class="card flow-section">
+    <div class="flow-header">
+      <div class="flow-num flow-num-5">8</div>
+      <div>
+        <div class="flow-title">极端情绪词 → 危机响应流程 <span style="background:#fee2e2;color:#991b1b;font-size:11px;padding:2px 6px;border-radius:4px;font-weight:600;margin-left:6px;">P0 必测</span></div>
+        <div class="flow-subtitle">关键词检测 → IP柔性对话（L1）+ 系统安全卡片（L2）→ 12356热线</div>
+        <div><span class="screenshot-ref">ai对话L2截图2</span> <span class="screenshot-ref">ai对话L2截图3</span></div>
+      </div>
+    </div>
+
+    <div style="font-size:12px;font-weight:700;color:#475569;margin:14px 0 6px;">第一段：触发</div>
+    <div class="flow-diagram">
+      <div class="flow-node fn-user" style="position:relative;">用户输入极端词<br><span style="font-size:10px">「想死」等高危关键词</span><span class="tag-key">触发</span></div><div class="arrow">→</div>
+      <div class="flow-node fn-api" style="position:relative;">系统关键词<br>匹配检测<span style="position:absolute;top:-10px;right:-10px;background:#f59e0b;color:#fff;font-size:9px;padding:2px 5px;border-radius:3px;font-weight:700;white-space:nowrap;">后台</span></div><div class="arrow">→</div>
+      <div class="flow-node fn-decision">触发<br>危机响应<br>双层机制</div>
+    </div>
+
+    <div style="font-size:12px;font-weight:700;color:#475569;margin:14px 0 6px;">第二段：L1 — IP柔性对话（用户可见）</div>
+    <div class="flow-diagram">
+      <div class="flow-node fn-special" style="position:relative;">IP切换语气<br><span style="font-size:10px">吉塔为主场景</span><span style="position:absolute;top:-10px;right:-10px;background:#f59e0b;color:#fff;font-size:9px;padding:2px 5px;border-radius:3px;font-weight:700;white-space:nowrap;">观察点</span></div><div class="arrow">→</div>
+      <div class="flow-node fn-system">肢体语言前缀<br><span style="font-size:10px">「轻轻握住你的手，<br>掌心传来温热的力量」</span></div><div class="arrow">→</div>
+      <div class="flow-node fn-system">共情回应<br><span style="font-size:10px">接住情绪<br>邀请倾诉</span></div><div class="arrow">→</div>
+      <div class="flow-node fn-system">建议联系<br>专业人士</div>
+    </div>
+
+    <div style="font-size:12px;font-weight:700;color:#475569;margin:14px 0 6px;">第三段：L2 — 系统安全卡片（小星推送，用户可见）</div>
+    <div class="flow-diagram">
+      <div class="flow-node fn-api">系统独立触发<br>安全卡片</div><div class="arrow">→</div>
+      <div class="flow-node fn-system" style="position:relative;">小星Avatar推送<br><span style="font-size:10px">（无论当前IP是谁）</span><span class="tag-key">关键</span></div><div class="arrow">→</div>
+      <div class="flow-node fn-system">情感支持文字<br>+ 12356热线<br><span style="font-size:10px">全国心理援助热线</span></div><div class="arrow">→</div>
+      <div class="flow-node fn-end">用户可<br>继续对话</div>
+    </div>
+
+    <div style="margin-top:10px;display:flex;gap:14px;flex-wrap:wrap;">
+      <div class="branch-wrap" style="flex:1;min-width:200px;border-left-color:#dc2626;">
+        <div class="branch-label" style="color:#dc2626;">▶ 用户点击12356热线</div>
+        <div class="flow-diagram">
+          <div class="flow-node fn-user">拨打热线</div><div class="arrow">→</div>
+          <div class="flow-node fn-end">跳出App<br>进入电话</div>
+        </div>
+      </div>
+      <div class="branch-wrap" style="flex:1;min-width:200px;border-left-color:#7c3aed;">
+        <div class="branch-label" style="color:#7c3aed;">▶ 用户继续对话</div>
+        <div class="flow-diagram">
+          <div class="flow-node fn-user">忽略卡片<br>继续输入</div><div class="arrow">→</div>
+          <div class="flow-node fn-system">IP持续<br>柔性陪伴模式</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="note-box" style="margin-top:14px;">
+      <strong>分级说明：</strong>截图所示均为<strong>用户端可见的 L1+L2 响应</strong>。L3（教师黄色提醒）为后台行为，学生端不可见，不在本流程图范围内。L1与L2同时触发，非顺序先后。
+    </div>
+    <div class="note-box green" style="margin-top:8px;">
+      <strong>截图证据：</strong>ai对话L2截图2 证实：吉塔在「想死」触发后使用肢体语言前缀「轻轻握住你的手，掌心传来温热的力量」，随后共情询问情绪来源，语气从正常对话切换为柔性陪伴模式。ai对话L2截图3 证实：小星系统安全卡片出现在同一对话框中（当前IP为吉塔），卡片底部含12356全国心理援助热线链接。
+    </div>
+    <div class="note-box" style="background:#fff1f2;border-color:#fecdd3;color:#881337;margin-top:8px;">
+      <strong>⚠️ 设计风险：</strong>L1+L2同时出现在同一对话框中，视觉上有吉塔柔性回复 + 小星安全卡片两个发言者并列。对于正在情绪中的用户，双来源信息可能造成<strong>认知负担</strong>或「被打断感」。建议评测时专项观察用户的情绪反应与阅读顺序。
+    </div>
+    <div class="note-box" style="background:#fffbeb;border-color:#fde68a;color:#78350f;margin-top:8px;">
+      <strong>🔍 易用性评测重点（敏感场景，需特殊伦理设计）：</strong><br>
+      ✓ 不建议在常规可用性测试中直接触发危机词，须单独设计伦理安全的测试场景<br>
+      ✓ 可使用截图呈现方式代替真实触发，收集用户对响应界面的理解度与情感反应<br>
+      ✓ 观察维度：<br>
+      &nbsp;&nbsp;• 吉塔肢体语言前缀是否被感知为「温暖」还是「奇怪」？<br>
+      &nbsp;&nbsp;• 小星安全卡片是否与吉塔回复产生视觉竞争/混乱？<br>
+      &nbsp;&nbsp;• 12356热线的可信度感知（是否会真的拨打？）
+    </div>
+  </div>
+
+  <!-- 易用性评测范围 -->
+  <div class="card">
+    <div class="section-title">易用性评测范围建议（基于真实流程）</div>
+    <div class="screenshot-grid">
+      <div class="screenshot-item">
+        <h4>P0 - 核心路径（必测）</h4>
+        <ul>
+          <li><strong>Flow 1:</strong> 从首页找到对话入口并成功进入
+            <div style="font-size:11px;color:#64748b;margin-top:2px;">✓ 成功标准：15秒内找到小星卡片并点击 | 观察：视线扫描路径、是否遗漏卡片</div>
+          </li>
+          <li><strong>Flow 2:</strong> 完成一次语音输入对话（按住-说话-松开）
+            <div style="font-size:11px;color:#64748b;margin-top:2px;">✓ 成功标准：第一次按住说话成功识别 | 观察：是否理解「按住」交互、松开时机</div>
+          </li>
+          <li><strong>Flow 3:</strong> 切换到文本模式并发送消息
+            <div style="font-size:11px;color:#64748b;margin-top:2px;">✓ 成功标准：找到切换图标并成功发送 | 观察：IP缩小是否引起困惑</div>
+          </li>
+          <li><strong>Flow 4:</strong> 切换IP并完成一轮对话
+            <div style="font-size:11px;color:#64748b;margin-top:2px;">✓ 成功标准：30秒内找到设置入口并切换 | 观察：是否理解三个IP的差异</div>
+          </li>
+          <li><strong>Flow 8:</strong> 危机响应界面理解度测试（截图呈现方式）
+            <div style="font-size:11px;color:#64748b;margin-top:2px;">✓ 成功标准：用户能识别12356为可用求助热线 | 观察：吉塔+小星双来源是否引起困惑；<span style="color:#dc2626;">须独立伦理设计，不得在常规测试中真实触发</span></div>
+          </li>
+        </ul>
+      </div>
+      <div class="screenshot-item">
+        <h4>P1 - 重要功能（建议测）</h4>
+        <ul>
+          <li><strong>Flow 5:</strong> 识别聊愈室气泡入口 → 进入沉浸场景 → 完成形象/声音切换 → 结束对话
+            <div style="font-size:11px;color:#64748b;margin-top:2px;">✓ 成功标准：注意到按钮并主动点击 | 观察：是否发现右上角两个圆形按钮、是否尝试语音指令</div>
+          </li>
+          <li><strong>Flow 6:</strong> 响应换装提示并完成一次换装
+            <div style="font-size:11px;color:#64748b;margin-top:2px;">✓ 成功标准：找到解锁的服饰并成功更换 | 观察：是否觉得弹窗打断</div>
+          </li>
+          <li><strong>Flow 7:</strong> 理解「以下为新对话」标签含义 → 主动找到清空入口
+            <div style="font-size:11px;color:#64748b;margin-top:2px;">✓ 成功标准：能解释标签意图并完成清空操作 | 观察：跨IP混排头像是否造成困惑</div>
+          </li>
+          <li><strong>深入话题链接:</strong> 点击对话中的蓝色链接（ai对话流程.png左下）
+            <div style="font-size:11px;color:#64748b;margin-top:2px;">✓ 成功标准：识别出可点击链接并查看详情 | 观察：是否注意到链接存在</div>
+          </li>
+        </ul>
+      </div>
+      <div class="screenshot-item">
+        <h4>关键观察点</h4>
+        <ul>
+          <li>首页小星卡片的发现性（是否注意到对话入口？）</li>
+          <li>语音按钮的交互理解度（按住说话是否清晰？）</li>
+          <li>键盘弹起后IP缩小的感知（是否觉得IP消失了？）</li>
+          <li>IP切换界面的三个角色区分度（能否快速理解差异？）</li>
+          <li>聊愈室气泡按钮的视觉辨识度（能否与普通对话气泡区分？）</li>
+          <li>进入聊愈室后的场景沉浸感（客厅背景是否产生情境转换感知？）</li>
+          <li>形象/声音切换面板的发现性（右上角两个圆形按钮是否易找？）</li>
+          <li>语音指令"切换形象""切换声音"的可发现性（用户是否会主动尝试语音指令？）</li>
+          <li>换装解锁提示的打断感（是否觉得被打扰？）</li>
+          <li>「以下为新对话」标签是否被理解为会话隔断？</li>
+          <li>跨IP混排头像是否造成「谁在回我话」的认知混乱？</li>
+          <li>危机响应卡片的情绪安全感（是否觉得被关怀还是被监视？）</li>
+        </ul>
+      </div>
+      <div class="screenshot-item">
+        <h4>测试方法建议</h4>
+        <ul>
+          <li><strong>任务完成率：</strong>P0路径必须≥90%，P1路径≥70%</li>
+          <li><strong>任务完成时间：</strong>记录每个Flow的操作耗时，识别卡点</li>
+          <li><strong>错误率：</strong>记录误操作次数（点错/找不到按钮/理解错误）</li>
+          <li><strong>主观评分：</strong>任务后询问SUS量表（系统可用性量表）</li>
+          <li><strong>观察法：</strong>记录用户的语言反馈（"这是什么？""怎么操作？"）</li>
+          <li><strong>眼动追踪（可选）：</strong>识别视觉盲区和扫描路径</li>
+          <li><strong>Flow 8专项：</strong>须使用截图展示替代真实触发，独立伦理审查</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 埋点方案 -->
+  <div class="card">
+    <div class="section-title">用户体验数据采集埋点方案（按维度）</div>
+    <div class="screenshot-grid" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr));">
+
+      <div class="screenshot-item">
+        <h4>① 用户操作埋点</h4>
+        <ul>
+          <li><code>dialog_entry_tap</code> — 点击首页小星卡片，记录页面停留时长 → 衡量发现耗时</li>
+          <li><code>voice_button_hold_start / end</code> — 按住/松开语音按钮，记录时长、识别成功与否</li>
+          <li><code>input_mode_switch</code> — 语音↔文本切换，记录切换频率</li>
+          <li><code>ip_switch_tap</code> — 触发IP切换，记录从哪个IP切到哪个IP</li>
+          <li><code>chat_clear_tap</code> — 点击「清空聊天记录」及确认/取消结果</li>
+          <li><code>link_in_reply_tap</code> — 点击对话回复中的蓝色深入话题链接</li>
+        </ul>
+      </div>
+
+      <div class="screenshot-item">
+        <h4>② 系统响应埋点</h4>
+        <ul>
+          <li><code>voice_recognition_latency</code> — 松开按钮到文字上屏的耗时（毫秒）</li>
+          <li><code>ip_reply_latency</code> — 发送消息到AI第一个字符出现的耗时</li>
+          <li><code>keyboard_show</code> — 键盘弹起时间，同步记录IP是否缩放</li>
+          <li><code>session_tag_display</code> — 「以下为新对话」标签曝光，记录用户是否继续滚动/停顿</li>
+          <li><code>costume_unlock_modal_show</code> — 换装弹窗触发时刻</li>
+        </ul>
+      </div>
+
+      <div class="screenshot-item">
+        <h4>③ API/后台埋点</h4>
+        <ul>
+          <li><code>voice_asr_success_rate</code> — 语音识别成功率（后台），区分首次/重试</li>
+          <li><code>ip_reply_error_rate</code> — AI回复失败率（超时/空响应）</li>
+          <li><code>emotion_score_at_liaoyu_trigger</code> — 聊愈室按钮弹出时的情绪分值（APK emotionScore字段）</li>
+          <li><code>crisis_keyword_hit</code> — 危机词命中事件，记录词类别（不记录原文），同步触发L3后台通知</li>
+          <li><code>session_new_tag_insert</code> — 新会话标签插入时机（后台判断依据）</li>
+        </ul>
+      </div>
+
+      <div class="screenshot-item">
+        <h4>④ 决策分支 & 特殊功能埋点</h4>
+        <ul>
+          <li><code>liaoyu_entry_tap / skip</code> — 聊愈室气泡按钮点击或被忽略（停留超5秒未点=skip）</li>
+          <li><code>liaoyu_avatar_switch / voice_switch</code> — 聊愈室内形象/声音切换操作</li>
+          <li><code>crisis_card_hotline_tap</code> — 12356热线被点击（极高优先级指标）</li>
+          <li><code>crisis_card_dismissed</code> — 安全卡片被划走/忽略（不显示具体内容，只记录行为）</li>
+          <li><code>cross_ip_history_scroll</code> — 切换IP后用户向上滚动翻看历史记录的深度</li>
+        </ul>
+      </div>
+
+      <div class="screenshot-item">
+        <h4>⑤ 流程结束 & 留存埋点</h4>
+        <ul>
+          <li><code>dialog_session_duration</code> — 单次对话会话时长（入口到退出）</li>
+          <li><code>dialog_round_count</code> — 单次会话对话轮数</li>
+          <li><code>liaoyu_end_tap</code> — 点击「结束对话」退出聊愈室，记录在聊愈室内停留时长</li>
+          <li><code>next_day_return_rate</code> — 完成AI对话后次日回访率（模块留存核心指标）</li>
+          <li><code>dialog_exit_method</code> — 退出方式（主动返回首页 / 切Tab / App后台）</li>
+        </ul>
+      </div>
+
+      <div class="screenshot-item">
+        <h4>⑥ 易用性专项埋点</h4>
+        <ul>
+          <li><code>first_voice_attempt_success</code> — 首次语音输入是否一次成功（P0 Flow 2核心指标）</li>
+          <li><code>entry_find_time</code> — 首页到首次点击小星卡片的间隔秒数</li>
+          <li><code>ip_selection_browse_time</code> — IP选择界面的浏览时长（衡量差异理解）</li>
+          <li><code>session_tag_pause_duration</code> — 用户在「以下为新对话」标签处的停顿时长（衡量理解度）</li>
+          <li><code>cross_ip_confusion_signal</code> — 切换IP后用户在1分钟内再次打开设置菜单（推测为困惑信号）</li>
+        </ul>
+      </div>
+
+    </div>
+    <div class="note-box" style="margin-top:16px;">
+      <strong>埋点实施优先级：</strong>Flow 8危机词命中（<code>crisis_keyword_hit</code>）+ 12356热线点击（<code>crisis_card_hotline_tap</code>）须优先上线，属于安全合规监控指标。Flow 2语音首次成功率（<code>first_voice_attempt_success</code>）为P0易用性快赢指标。其余按Phase 1→2分批上线，对应升级路线图中的反馈埋点①–⑨节点。
+    </div>
+  </div>
+
+  <!-- 易用性测试实施方案 -->
+  <div class="card">
+    <div class="section-title">易用性测试实施方案（分两类采集方式）</div>
+
+    <div style="background:#f0f9ff;border:2px solid #0ea5e9;border-radius:12px;padding:20px 24px;margin-bottom:20px;">
+      <h3 style="font-size:16px;font-weight:700;color:#0c4a6e;margin-bottom:12px;">一、用研型采集（一次性测试活动）</h3>
+
+      <div style="margin-bottom:16px;">
+        <h4 style="font-size:14px;font-weight:700;color:#475569;margin-bottom:8px;">▸ 怎么实施</h4>
+        <p style="font-size:13px;color:#1e293b;line-height:1.7;">找 5-8 个真实学生（建议初中/高中各一组），在学校里做1对1有主持人的任务测试。不要说"你来试用这个App"——要给具体场景：<strong>「假设你最近压力很大，打开App，想跟一个AI聊聊」</strong>。让他们边操作边出声说想法（<strong>出声思考法</strong>）。</p>
+      </div>
+
+      <div style="margin-bottom:16px;">
+        <h4 style="font-size:14px;font-weight:700;color:#475569;margin-bottom:8px;">▸ 在哪里采集</h4>
+        <p style="font-size:13px;color:#1e293b;line-height:1.7;">学校空教室或会议室，用他们平时用的设备（同款平板）。不要模拟实验室环境，越接近真实使用场景越好。</p>
+      </div>
+
+      <div style="margin-bottom:0;">
+        <h4 style="font-size:14px;font-weight:700;color:#475569;margin-bottom:8px;">▸ 以什么形式采集</h4>
+        <ul style="font-size:13px;color:#1e293b;line-height:1.8;padding-left:20px;">
+          <li><strong>录屏 + 前置摄像头同步录制</strong>（表情反应）</li>
+          <li>研究员在旁记录卡点和口头反应</li>
+          <li>每个任务结束后口头追问 1-2 个问题（不要问"好用吗"，要问"刚才你在犹豫什么？"）</li>
+          <li><strong>Flow 8（危机响应）不做真实触发</strong>，改为：把 L2 截图打印出来或放大屏显示，直接访谈「如果你看到这个界面，你第一眼注意到什么？你会怎么做？」</li>
+        </ul>
+      </div>
+    </div>
+
+    <div style="background:#fdf4ff;border:2px solid #a855f7;border-radius:12px;padding:20px 24px;">
+      <h3 style="font-size:16px;font-weight:700;color:#581c87;margin-bottom:12px;">二、产品内嵌采集（持续运营中的 UI 设计）</h3>
+      <p style="font-size:13px;color:#44403c;line-height:1.7;margin-bottom:16px;">按照 A7 的 8 条流程，有明确的反馈触发时机。这些是<strong>需要在 UI 里增加的轻量反馈组件</strong>，不影响主流程：</p>
+
+      <div class="screenshot-grid" style="grid-template-columns:1fr 1fr;gap:16px;">
+
+        <div style="background:#fff;border:1px solid #e7e5e4;border-radius:10px;padding:16px;">
+          <h4 style="font-size:13px;font-weight:700;color:#0f172a;margin-bottom:8px;">① 对话结束后 — 情感反馈浮层 <span style="background:#fef3c7;color:#92400e;font-size:10px;padding:2px 6px;border-radius:3px;font-weight:700;margin-left:4px;">P0</span></h4>
+          <p style="font-size:12px;color:#475569;line-height:1.7;margin-bottom:8px;">对话自然结束或用户点返回时，小星出来问一句：「今天聊得怎么样？」配 3 个表情选项（很好 / 还行 / 有点难受）。<strong>不用文字填写，3秒可完成</strong>。这是最高价值的定性信号。</p>
+          <div style="background:#fef3c7;padding:8px 10px;border-radius:6px;font-size:11px;color:#78350f;">
+            <strong>埋点对应：</strong><code style="background:#fff;padding:1px 4px;border-radius:3px;">dialog_end_emotion_feedback</code>
+          </div>
+        </div>
+
+        <div style="background:#fff;border:1px solid #e7e5e4;border-radius:10px;padding:16px;">
+          <h4 style="font-size:13px;font-weight:700;color:#0f172a;margin-bottom:8px;">② 首次完成核心操作后 — 新手评分气泡 <span style="background:#fef3c7;color:#92400e;font-size:10px;padding:2px 6px;border-radius:3px;font-weight:700;margin-left:4px;">P0</span></h4>
+          <p style="font-size:12px;color:#475569;line-height:1.7;margin-bottom:8px;">Flow 2 第一次语音识别成功后、Flow 4 第一次切换 IP 后，小星冒出：「刚才的操作顺畅吗？」配 👍👎 两个按钮。<strong>时机精准，不打断主流程</strong>。</p>
+          <div style="background:#fef3c7;padding:8px 10px;border-radius:6px;font-size:11px;color:#78350f;">
+            <strong>埋点对应：</strong><code style="background:#fff;padding:1px 4px;border-radius:3px;">first_operation_smoothness</code>
+          </div>
+        </div>
+
+        <div style="background:#fff;border:1px solid #e7e5e4;border-radius:10px;padding:16px;">
+          <h4 style="font-size:13px;font-weight:700;color:#0f172a;margin-bottom:8px;">③ 聊愈室结束时 — 沉浸感确认 <span style="background:#dbeafe;color:#1e40af;font-size:10px;padding:2px 6px;border-radius:3px;font-weight:700;margin-left:4px;">P1</span></h4>
+          <p style="font-size:12px;color:#475569;line-height:1.7;margin-bottom:8px;">点「结束对话」退出聊愈室时，插入一个轻量卡片：「这次聊愈室让你感觉…」配几个情绪词选项（平静了 / 还是很乱 / 不太适应）。这直接对应 <strong>Flow 5 的沉浸感评测指标</strong>。</p>
+          <div style="background:#e0f2fe;padding:8px 10px;border-radius:6px;font-size:11px;color:#0c4a6e;">
+            <strong>埋点对应：</strong><code style="background:#fff;padding:1px 4px;border-radius:3px;">liaoyu_immersion_feedback</code>
+          </div>
+        </div>
+
+        <div style="background:#fff;border:1px solid #e7e5e4;border-radius:10px;padding:16px;">
+          <h4 style="font-size:13px;font-weight:700;color:#0f172a;margin-bottom:8px;">④ 清空记录前 — 意图确认 + 数据收集 <span style="background:#dbeafe;color:#1e40af;font-size:10px;padding:2px 6px;border-radius:3px;font-weight:700;margin-left:4px;">P1</span></h4>
+          <p style="font-size:12px;color:#475569;line-height:1.7;margin-bottom:8px;">用户点「清空聊天记录」时，确认弹窗里加一个可选原因：「为什么想清空？」（换个新开始 / 隐私保护 / 聊乱了 / 其他）。<strong>不强制填写</strong>，但能采集到 Flow 7 里跨IP混排造成的困惑信号。</p>
+          <div style="background:#e0f2fe;padding:8px 10px;border-radius:6px;font-size:11px;color:#0c4a6e;">
+            <strong>埋点对应：</strong><code style="background:#fff;padding:1px 4px;border-radius:3px;">chat_clear_reason</code>
+          </div>
+        </div>
+
+        <div style="background:#fff;border:1px solid #e7e5e4;border-radius:10px;padding:16px;">
+          <h4 style="font-size:13px;font-weight:700;color:#0f172a;margin-bottom:8px;">⑤ 定期 NPS 收集 — 7天后触发 <span style="background:#e0e7ff;color:#3730a3;font-size:10px;padding:2px 6px;border-radius:3px;font-weight:700;margin-left:4px;">P2</span></h4>
+          <p style="font-size:12px;color:#475569;line-height:1.7;margin-bottom:8px;">用户累计使用满 7 天，在首页小星卡片上触发一次 NPS 打分（0-10 推荐指数），配一个开放文本框。<strong>只触发一次，不重复打扰</strong>。</p>
+          <div style="background:#ede9fe;padding:8px 10px;border-radius:6px;font-size:11px;color:#4c1d95;">
+            <strong>埋点对应：</strong><code style="background:#fff;padding:1px 4px;border-radius:3px;">nps_7day_score</code>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="note-box" style="margin-top:16px;background:#fff7ed;border-color:#fed7aa;color:#7c2d12;">
+        <strong>实施优先级：</strong>①② 是最小可行版（P0），做完就能拿到核心数据。③④⑤ 是有余力时再做（P1/P2）。UI 改动量都很小，本质上是在现有节点上挂轻量反馈组件，不影响主流程。
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 被动数据采集方案 -->
+  <div class="card">
+    <div class="section-title">被动数据采集方案（无需线下观察员的规模化采集）</div>
+    <p style="font-size:13px;color:#475569;line-height:1.7;margin-bottom:20px;">如果无法进行线下有主持人的用研测试，可以通过以下三类被动采集方式，结合 A7 已有的埋点，来推断易用性问题。被动数据能告诉你<strong>「哪里有问题」</strong>，但很难告诉你<strong>「为什么有问题」</strong>和<strong>「用户当时在想什么」</strong>。</p>
+
+    <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:20px 24px;margin-bottom:18px;">
+      <h3 style="font-size:15px;font-weight:700;color:#0f172a;margin-bottom:14px;">一、行为数据分析（已有埋点的深度利用）</h3>
+      <p style="font-size:13px;color:#64748b;line-height:1.6;margin-bottom:12px;">不需要新技术栈，直接从现有埋点里挖掘卡点信号：</p>
+
+      <div style="margin-bottom:14px;">
+        <h4 style="font-size:13px;font-weight:700;color:#334155;margin-bottom:6px;">① 任务完成时长异常检测</h4>
+        <ul style="font-size:12px;color:#475569;line-height:1.8;padding-left:20px;">
+          <li><code>entry_find_time</code> > 20秒的用户占比 → <strong>Flow 1</strong> 入口发现性差</li>
+          <li><code>ip_selection_browse_time</code> > 60秒 → <strong>Flow 4</strong> 三个IP区分度不清晰</li>
+          <li><code>voice_button_hold_start</code> 到 <code>voice_button_hold_end</code> < 0.5秒的高频重试 → <strong>Flow 2</strong> 用户误以为是"点击"而非"按住"</li>
+        </ul>
+      </div>
+
+      <div style="margin-bottom:14px;">
+        <h4 style="font-size:13px;font-weight:700;color:#334155;margin-bottom:6px;">② 放弃率 & 回退率</h4>
+        <ul style="font-size:12px;color:#475569;line-height:1.8;padding-left:20px;">
+          <li>进入对话界面后 5秒内退出（无任何输入） → 入口预期与落地页不匹配</li>
+          <li><code>ip_switch_tap</code> 后 1分钟内再次触发 <code>ip_switch_tap</code> → 切换后发现不是想要的，盲选</li>
+          <li><code>chat_clear_tap</code> 后的 <code>cancel</code> 高比例 → <strong>Flow 7</strong> 确认弹窗文案不清晰</li>
+        </ul>
+      </div>
+
+      <div style="margin-bottom:0;">
+        <h4 style="font-size:13px;font-weight:700;color:#334155;margin-bottom:6px;">③ 错误操作模式识别</h4>
+        <ul style="font-size:12px;color:#475569;line-height:1.8;padding-left:20px;">
+          <li>连续3次 <code>voice_button_hold_start</code> 间隔 < 2秒 → 用户在重试，推测识别失败或不知道怎么用</li>
+          <li><code>cross_ip_confusion_signal</code>（切换IP后1分钟内再开设置）→ <strong>Flow 7</strong> 跨IP混排造成困惑</li>
+          <li><code>session_tag_display</code> 曝光后用户立即向上滚动查看历史 → 用户在找"新对话从哪开始"</li>
+        </ul>
+      </div>
+    </div>
+
+    <div style="background:#fefce8;border:1px solid #fde047;border-radius:12px;padding:20px 24px;margin-bottom:18px;">
+      <h3 style="font-size:15px;font-weight:700;color:#713f12;margin-bottom:14px;">二、会话回放 & 热力图（需轻量工具）</h3>
+      <p style="font-size:13px;color:#78350f;line-height:1.6;margin-bottom:12px;">如果能加入类似 Hotjar/FullStory 的轻量 SDK（移动端也支持），可以看到：</p>
+
+      <div style="margin-bottom:14px;">
+        <h4 style="font-size:13px;font-weight:700;color:#854d0e;margin-bottom:6px;">会话回放（Session Replay）</h4>
+        <ul style="font-size:12px;color:#78350f;line-height:1.8;padding-left:20px;">
+          <li>筛选 <code>first_voice_attempt_success = false</code> 的会话，回放看用户到底在哪卡住了（是没找到按钮？还是按了但没按住？）</li>
+          <li>筛选 <strong>Flow 8</strong> 触发后 <code>crisis_card_dismissed</code> 的会话，看用户是直接划走还是犹豫后才关闭</li>
+        </ul>
+      </div>
+
+      <div style="margin-bottom:14px;">
+        <h4 style="font-size:13px;font-weight:700;color:#854d0e;margin-bottom:6px;">热力图（Heatmap）</h4>
+        <ul style="font-size:12px;color:#78350f;line-height:1.8;padding-left:20px;">
+          <li>首页的点击热力图 → 验证小星卡片是否在视觉焦点区</li>
+          <li>IP选择界面的停留热力分布 → 看用户是平均浏览三个IP，还是只看第一个就选了</li>
+        </ul>
+      </div>
+
+      <div style="margin-bottom:0;">
+        <h4 style="font-size:13px;font-weight:700;color:#854d0e;margin-bottom:6px;">无效点击追踪（Rage Clicks）</h4>
+        <ul style="font-size:12px;color:#78350f;line-height:1.8;padding-left:20px;">
+          <li>短时间内连续点击同一区域但无响应 → 可能是把"按住说话"当成了"点击"，或者以为某个文字是链接但其实不是</li>
+        </ul>
+      </div>
+    </div>
+
+    <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:12px;padding:20px 24px;margin-bottom:18px;">
+      <h3 style="font-size:15px;font-weight:700;color:#14532d;margin-bottom:14px;">三、文本反馈的 NLP 分析</h3>
+      <p style="font-size:13px;color:#166534;line-height:1.6;margin-bottom:12px;">如果「二、产品内嵌采集」的开放文本框收集到了用户评论，可以做关键词提取：</p>
+
+      <div style="margin-bottom:14px;">
+        <h4 style="font-size:13px;font-weight:700;color:#15803d;margin-bottom:6px;">高频负面词云</h4>
+        <ul style="font-size:12px;color:#166534;line-height:1.8;padding-left:20px;">
+          <li>"找不到" / "不知道怎么" → 发现性问题</li>
+          <li>"乱了" / "不知道在跟谁聊" → <strong>Flow 7</strong> 跨IP混排</li>
+          <li>"没反应" / "一直识别不了" → <strong>Flow 2</strong> 语音交互</li>
+          <li>"吓到了" / "突然弹出" → 换装弹窗或聊愈室入口的打断感</li>
+        </ul>
+      </div>
+
+      <div style="margin-bottom:0;">
+        <h4 style="font-size:13px;font-weight:700;color:#15803d;margin-bottom:6px;">情感分析分值 < 3分的会话</h4>
+        <p style="font-size:12px;color:#166534;line-height:1.7;">拉取对应的埋点序列，看操作路径有没有共性（比如都在 <code>ip_switch_tap</code> 后情感分下降）</p>
+      </div>
+    </div>
+
+    <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:12px;padding:20px 24px;margin-bottom:18px;">
+      <h3 style="font-size:15px;font-weight:700;color:#7f1d1d;margin-bottom:14px;">四、A/B 测试验证假设</h3>
+      <p style="font-size:13px;color:#991b1b;line-height:1.6;margin-bottom:12px;">当你从上述数据发现疑似问题后，可以小流量 A/B 验证：</p>
+
+      <div style="background:#fff;padding:14px;border-radius:8px;border:1px solid #fee2e2;">
+        <p style="font-size:12px;color:#1e293b;line-height:1.7;margin-bottom:8px;"><strong style="color:#dc2626;">假设：</strong>Flow 2 用户不理解"按住"，是因为按钮没有明确引导文案</p>
+        <p style="font-size:12px;color:#1e293b;line-height:1.7;margin-bottom:8px;"><strong style="color:#dc2626;">实验：</strong>A组（现状），B组（按钮下方增加小字"按住说话"）</p>
+        <p style="font-size:12px;color:#1e293b;line-height:1.7;margin-bottom:0;"><strong style="color:#dc2626;">观察：</strong>B组的 <code>first_voice_attempt_success</code> 是否显著提升</p>
+      </div>
+    </div>
+
+    <div class="note-box" style="background:#fff1f2;border-color:#fecdd3;color:#881337;">
+      <strong>⚠️ 局限性提醒</strong><br><br>
+      被动数据能告诉你"<strong>哪里有问题</strong>"，但很难告诉你"<strong>为什么有问题</strong>"和"<strong>用户当时在想什么</strong>"。<br><br>
+      <strong>举例：</strong><br>
+      • 埋点显示 <code>ip_selection_browse_time</code> 平均 45秒 → 你知道用户在犹豫，但不知道是"三个IP介绍太长看不完"还是"看完了但还是不懂区别"<br>
+      • 会话回放看到用户在 Flow 8 安全卡片停留 10秒后划走 → 不知道是"觉得不需要"还是"不敢点怕被记录"<br><br>
+      <strong>所以建议混合使用：</strong><br>
+      ✓ 用<strong>被动数据</strong>筛选高优先级问题（哪个流程卡点最严重？）<br>
+      ✓ 用<strong>线下观察</strong>深挖根因（为什么卡？具体哪句话没看懂？）<br>
+      ✓ 用<strong>A/B 测试</strong>验证解决方案（改了之后真的好了吗？）<br><br>
+      对于 AI星球这种学校采购的产品，建议<strong>先跑 1-2 个月被动数据</strong>，找出 Top 3 卡点，再针对性地去 1-2 所试点学校做深度访谈。这样用研效率最高。
+    </div>
+
+  </div>
+
+</div>
+
+<div class="footer">AI星球 · AI对话流程真实用户路径图 · 2026.06.17 · 基于真实APP截图 + L2实测补充分析 · 完整易用性测评与数据采集方案</div>
+
+<div style="text-align:center;padding:24px 0 16px;font-size:11px;color:#94a3b8;">署名已省略</div>
+</body>
+</html>

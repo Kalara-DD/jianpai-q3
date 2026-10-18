@@ -1,0 +1,21 @@
+.application-archive-note { position: relative; z-index: 100; padding: 19px max(24px, calc((100% - 1200px) / 2)); margin: 0 0 24px; background: #eaf0ff; border-bottom: 1px solid #cbd7f0; color: #1e2b45; font: 14px/1.8 "PingFang SC", "Microsoft YaHei", sans-serif; text-align: left; }
+.application-archive-note a { display: inline-block; color: #2647b6; font-weight: 600; text-decoration: underline; text-underline-offset: 4px; padding: 4px 0; }
+.application-archive-note strong { display: block; font-size: 17px; margin: 4px 0; }
+.application-archive-note p { margin: 0; max-width: 86ch; }
+.application-archive-note a:focus-visible { outline: 3px solid #3358df; outline-offset: 4px; }
+.decision-report { margin: 0; background: #f5f7fb; color: #1e2b45; font: 16px/1.9 "PingFang SC", "Microsoft YaHei", sans-serif; overflow-wrap: anywhere; }
+.decision-report main { max-width: 980px; margin: 48px auto 90px; padding: 0 24px; }
+.decision-report h1 { font-size: clamp(29px, 4vw, 44px); line-height: 1.4; margin: 0 0 32px; }
+.decision-report h2 { font-size: 25px; line-height: 1.5; margin: 52px 0 20px; }
+.decision-report h3 { font-size: 19px; margin-top: 30px; }
+.decision-report h2,.decision-report h3 { scroll-margin-top: 24px; }
+.decision-report p,.decision-report ul,.decision-report ol { margin: 16px 0; }
+.decision-report blockquote { border-left: 3px solid #3358df; margin: 24px 0; padding: 2px 22px; background: #eaf0ff; }
+.decision-report a { color: #2647b6; text-underline-offset: 3px; overflow-wrap: anywhere; }
+.decision-report pre { white-space: pre-wrap; background: white; padding: 24px; border: 1px solid #dce3ef; border-radius: 10px; }
+.decision-report .archive-table { overflow-x: auto; margin: 24px 0; background: white; border: 1px solid #dce3ef; }
+.decision-report table { width: 100%; border-collapse: collapse; min-width: 620px; font-size: 14px; }
+.decision-report th,.decision-report td { text-align: left; vertical-align: top; padding: 16px; border-bottom: 1px solid #dce3ef; }
+.decision-report th { background: #eaf0ff; }
+@media (max-width: 640px) { .application-archive-note { padding: 16px 20px; font-size: 12px; } .decision-report main { margin-top: 32px; padding: 0 20px; } .decision-report h2 { font-size: 23px; } .archive-product-tree .nav-tabs { grid-template-columns: repeat(2,minmax(0,1fr)); } .archive-product-tree .modules,.archive-product-tree .ip-cards { grid-template-columns: minmax(0,1fr); } .archive-product-tree .module-header,.archive-product-tree .feature-item { flex-wrap: wrap; } .archive-product-tree .module-route { overflow-wrap: anywhere; } }
+@media print { .application-archive-note { background: white; font-size: 10pt; padding: 10pt; margin-bottom: 16pt; } .decision-report main { margin: 0; max-width: none; } .decision-report .archive-table { overflow: visible; } .decision-report table { min-width: 0; font-size: 9pt; } }

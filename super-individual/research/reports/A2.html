@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>AI星球 · 多维度深度分析</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'PingFang SC','Noto Sans SC',sans-serif; background:#f7f8fc; color:#2d3142; line-height:1.7; }
+
+.page-header { background:linear-gradient(135deg,#3b4cca 0%,#6c63ff 100%); color:#fff; padding:48px 0 36px; text-align:center; }
+.page-header h1 { font-size:28px; margin-bottom:8px; }
+.page-header p { font-size:14px; opacity:0.8; }
+
+.toc { max-width:900px; margin:32px auto 0; padding:0 24px; display:flex; flex-wrap:wrap; gap:10px; }
+.toc a { background:#fff; border-radius:20px; padding:6px 16px; font-size:13px; color:#3b4cca; text-decoration:none; box-shadow:0 2px 8px rgba(0,0,0,0.08); }
+.toc a:hover { background:#3b4cca; color:#fff; }
+
+.container { max-width:900px; margin:0 auto; padding:32px 24px 80px; }
+
+.section { background:#fff; border-radius:16px; padding:32px; margin-bottom:24px; box-shadow:0 2px 12px rgba(0,0,0,0.06); }
+.section h2 { font-size:20px; margin-bottom:20px; padding-bottom:12px; border-bottom:2px solid #f0f0f0; display:flex; align-items:center; gap:8px; }
+.section h3 { font-size:15px; font-weight:700; margin:20px 0 10px; color:#3b4cca; }
+
+/* 标签 */
+.tag { display:inline-block; border-radius:4px; padding:2px 8px; font-size:11px; font-weight:700; margin-right:6px; }
+.tag-good { background:#e6fcf5; color:#0ca678; }
+.tag-bad { background:#fff5f5; color:#e03131; }
+.tag-tip { background:#f0f4ff; color:#3b4cca; }
+
+/* 评分卡 */
+.score-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin:16px 0; }
+.score-card { background:#f7f8fc; border-radius:10px; padding:14px; text-align:center; }
+.score-card .score { font-size:28px; font-weight:900; }
+.score-card .label { font-size:12px; color:#888; margin-top:4px; }
+.score-6 { color:#e03131; } .score-7 { color:#f08c00; } .score-8 { color:#2f9e44; } .score-9 { color:#1971c2; }
+
+/* 优缺点列表 */
+.pros-cons { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:16px 0; }
+.pros, .cons { border-radius:10px; padding:16px; }
+.pros { background:#f0fff4; border-left:4px solid #51cf66; }
+.cons { background:#fff5f5; border-left:4px solid #ff6b6b; }
+.pros h4 { color:#2f9e44; margin-bottom:10px; font-size:14px; }
+.cons h4 { color:#e03131; margin-bottom:10px; font-size:14px; }
+ul { padding-left:18px; }
+li { font-size:13px; margin-bottom:6px; color:#444; }
+
+/* 用户旅程 */
+.journey { display:flex; gap:0; margin:16px 0; overflow-x:auto; }
+.journey-step { min-width:130px; background:#f0f4ff; border-radius:10px; padding:12px; text-align:center; position:relative; flex-shrink:0; }
+.journey-step:not(:last-child)::after { content:'→'; position:absolute; right:-14px; top:50%; transform:translateY(-50%); color:#748ffc; font-size:18px; z-index:1; }
+.journey-step .icon { font-size:22px; margin-bottom:6px; }
+.journey-step .step-title { font-size:12px; font-weight:700; color:#3b4cca; }
+.journey-step .step-note { font-size:11px; color:#888; margin-top:4px; }
+.journey { gap:20px; }
+
+/* 优化建议卡 */
+.opt-list { display:flex; flex-direction:column; gap:12px; margin:16px 0; }
+.opt-item { background:#f7f8fc; border-radius:10px; padding:14px 16px; border-left:4px solid #748ffc; }
+.opt-item .opt-title { font-size:14px; font-weight:700; color:#3b4cca; margin-bottom:4px; }
+.opt-item .opt-desc { font-size:13px; color:#555; }
+.opt-item .opt-priority { font-size:11px; margin-top:6px; }
+
+/* 反馈弹窗触发点 */
+.feedback-points { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:16px 0; }
+.fp { background:#fffbe6; border:1px solid #ffe066; border-radius:10px; padding:12px; }
+.fp .fp-where { font-size:12px; font-weight:700; color:#f08c00; margin-bottom:4px; }
+.fp .fp-what { font-size:12px; color:#555; }
+.fp .fp-type { font-size:11px; color:#999; margin-top:4px; }
+
+table { width:100%; border-collapse:collapse; font-size:13px; }
+th { background:#f0f4ff; color:#3b4cca; padding:10px 12px; text-align:left; font-size:12px; }
+td { padding:9px 12px; border-bottom:1px solid #f0f0f0; color:#444; }
+tr:last-child td { border-bottom:none; }
+tr:hover td { background:#fafbff; }
+</style>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="../../assets/archive-report.css?v=20261014e">
+
+<!-- Mobile reading layout; original report content is preserved. -->
+<style id="report-mobile-layout">
+@media screen and (max-width:720px) {
+
+body { overflow-wrap: anywhere; }
+.container,.section,.card,.header,.page-header { min-width:0; max-width:100%; }
+.report-mobile-scroll { display:block !important; width:100%; max-width:100%; min-width:0; overflow-x:auto; overscroll-behavior-x:contain; margin:16px 0; padding-bottom:8px; border:1px solid #dce3ef; border-radius:8px; scrollbar-width:thin; }
+.report-mobile-scroll::before { content:attr(data-scroll-label); display:block; position:sticky; left:0; width:100%; padding:9px 12px; background:#f4f7fc; color:#5f6b7c; font:11px/1.6 'PingFang SC','Microsoft YaHei',sans-serif; text-align:left; }
+.report-mobile-scroll:focus-visible { outline:3px solid #3358df; outline-offset:3px; }
+.report-mobile-scroll>table { min-width:620px; margin:0; }
+.report-mobile-scroll th,.report-mobile-scroll td { overflow-wrap:normal; }
+
+.page-header { padding:30px 18px 26px; }
+.page-header h1 { font-size:24px; }
+.toc { padding:0 16px; margin-top:22px; gap:8px; }
+.toc a { max-width:100%; }
+.container { padding:22px 12px 48px; }
+.section { padding:24px 18px; }
+.section h2 { align-items:flex-start; }
+
+.score-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+.pros-cons,.feedback-points { grid-template-columns:minmax(0,1fr); }
+.score-card,.pros,.cons,.fp,.opt-item { min-width:0; }
+.report-mobile-scroll>.journey { width:max-content; min-width:100%; margin:0; padding:14px 12px 8px; overflow:visible; flex-wrap:nowrap; }
+}
+</style>
+</head>
+<body>
+<div class="application-archive-note" role="note"><a href="../index.html#doc-A2">← 返回研究资料库</a><strong>Q3研究基础 · 原报告阅读副本</strong><p><b>诊断与建议 · 2026.06</b></p><p>历史研究/设计提案；文中评分、预测、预算与排期属于当时的分析或假设，不作为本次已实现业绩。当前采用与状态以成果档案说明为准。</p><p>文中评分和心理感受为分析判断；APK 推断不等于全部能力已完成实机验证。</p><small>原稿：A2_多维度深度分析.html</small></div>
+
+
+<div class="page-header">
+  <h1>AI星球 · 多维度深度分析报告</h1>
+  <p>产品经理 × 前端工程师 × UX设计师 × 青少年心理学 · 四维视角</p>
+  <p style="font-size:12px;opacity:0.7;margin-top:8px;">分析依据：APK v1.0.2801 代码与资源文件直接提取（技术栈、功能模块、Activity名称均可从代码核查）| 2026年6月</p>
+</div>
+
+<div class="toc">
+  <a href="#overview">产品概览</a>
+  <a href="#pm">产品经理视角</a>
+  <a href="#ux">UX 体验视角</a>
+  <a href="#psychology">青少年心理学视角</a>
+  <a href="#tech">技术视角</a>
+  <a href="#feedback">用户反馈设计</a>
+  <a href="#roadmap">优化路线图</a>
+</div>
+
+<div class="container">
+
+  <!-- 产品概览 -->
+  <div class="section" id="overview">
+    <h2>🪐 产品概览</h2>
+    <p style="font-size:14px;color:#555;margin-bottom:20px;">AI星球（ai_planet）是一款面向<strong>小初高中生</strong>的综合型 AI 心理成长平台，集AI对话、心理健康、生涯规划、学习指导、社区互动于一体。包名 <code>com.ifltyek.ai.planet</code>，科大讯飞旗下产品。</p>
+
+    <div class="score-grid">
+      <div class="score-card"><div class="score score-7">7.2</div><div class="label">产品完整度</div></div>
+      <div class="score-card"><div class="score score-6">6.5</div><div class="label">UX 体验</div></div>
+      <div class="score-card"><div class="score score-8">8.0</div><div class="label">功能丰富度</div></div>
+      <div class="score-card"><div class="score score-6">6.0</div><div class="label">青少年适配度</div></div>
+    </div>
+
+    <h3>核心功能模块（8大板块）</h3>
+    <div class="report-mobile-scroll" style="display:contents" role="region" tabindex="0" aria-label="核心功能模块（8大板块） · 表格左右滑动查看" data-scroll-label="核心功能模块（8大板块） · 表格左右滑动查看"><table>
+      <tr><th>模块</th><th>核心功能</th><th>技术亮点</th><th>成熟度</th></tr>
+      <tr><td>🤖 AI对话（三IP）</td><td>🌟小星（通用AI）· 🐳罗素（逻辑/生涯AI）· 🐼吉塔（心愈AI）· AI视频对话</td><td>多模态 AI、语音识别、三IP角色差异化</td><td>⭐⭐⭐⭐</td></tr>
+      <tr><td>💙 心育·心理健康</td><td>心理筛查测评、压力/测评报告、焦虑处理盒、减压工具（音乐/阅读/活动）、情绪打卡、高风险预警</td><td>情绪识别模型、face detection、分级干预</td><td>⭐⭐⭐⭐</td></tr>
+      <tr><td>🎭 心理剧场</td><td>主题心理短视频内容库（运动/心态/情绪/学业等系列）、知心姐姐联名课件</td><td>视频内容运营、联名内容合作</td><td>⭐⭐⭐⭐</td></tr>
+      <tr><td>🧠 脑之岛</td><td>认知训练课程、勋章墙（训练奖励）、成长总结、视频日记</td><td>行为激励设计、认知科学内容</td><td>⭐⭐⭐</td></tr>
+      <tr><td>📚 学习规划</td><td>选科指导、思维评测、兴趣倾向、高考指南</td><td>3+1+2 模型、科目匹配算法</td><td>⭐⭐⭐</td></tr>
+      <tr><td>🔭 生涯探索</td><td>职业/专业/院校介绍、志愿填报、录取线查询</td><td>职业数据库、决策平衡模型</td><td>⭐⭐⭐⭐</td></tr>
+      <tr><td>🌐 互动社区</td><td>心理朋友圈、情绪打卡（月历/打卡列表）、动物思维导图（AI对话延伸功能）</td><td>社交互动、内容社区</td><td>⭐⭐⭐</td></tr>
+      <tr><td>👤 个人中心</td><td>换装（虚拟形象）、账单、人脸登录、角色选择</td><td>人脸识别、极验一键登录</td><td>⭐⭐⭐⭐</td></tr>
+    </table></div>
+  </div>
+
+  <!-- 产品经理视角 -->
+  <div class="section" id="pm">
+    <h2>📋 产品经理视角</h2>
+
+    <h3>信息架构问题</h3>
+    <div class="pros-cons">
+      <div class="pros">
+        <h4>✅ 优点</h4>
+        <ul>
+          <li>功能覆盖面广，心理+学习+生涯三位一体</li>
+          <li>有完整的测评→报告→建议闭环</li>
+          <li>三IP角色系统（小星/罗素/吉塔）降低AI使用门槛，场景差异化清晰</li>
+          <li>心理剧场短视频内容丰富，贴近青少年内容消费习惯</li>
+          <li>月度活动体系（全年12个月均有内容）运营意识强</li>
+          <li>脑之岛独立Tab体现认知训练的重要地位</li>
+          <li>人脸识别登录降低了青少年的登录门槛</li>
+        </ul>
+      </div>
+      <div class="cons">
+        <h4>❌ 缺点</h4>
+        <ul>
+          <li>功能入口过多，导航层级不清晰（底部6个Tab，部分权限门控）</li>
+          <li>三IP角色（小星/罗素/吉塔）差异未在首页明确呈现，用户不知道何时用哪个</li>
+          <li>心理、生涯、学习三大模块关联性弱，数据不流通</li>
+          <li>活动页面（/activity/2025/...）与主功能割裂</li>
+          <li>缺少新手引导流程（chooseRole后直接进功能）</li>
+          <li>勋章只在脑之岛内部，未形成跨模块的统一成长体系</li>
+          <li>咨询预约功能弱，并非所有学校购买，不是核心路径</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>用户旅程（典型：高中生首次使用）</h3>
+    <div class="report-mobile-scroll" style="display:contents" role="region" tabindex="0" aria-label="用户旅程（典型：高中生首次使用） · 流程左右滑动查看" data-scroll-label="用户旅程（典型：高中生首次使用） · 流程左右滑动查看"><div class="journey">
+      <div class="journey-step"><div class="icon">📲</div><div class="step-title">下载安装</div><div class="step-note">--</div></div>
+      <div class="journey-step"><div class="icon">👤</div><div class="step-title">注册登录</div><div class="step-note">人脸/手机号</div></div>
+      <div class="journey-step"><div class="icon">🎭</div><div class="step-title">选择角色</div><div class="step-note">⚠️ 无引导说明</div></div>
+      <div class="journey-step"><div class="icon">🏠</div><div class="step-title">进入首页</div><div class="step-note">⚠️ 信息量大</div></div>
+      <div class="journey-step"><div class="icon">🤖</div><div class="step-title">尝试AI对话</div><div class="step-note">主要入口</div></div>
+      <div class="journey-step"><div class="icon">📊</div><div class="step-title">完成测评</div><div class="step-note">被动触发</div></div>
+      <div class="journey-step"><div class="icon">📄</div><div class="step-title">获取报告</div><div class="step-note">✅ 有价值感</div></div>
+    </div></div>
+    <p style="font-size:12px;color:#e03131;margin-top:8px;">⚠️ 断点：选角色后没有引导，用户不知道"AI星球"对自己意味着什么，流失风险高。</p>
+
+    <h3>核心数据闭环缺失</h3>
+    <p style="font-size:13px;color:#555;">心理测评结果 → 未关联到学习规划建议；选科结果 → 未关联到职业/专业推荐；AI对话记录 → 未形成成长档案。三大模块是"信息孤岛"，无法形成用户粘性的核心飞轮。</p>
+  </div>
+
+  <!-- UX 体验视角 -->
+  <div class="section" id="ux">
+    <h2>🎨 UX 体验视角</h2>
+
+    <div class="pros-cons">
+      <div class="pros">
+        <h4>✅ 体验优点</h4>
+        <ul>
+          <li>有换装系统，角色个性化让青少年有归属感</li>
+          <li>视频日记支持录制，表达形式丰富</li>
+          <li>放松专区（音乐+阅读）的内容分层合理</li>
+          <li>月历设计有仪式感，时间管理意识培养好</li>
+          <li>MathJax 公式渲染，学术内容展示专业</li>
+        </ul>
+      </div>
+      <div class="cons">
+        <h4>❌ 体验痛点</h4>
+        <ul>
+          <li>大量页面用 WebView 加载，交互割裂感强</li>
+          <li>功能路径过深（生涯探索需要3-4层才到核心内容）</li>
+          <li>报告页面设计模板化，缺少个性化呈现</li>
+          <li>互动社区（朋友圈）与主功能风格不统一</li>
+          <li>没有暗黑模式，深夜使用眼睛疲劳</li>
+          <li>焦虑/压力内容入口不够显眼，急需帮助时难找到</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>关键体验节点优化建议</h3>
+    <div class="opt-list">
+      <div class="opt-item">
+        <div class="opt-title">① 首页信息层级重构</div>
+        <div class="opt-desc">首页入口过多，建议改为「今日状态」卡片为核心，根据用户历史数据动态推荐1-2个主要入口，其余折叠。</div>
+        <div class="opt-priority"><span class="tag tag-bad">高优先级</span>影响留存的核心问题</div>
+      </div>
+      <div class="opt-item">
+        <div class="opt-title">② 三IP角色差异化呈现</div>
+        <div class="opt-desc">小星（通用AI）/ 罗素（逻辑/生涯）/ 吉塔（心愈疗愈）三个IP绑定不同AI模型，差异化清晰，但首页对用户的展示不够直观。建议：首页明确标注每个IP的使用场景，如「想聊情绪 → 找吉塔」「想规划生涯 → 找罗素」，降低选择成本。</div>
+        <div class="opt-priority"><span class="tag tag-bad">高优先级</span>产品核心差异化卖点</div>
+      </div>
+      <div class="opt-item">
+        <div class="opt-title">③ 报告页个性化升级</div>
+        <div class="opt-desc">测评报告目前模板化严重，建议加入用户名、头像、角色形象，让报告成为"专属的我"，增加分享意愿和留存动力。</div>
+        <div class="opt-priority"><span class="tag tag-tip">中优先级</span>提升传播和自我认同感</div>
+      </div>
+      <div class="opt-item">
+        <div class="opt-title">④ 情绪快速入口</div>
+        <div class="opt-desc">当前「焦虑处理盒」「放松专区」藏得较深，建议在首页固定「今天感觉怎么样？」一句话入口，情绪低落时3秒内可找到帮助。</div>
+        <div class="opt-priority"><span class="tag tag-bad">高优先级</span>心理健康类产品的生命线</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 青少年心理学视角 -->
+  <div class="section" id="psychology">
+    <h2>🧠 青少年心理学视角</h2>
+    <p style="font-size:13px;color:#555;margin-bottom:16px;">目标用户：小学高年级～高中生（约10-18岁）。这个阶段的核心心理特征是：<strong>自我认同形成期、同伴关系敏感、成就动机强、情绪波动大、对标签和比较极度敏感</strong>。</p>
+
+    <div class="pros-cons">
+      <div class="pros">
+        <h4>✅ 心理设计亮点</h4>
+        <ul>
+          <li>三IP角色设计（吉塔·心愈、小星·通用、罗素·生涯），角色个性化降低倾诉和使用门槛</li>
+          <li>知心姐姐（中国知名青少年心理公益品牌）联名内容，专业背书强，降低接受度阻力</li>
+          <li>心理剧场短视频，降低心理知识获取门槛，非文字形式青少年接受度更高</li>
+          <li>「焦虑处理盒」命名具体，不抽象，青少年能理解</li>
+          <li>视频日记支持非文字表达，适合语言表达能力尚在发展的学生</li>
+          <li>换装/角色系统满足身份认同探索需求</li>
+          <li>脑之岛勋章墙满足成就感和自我效能感需求</li>
+          <li>月度活动主题贴近学生生活节律（考前/考后等）</li>
+        </ul>
+      </div>
+      <div class="cons">
+        <h4>❌ 心理设计风险</h4>
+        <ul>
+          <li>压力报告/测评报告如果直接呈现"你的焦虑程度偏高"，可能加剧负面情绪</li>
+          <li>朋友圈设计可能引发社交比较，对敏感用户有害</li>
+          <li>打卡/勋章体系若设计不当，会产生"完美主义焦虑"</li>
+          <li>AI对话缺少"情绪识别→及时干预"机制，极端情绪下没有保护</li>
+          <li>选科、志愿填报内容可能被家长主导，忽略学生自主性</li>
+          <li>缺少"今天不想做任何事"的出口，总是推功能显得压迫</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>动机模型分析（自我决定理论 SDT）</h3>
+    <div class="report-mobile-scroll" style="display:contents" role="region" tabindex="0" aria-label="动机模型分析（自我决定理论 SDT） · 表格左右滑动查看" data-scroll-label="动机模型分析（自我决定理论 SDT） · 表格左右滑动查看"><table>
+      <tr><th>心理需求</th><th>当前满足度</th><th>问题</th><th>改进方向</th></tr>
+      <tr><td>自主感（Autonomy）</td><td>⭐⭐⭐</td><td>选科、志愿填报偏向外驱，缺少"我为自己选"的引导</td><td>强化"这是你的选择"的叙事框架</td></tr>
+      <tr><td>胜任感（Competence）</td><td>⭐⭐⭐⭐</td><td>测评+报告+勋章有胜任感设计，但反馈周期太长</td><td>增加即时小反馈（完成一次对话→小鼓励）</td></tr>
+      <tr><td>归属感（Relatedness）</td><td>⭐⭐</td><td>社区功能薄弱，个体感强，孤独感未被充分关照</td><td>增加匿名同伴互动、"你不是一个人"的设计</td></tr>
+    </table></div>
+
+    <h3>高风险场景 · 需要特别关注</h3>
+    <div class="opt-list">
+      <div class="opt-item" style="border-left-color:#e03131;">
+        <div class="opt-title" style="color:#e03131;">🚨 场景1：考试失败后打开 App</div>
+        <div class="opt-desc">用户在成绩不好后打开，若首屏直接推「生涯规划」「选科分析」等压力性内容，极易引发挫败感加剧。<br><strong>建议：</strong>接入情绪状态检测，若识别到负面情绪，优先推送「今天不如先休息一下」→ 放松专区。</div>
+      </div>
+      <div class="opt-item" style="border-left-color:#e03131;">
+        <div class="opt-title" style="color:#e03131;">🚨 场景2：AI对话触及敏感内容</div>
+        <div class="opt-desc">青少年在AI对话中可能触及自我伤害、家庭暴力等话题，当前是否有关键词检测+专业干预机制不明确。<br><strong>建议：</strong>必须设置危机关键词检测，触发后自动弹出「需要帮助吗？」引导接触专业咨询。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 技术视角 -->
+  <div class="section" id="tech">
+    <h2>⚙️ 技术视角</h2>
+    <h3>技术栈识别</h3>
+    <div class="report-mobile-scroll" style="display:contents" role="region" tabindex="0" aria-label="技术栈识别 · 表格左右滑动查看" data-scroll-label="技术栈识别 · 表格左右滑动查看"><table>
+      <tr><th>层次</th><th>技术</th><th>说明</th></tr>
+      <tr><td>原生层</td><td>Android (Kotlin/Java)</td><td>5个Activity：MainActivity/WebActivity/RelaxationActivity/VideoDiaryActivity/FaceLoginActivity</td></tr>
+      <tr><td>Web层</td><td>Vue.js + Webpack</td><td>assets/web/ 下有完整 Vue 路由体系，130+ 页面由 WebView 承载</td></tr>
+      <tr><td>AI能力</td><td>科大讯飞 AI + GPT</td><td>语音识别(ISE)、语音合成(TTS)、语义理解、多轮对话</td></tr>
+      <tr><td>人脸识别</td><td>TFLite + 自研模型</td><td>多个 .tflite/.emd 模型文件，支持表情/眼睛状态检测</td></tr>
+      <tr><td>登录</td><td>极验一键登录</td><td>com.geetest.onelogin</td></tr>
+      <tr><td>视频</td><td>阿里云视频 + JZVideo</td><td>alivc 证书 + JZVideo 播放器</td></tr>
+      <tr><td>数学渲染</td><td>MathJax 2.7.1</td><td>学科内容公式展示</td></tr>
+      <tr><td>推送/统计</td><td>Firebase + 讯飞</td><td>firebase-components 等</td></tr>
+    </table></div>
+
+    <h3>技术层面风险</h3>
+    <div class="cons" style="margin-top:12px;">
+      <ul>
+        <li>大量功能由 WebView 承载（130+路由），性能差、动画体验弱，首屏加载慢</li>
+        <li>MathJax 2.7.1 版本较旧（2017年），建议升级到 MathJax 3.x</li>
+        <li>多个 .dex 文件（classes1-4.dex）说明体积较大，安装包可优化</li>
+        <li>READ/WRITE_EXTERNAL_STORAGE 权限在 Android 13+ 已废弃，需适配新存储权限</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 用户反馈设计 -->
+  <div class="section" id="feedback">
+    <h2>💬 用户反馈系统设计</h2>
+    <p style="font-size:13px;color:#555;margin-bottom:16px;">在以下关键节点嵌入反馈入口，收集功能体验、观感、心理帮助实用性三个维度的真实数据。</p>
+
+    <h3>反馈触发点设计</h3>
+    <div class="feedback-points">
+      <div class="fp">
+        <div class="fp-where">📊 测评/报告完成后</div>
+        <div class="fp-what">「这份报告对你有帮助吗？」⭐⭐⭐⭐⭐ + 一句话输入</div>
+        <div class="fp-type">收集：心理帮助实用性</div>
+      </div>
+      <div class="fp">
+        <div class="fp-where">🤖 AI对话结束后</div>
+        <div class="fp-what">「这次对话让你感觉如何？」😊 😐 😟 三选一 + 可选备注</div>
+        <div class="fp-type">收集：情绪有效性、对话质量</div>
+      </div>
+      <div class="fp">
+        <div class="fp-where">🎵 放松专区使用后</div>
+        <div class="fp-what">「放松了吗？」 是/有点/没什么感觉 快速点选</div>
+        <div class="fp-type">收集：功能实用性</div>
+      </div>
+      <div class="fp">
+        <div class="fp-where">📓 视频日记录制后</div>
+        <div class="fp-what">「记录完感觉怎么样？」情绪前后对比</div>
+        <div class="fp-type">收集：情绪变化、功能价值</div>
+      </div>
+      <div class="fp">
+        <div class="fp-where">🔭 志愿/生涯查询后</div>
+        <div class="fp-what">「找到你想要的信息了吗？」找到了/部分找到/没找到</div>
+        <div class="fp-type">收集：信息完整性、功能设计</div>
+      </div>
+      <div class="fp">
+        <div class="fp-where">📅 月度活动完成后</div>
+        <div class="fp-what">「这个月的主题内容符合你的需求吗？」+ 开放输入</div>
+        <div class="fp-type">收集：内容运营方向</div>
+      </div>
+      <div class="fp">
+        <div class="fp-where">⚙️ 个人中心 · 常驻入口</div>
+        <div class="fp-what">「我有个想法/建议」悬浮入口，随时可提交</div>
+        <div class="fp-type">收集：功能缺失、bug、诉求</div>
+      </div>
+      <div class="fp">
+        <div class="fp-where">🚪 退出 App 时（低频）</div>
+        <div class="fp-what">每2周触发一次「今天的体验怎么样？」NPS评分</div>
+        <div class="fp-type">收集：整体满意度趋势</div>
+      </div>
+    </div>
+
+    <h3>反馈弹窗设计原则（面向青少年）</h3>
+    <div class="opt-list">
+      <div class="opt-item">
+        <div class="opt-title">① 轻量、不打断</div>
+        <div class="opt-desc">弹窗最多2步，15秒内可完成。不强制填写，提供「稍后再说」和「跳过」。</div>
+      </div>
+      <div class="opt-item">
+        <div class="opt-title">② 口语化、非正式</div>
+        <div class="opt-desc">避免「请对本次功能体验进行评价」，改用「这次对你有用吗？」「有什么想告诉我们的？」</div>
+      </div>
+      <div class="opt-item">
+        <div class="opt-title">③ 情感化选项替代数字评分</div>
+        <div class="opt-desc">用 😊😐😟 或「有帮助/一般/没帮助」替代 1-5 分，青少年更容易快速作答。</div>
+      </div>
+      <div class="opt-item">
+        <div class="opt-title">④ 反馈后给予回应</div>
+        <div class="opt-desc">提交后显示「谢谢你告诉我们 💙 你的反馈帮助我们变得更好」，而不是静默消失。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 优化路线图 -->
+  <div class="section" id="roadmap">
+    <h2>🗺️ 优化路线图</h2>
+    <div class="report-mobile-scroll" style="display:contents" role="region" tabindex="0" aria-label="🗺️ 优化路线图 · 表格左右滑动查看" data-scroll-label="🗺️ 优化路线图 · 表格左右滑动查看"><table>
+      <tr><th>优先级</th><th>方向</th><th>具体措施</th><th>预期收益</th></tr>
+      <tr><td><span class="tag tag-bad">P0 · 立即</span></td><td>新手引导</td><td>chooseRole 后增加3步引导，说明App能帮你做什么</td><td>降低首次流失率</td></tr>
+      <tr><td><span class="tag tag-bad">P0 · 立即</span></td><td>情绪安全机制</td><td>AI对话加入危机关键词检测+专业干预弹窗</td><td>用户安全保障</td></tr>
+      <tr><td><span class="tag tag-bad">P0 · 立即</span></td><td>情绪快速入口</td><td>首页固定情绪状态快捷入口，3步内到达放松/咨询</td><td>提升心理功能核心使用率</td></tr>
+      <tr><td><span class="tag tag-tip">P1 · 本季度</span></td><td>AI对话整合</td><td>三IP角色（小星/罗素/吉塔）的使用场景在首页明确引导，动物思维导图作为AI对话的延伸结果强化展示</td><td>提升AI功能使用深度</td></tr>
+      <tr><td><span class="tag tag-tip">P1 · 本季度</span></td><td>数据流通</td><td>心理测评结果关联学习规划；选科关联职业推荐</td><td>形成产品核心飞轮</td></tr>
+      <tr><td><span class="tag tag-tip">P1 · 本季度</span></td><td>用户反馈系统</td><td>在8个关键节点嵌入轻量反馈弹窗</td><td>建立数据驱动迭代能力</td></tr>
+      <tr><td><span class="tag tag-good">P2 · 下季度</span></td><td>报告个性化</td><td>测评报告加入用户头像/角色形象，增加分享功能</td><td>提升传播和自我认同感</td></tr>
+      <tr><td><span class="tag tag-good">P2 · 下季度</span></td><td>暗黑模式</td><td>支持系统跟随暗黑模式，保护用户视力</td><td>晚间使用体验提升</td></tr>
+      <tr><td><span class="tag tag-good">P2 · 下季度</span></td><td>WebView 性能优化</td><td>关键路径页面原生化改造，减少白屏时间</td><td>整体流畅度提升</td></tr>
+      <tr><td><span class="tag tag-good">P3 · 长期</span></td><td>成长档案</td><td>整合AI对话、测评、日记形成纵向成长轨迹</td><td>长期留存核心驱动力</td></tr>
+      <tr><td><span class="tag tag-good">P3 · 长期</span></td><td>同伴互动</td><td>匿名同伴支持功能（非比较式）</td><td>增强归属感，降低孤独感</td></tr>
+    </table></div>
+  </div>
+
+</div>
+
+<div style="text-align:center;padding:24px 0 16px;font-size:11px;color:#94a3b8;">署名已省略</div>
+</body>
+</html>

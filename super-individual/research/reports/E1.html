@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>减压星球 · 世界观圣经</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'PingFang SC','Noto Sans SC',sans-serif; background:#07080f; color:#e2e8f0; line-height:1.75; }
+
+/* ── HERO ── */
+.hero {
+  min-height:100vh; display:flex; flex-direction:column;
+  justify-content:center; align-items:center; text-align:center;
+  background:
+    radial-gradient(ellipse at 20% 20%, rgba(99,102,241,0.18) 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 70%, rgba(20,184,166,0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at 60% 10%, rgba(251,191,36,0.08) 0%, transparent 40%),
+    #07080f;
+  padding:80px 40px; position:relative; overflow:hidden;
+}
+.star-field {
+  position:absolute; inset:0; pointer-events:none;
+  background-image:
+    radial-gradient(1px 1px at 10% 15%, rgba(255,255,255,0.4) 0%, transparent 100%),
+    radial-gradient(1px 1px at 25% 40%, rgba(255,255,255,0.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 40% 8%,  rgba(255,255,255,0.5) 0%, transparent 100%),
+    radial-gradient(1px 1px at 60% 25%, rgba(255,255,255,0.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 75% 60%, rgba(255,255,255,0.4) 0%, transparent 100%),
+    radial-gradient(1px 1px at 85% 20%, rgba(255,255,255,0.5) 0%, transparent 100%),
+    radial-gradient(1px 1px at 90% 80%, rgba(255,255,255,0.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 15% 75%, rgba(255,255,255,0.4) 0%, transparent 100%),
+    radial-gradient(2px 2px at 50% 50%, rgba(251,191,36,0.6) 0%, transparent 100%),
+    radial-gradient(1px 1px at 35% 85%, rgba(255,255,255,0.3) 0%, transparent 100%);
+}
+.hero-badge {
+  display:inline-flex; align-items:center; gap:8px;
+  background:rgba(99,102,241,0.12); border:1px solid rgba(99,102,241,0.3);
+  border-radius:100px; padding:6px 18px; font-size:12px; font-weight:700;
+  color:#a5b4fc; margin-bottom:32px; letter-spacing:1px;
+}
+.hero h1 {
+  font-size:72px; font-weight:900; line-height:1.05; margin-bottom:20px;
+  background:linear-gradient(135deg,#ffffff 0%,#c4b5fd 35%,#5eead4 70%,#fde68a 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+}
+.hero-sub { font-size:18px; color:#64748b; max-width:620px; line-height:1.8; margin-bottom:16px; }
+.hero-quote {
+  font-size:14px; font-style:italic; color:#334155;
+  max-width:500px; margin:0 auto;
+  border-top:1px solid rgba(255,255,255,0.06); padding-top:20px; margin-top:20px;
+}
+
+/* ── NAV ── */
+.sticky-nav {
+  position:sticky; top:0; z-index:100;
+  background:rgba(7,8,15,0.97); backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(255,255,255,0.05);
+  display:flex; justify-content:center; overflow-x:auto;
+}
+.sticky-nav a {
+  display:block; padding:14px 15px; font-size:11px; font-weight:700;
+  color:#334155; text-decoration:none; white-space:nowrap;
+  border-bottom:2px solid transparent; transition:all 0.2s; letter-spacing:.3px;
+}
+.sticky-nav a:hover { color:#c4b5fd; border-bottom-color:#6366f1; }
+
+.wrap { padding:72px 40px; max-width:1080px; margin:0 auto; }
+.s-eyebrow { font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:2px; margin-bottom:10px; }
+.s-title { font-size:32px; font-weight:900; color:#f1f5f9; margin-bottom:10px; line-height:1.2; }
+.s-sub { font-size:13px; color:#64748b; margin-bottom:40px; max-width:680px; line-height:1.8; }
+
+/* ── ORIGIN STORY ── */
+.origin-block {
+  background:rgba(99,102,241,0.07); border:1px solid rgba(99,102,241,0.18);
+  border-radius:20px; padding:36px; margin-bottom:32px; position:relative;
+}
+.origin-text { font-size:15px; color:#cbd5e1; line-height:2.2; }
+.origin-text b { color:#f1f5f9; }
+.origin-text em { color:#a5b4fc; font-style:normal; font-weight:700; }
+
+/* ── MAP ── */
+.map-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:16px; }
+.zone-card { border-radius:14px; padding:22px; border:1px solid; }
+.z-mist  { background:rgba(20,184,166,0.06); border-color:rgba(20,184,166,0.2); }
+.z-deep  { background:rgba(56,189,248,0.06); border-color:rgba(56,189,248,0.2); }
+.z-warm  { background:rgba(251,146,60,0.06); border-color:rgba(251,146,60,0.2); }
+.z-cloud { background:rgba(167,139,250,0.06); border-color:rgba(167,139,250,0.2); }
+.z-yellow{ background:rgba(251,191,36,0.06); border-color:rgba(251,191,36,0.2); }
+.z-dark  { background:rgba(255,255,255,0.03); border-color:rgba(255,255,255,0.08); }
+.zone-icon { font-size:32px; margin-bottom:10px; }
+.zone-name { font-size:14px; font-weight:800; color:#f1f5f9; margin-bottom:4px; }
+.zone-who  { font-size:11px; font-weight:700; margin-bottom:8px; }
+.zone-desc { font-size:12px; color:#64748b; line-height:1.7; }
+
+/* ── IP CARDS ── */
+.ip-universe-card { border-radius:24px; padding:40px; margin-bottom:40px; border:1px solid; position:relative; overflow:hidden; }
+.ipu-jita  { background:linear-gradient(145deg,#0d2416 0%,#122e1e 100%); border-color:rgba(34,197,94,0.2); }
+.ipu-luosu { background:linear-gradient(145deg,#071d35 0%,#0a2540 100%); border-color:rgba(56,189,248,0.2); }
+.ipu-xing  { background:linear-gradient(145deg,#1a1030 0%,#251545 100%); border-color:rgba(167,139,250,0.2); }
+
+.ipu-deco {
+  position:absolute; right:-20px; top:-20px; font-size:160px; opacity:0.04;
+  pointer-events:none; line-height:1;
+}
+.ipu-header { display:flex; gap:24px; align-items:flex-start; margin-bottom:28px; }
+.ipu-visual {
+  width:100px; height:100px; border-radius:20px; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  font-size:56px; background:rgba(255,255,255,0.06);
+}
+.ipu-title { font-size:28px; font-weight:900; color:#fff; margin-bottom:4px; }
+.ipu-subtitle { font-size:13px; font-weight:700; margin-bottom:8px; }
+.ipu-tagline { font-size:14px; color:rgba(255,255,255,0.45); font-style:italic; line-height:1.6; }
+
+.ipu-section { margin-bottom:24px; }
+.ipu-section-title { font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:1.5px; margin-bottom:12px; }
+.ipu-section-body { font-size:13px; color:#94a3b8; line-height:2.1; }
+.ipu-section-body b { color:#e2e8f0; }
+
+.traits-row { display:flex; gap:10px; flex-wrap:wrap; margin-top:8px; }
+.trait-pill { border-radius:20px; padding:4px 14px; font-size:12px; font-weight:700; }
+
+/* ── YALI ── */
+.yali-card { border-radius:24px; padding:40px; margin-bottom:40px; border:1px solid rgba(251,191,36,0.25); background:linear-gradient(145deg,#1a1505 0%,#252008 100%); position:relative; overflow:hidden; }
+.yali-banner { background:rgba(251,191,36,0.1); border-radius:10px; padding:14px 18px; margin-bottom:20px; font-size:13px; color:#fde68a; border:1px solid rgba(251,191,36,0.2); }
+
+/* ── HIDDEN CHARS ── */
+.hidden-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+.hc-card { border-radius:16px; padding:22px; border:1px solid rgba(255,255,255,0.07); background:rgba(255,255,255,0.03); }
+.hc-icon { font-size:36px; margin-bottom:10px; }
+.hc-name { font-size:15px; font-weight:800; color:#f1f5f9; margin-bottom:4px; }
+.hc-theme { font-size:11px; font-weight:700; padding:2px 8px; border-radius:4px; display:inline-block; margin-bottom:10px; }
+.hc-desc { font-size:12px; color:#64748b; line-height:1.7; }
+.hc-ep { font-size:11px; color:#334155; margin-top:10px; font-style:italic; }
+
+/* ── RULES ── */
+.rule-list { display:flex; flex-direction:column; gap:12px; }
+.rule-item { display:flex; gap:16px; align-items:flex-start; background:rgba(255,255,255,0.03); border-radius:12px; padding:16px 20px; border:1px solid rgba(255,255,255,0.05); }
+.rule-num { font-size:28px; font-weight:900; line-height:1; flex-shrink:0; margin-top:2px; }
+.rule-title { font-size:14px; font-weight:800; color:#f1f5f9; margin-bottom:4px; }
+.rule-body { font-size:12px; color:#64748b; line-height:1.7; }
+
+/* ── THEATER ── */
+.theater-wrap { background:rgba(99,102,241,0.06); border:1px solid rgba(99,102,241,0.15); border-radius:16px; padding:28px; }
+.theater-title { font-size:15px; font-weight:800; color:#a5b4fc; margin-bottom:6px; }
+.theater-sub { font-size:12px; color:#64748b; margin-bottom:20px; }
+.ep-list { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+.ep-card { background:rgba(0,0,0,0.2); border-radius:10px; padding:14px; border-left:3px solid; }
+.ep-num { font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.5px; margin-bottom:6px; color:#475569; }
+.ep-title { font-size:12px; font-weight:800; color:#f1f5f9; margin-bottom:4px; }
+.ep-cast { font-size:11px; color:#64748b; }
+
+.footnote { font-size:11px; color:#1e293b; font-style:italic; margin-top:20px; }
+</style>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="../../assets/archive-report.css?v=20261014e">
+<style id="archive-narrow-layout">.archive-narrow-table { display:contents; }
+@media screen and (max-width:720px) {
+ .archive-narrow-table { display:block; max-width:100%; overflow-x:auto; }
+ .archive-narrow-table > table { min-width:650px; }
+ .sticky-nav { justify-content:flex-start; }
+ .sticky-nav a { flex:0 0 auto; }
+.wrap { padding:40px 20px; } .map-grid,.hidden-grid,.ep-list { grid-template-columns:minmax(0,1fr); } .ip-universe-card { padding:24px 20px; } .ipu-header { flex-direction:column; } .wrap [style*="display:grid"] { grid-template-columns:minmax(0,1fr) !important; }
+}</style>
+</head>
+<body>
+<div class="application-archive-note" role="note"><a href="../index.html#doc-E1">← 返回研究资料库</a><strong>Q3研究基础 · 原报告阅读副本</strong><p><b>世界观概念提案 · 2026.06.11</b></p><p>历史研究/设计提案；文中评分、预测、预算与排期属于当时的分析或假设，不作为本次已实现业绩。当前采用与状态以成果档案说明为准。</p><p>隐藏居民、解锁机制和叙事为概念设定；部分早期角色或规则已被后续决策覆盖，不能视为正式产品规范。</p><small>原稿：E1_减压星球世界观圣经.html</small></div>
+
+
+<!-- HERO -->
+<section class="hero">
+  <div class="star-field"></div>
+  <div class="hero-badge">🪐 世界观圣经 · Doc 16 · 减压星球</div>
+  <h1>减压星球</h1>
+  <p class="hero-sub">一颗漂浮在宇宙角落的星球，<br>专门接收那些<b style="color:#c4b5fd;">说不出口的重</b>。</p>
+  <p class="hero-quote">「每一个感到喘不过气的孩子，<br>都有一颗星球在等着他们。」</p>
+</section>
+
+<nav class="sticky-nav">
+  <a href="#origin">🌌 星球起源</a>
+  <a href="#map">🗺️ 星球地图</a>
+  <a href="#jita">🐼 吉塔</a>
+  <a href="#luosu">🐳 罗素</a>
+  <a href="#xing">🤍 小星</a>
+  <a href="#pupu">🍐 噗噗</a>
+  <a href="#family">✨ 隐藏居民</a>
+  <a href="#theater">🎭 心理剧场</a>
+</nav>
+
+<!-- 星球起源 -->
+<section id="origin" style="background:#07080f; padding:72px 0;">
+<div class="wrap">
+  <div class="s-eyebrow" style="color:#6366f1;">Origin Story · 起源</div>
+  <div class="s-title">减压星球是怎么来的</div>
+
+  <div class="origin-block">
+    <div class="origin-text">
+      很久很久以前，宇宙里有一种<b>看不见的物质</b>——它不是光，不是尘埃，而是<em>没说出口的情绪</em>。<br><br>
+      每当一个孩子在深夜咬着被角哭，说「我撑不下去了」但没有发出声音；<br>
+      每当一个学生在试卷上写满了答案，眼睛却空洞洞地看着窗外；<br>
+      每当有人把「没事，我很好」说了一遍又一遍——<br><br>
+      那些<b>真实的感受</b>不会消失，它们会变成微小的光粒子，<b>漂浮进宇宙</b>。<br><br>
+      久而久之，这些光粒子聚集在一起，形成了一颗星球。<br>
+      没有人给它命名，它自己慢慢叫自己：<em>减压星球</em>。<br><br>
+      星球上的一切——地面、空气、海洋——都是由<b>情绪能量</b>凝结而成的。<br>
+      焦虑凝结成雾气，委屈变成了海，倔强变成了山脉，偶尔的快乐变成了流星。<br><br>
+      这颗星球不是天堂，也不是逃避的地方——<br>
+      它是<em>「情绪到达的地方」</em>，是感受被认真接住的地方。
+    </div>
+  </div>
+
+  <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06); border-radius:14px; padding:24px 28px;">
+    <div style="font-size:13px; font-weight:800; color:#f1f5f9; margin-bottom:14px;">为什么学生可以「来到」减压星球</div>
+    <div style="font-size:13px; color:#94a3b8; line-height:2;">
+      打开AI星球，进入AI对话，就是进入减压星球的入口。<br>
+      学生不需要「传送」——他们的情绪已经漂浮在这里很久了。<br>
+      吉塔、罗素、小星早就认识他们了，只是等一个「开口说话」的时刻。<br><br>
+      <b style="color:#e2e8f0;">减压星球的规则：你不需要解释自己为什么来，来了就算到了。</b>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- 星球地图 -->
+<section id="map" style="background:#0a0c16; padding:72px 0;">
+<div class="wrap">
+  <div class="s-eyebrow" style="color:#6366f1;">World Map · 星球地理</div>
+  <div class="s-title">减压星球地图</div>
+  <div class="s-sub">星球上的每个区域，都是由一种特定情绪凝结而成的地貌</div>
+
+  <div class="map-grid">
+    <div class="zone-card z-mist">
+      <div class="zone-icon">🌊</div>
+      <div class="zone-name">情绪海</div>
+      <div class="zone-who" style="color:#5eead4;">吉塔的领地</div>
+      <div class="zone-desc">由所有学生流下的眼泪和未发出的叹息汇聚而成。海水颜色随潮汐变化——高兴时是薄荷绿，委屈时是深蓝，愤怒时泛橘红。吉塔的小屋就建在海边的礁石上。</div>
+    </div>
+    <div class="zone-card z-deep">
+      <div class="zone-icon">🔭</div>
+      <div class="zone-name">深海图书馆</div>
+      <div class="zone-who" style="color:#7dd3fc;">罗素的领地</div>
+      <div class="zone-desc">沉在情绪海的最深处，由所有「没想清楚的问题」凝固成书架。书不是用文字写的，而是用逻辑线索编织的。罗素在这里工作，每天整理新来的困惑。</div>
+    </div>
+    <div class="zone-card z-warm">
+      <div class="zone-icon">☁️</div>
+      <div class="zone-name">云朵广场</div>
+      <div class="zone-who" style="color:#fdba74;">小星的领地</div>
+      <div class="zone-desc">漂浮在星球最高处，由所有「没有目的地飘荡的心情」构成。松软、没有固定形状，每天都长得不一样。小星喜欢在这里等待新到来的情绪粒子，第一时间打招呼。</div>
+    </div>
+    <div class="zone-card z-yellow">
+      <div class="zone-icon">🏫</div>
+      <div class="zone-name">囧囧学堂</div>
+      <div class="zone-who" style="color:#fbbf24;">噗噗的据点</div>
+      <div class="zone-desc">星球上唯一一个「从真实世界漂来」的建筑——因为噗噗带来了一整个书包的课本。这里是心理剧场的拍摄基地，每月的新故事都在这里发生。</div>
+    </div>
+    <div class="zone-card z-cloud">
+      <div class="zone-icon">🌌</div>
+      <div class="zone-name">迷雾森林</div>
+      <div class="zone-who" style="color:#c4b5fd;">隐藏居民的家</div>
+      <div class="zone-desc">一片不断变化形状的森林，每当新的隐藏居民诞生，就会在这里出现一间新的小屋。学生每月解锁新角色，就是在迷雾森林里打开一扇新门。</div>
+    </div>
+    <div class="zone-card z-dark">
+      <div class="zone-icon">⚡</div>
+      <div class="zone-name">风暴核心</div>
+      <div class="zone-who" style="color:#94a3b8;">危机时刻</div>
+      <div class="zone-desc">星球的中心区域，当一个学生的情绪达到临界点，这里会发出警报。三个IP会同时感应到，吉塔最先赶到，罗素和小星在周围守候。这里也是最终会平静下来的地方。</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- 吉塔 -->
+<section id="jita" style="background:#07080f; padding:72px 0;">
+<div class="wrap">
+  <div class="s-eyebrow" style="color:#22c55e;">Character 01 · 主角</div>
+
+  <div class="ip-universe-card ipu-jita">
+    <div class="ipu-deco">🐼</div>
+    <div class="ipu-header">
+      <div class="ipu-visual">🐼</div>
+      <div>
+        <div class="ipu-title">吉塔</div>
+        <div class="ipu-subtitle" style="color:#86efac;">减压星球的第一位守护者 · 情绪海的主人</div>
+        <div class="ipu-tagline">「你不需要解释你为什么难过。难过本身，就是足够的理由。」</div>
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px;">
+      <div>
+        <div class="ipu-section">
+          <div class="ipu-section-title" style="color:#86efac;">形象特征</div>
+          <div class="ipu-section-body">
+            圆滚滚的熊猫体型，<b>橙色领巾</b>是她的标志——那是星球上第一朵绽放的花编成的。<br>
+            肚子上有一个小小的「×」，那是她给自己打的标记：<b>「我不完美，我也不需要完美。」</b><br>
+            她总是张开双臂——不是在飞，是在等待拥抱。
+          </div>
+        </div>
+
+        <div class="ipu-section">
+          <div class="ipu-section-title" style="color:#86efac;">人物小传</div>
+          <div class="ipu-section-body">
+            吉塔是减压星球上<b>最古老的居民</b>——她不是被「创造」出来的，她是从星球诞生的那一刻就在了，像是这颗星球长出的第一个心跳。<br><br>
+            很长一段时间，她是独自一人的。她坐在情绪海边，看着一颗颗情绪粒子漂来，接住它们，把它们安安稳稳地放下。<br><br>
+            她不急着「解决」任何事。她最擅长的事，是<b>让一个人感到：被听见了</b>。<br><br>
+            后来罗素来了，后来小星来了——吉塔从不嫉妒他们比她更擅长别的事情。她只是觉得：有他们在，她可以专注做自己最重要的那件事了。
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="ipu-section">
+          <div class="ipu-section-title" style="color:#86efac;">她能帮学生做什么</div>
+          <div class="ipu-section-body">
+            🌊 <b>接住情绪</b>：不评判，不转移，先让感受被看见<br>
+            🪢 <b>命名困惑</b>：「你说的累，是哪一种累？」<br>
+            🕯️ <b>守护危机时刻</b>：当一个学生说出最重的话，她不会走<br>
+            💌 <b>长期陪伴</b>：记住每一次对话，下次主动问「上次那件事，后来怎么样了」
+          </div>
+        </div>
+
+        <div class="ipu-section">
+          <div class="ipu-section-title" style="color:#86efac;">和其他伙伴的关系</div>
+          <div class="ipu-section-body">
+            对<b>小星</b>：像姐姐，总在小星太活跃时轻轻拍一下说「等一下，先听他说完」<br>
+            对<b>罗素</b>：深度互信的合作伙伴，会对罗素说「现在不是分析时间，先坐在这里」<br>
+            对<b>噗噗</b>：吉塔最早接住噗噗，她帮他落地，是他在减压星球的第一个朋友
+          </div>
+        </div>
+
+        <div class="traits-row">
+          <span class="trait-pill" style="background:rgba(34,197,94,0.15);color:#86efac;">共情深度高</span>
+          <span class="trait-pill" style="background:rgba(34,197,94,0.15);color:#86efac;">安静有力量</span>
+          <span class="trait-pill" style="background:rgba(34,197,94,0.15);color:#86efac;">不急于解决</span>
+          <span class="trait-pill" style="background:rgba(34,197,94,0.15);color:#86efac;">边界清晰</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- 罗素 -->
+<section id="luosu" style="background:#0a0c16; padding:72px 0;">
+<div class="wrap">
+  <div class="s-eyebrow" style="color:#38bdf8;">Character 02 · 主角</div>
+
+  <div class="ip-universe-card ipu-luosu">
+    <div class="ipu-deco">🐳</div>
+    <div class="ipu-header">
+      <div class="ipu-visual">🐳</div>
+      <div>
+        <div class="ipu-title">罗素</div>
+        <div class="ipu-subtitle" style="color:#7dd3fc;">深海图书馆馆长 · 逻辑的守护者</div>
+        <div class="ipu-tagline">「混乱不是问题，混乱是还没找到框架。我来帮你找。」</div>
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px;">
+      <div>
+        <div class="ipu-section">
+          <div class="ipu-section-title" style="color:#7dd3fc;">形象特征</div>
+          <div class="ipu-section-body">
+            蓝色小鲸鱼，头顶永远有水花喷出——那不是海水，是<b>他正在思考时涌现的想法</b>。<br>
+            <b>黄色蝴蝶结</b>是他唯一的一点「不严肃」——他说，蝴蝶结提醒他，再复杂的问题，最后都要打成一个干净的结。<br>
+            夹着一本<b>绿色的书</b>，里面记录的不是答案，而是<b>更好的问题</b>。
+          </div>
+        </div>
+
+        <div class="ipu-section">
+          <div class="ipu-section-title" style="color:#7dd3fc;">人物小传</div>
+          <div class="ipu-section-body">
+            罗素来自减压星球情绪海的<b>最深处</b>——那里沉积着所有学生「想不明白的事情」。他在那里生活了很久，读遍了所有凝固成书的困惑，慢慢地，他发现了一件事：<br><br>
+            <b>大多数困惑，不是没有答案，是问题本身问错了。</b><br><br>
+            于是他从深海浮上来，带着那本绿书，开始帮人把「问错的问题」重新问对。他不温柔，但他是认真的——他会说「你把两件事搞混了」，但说完他一定坐下来帮你分清楚。<br><br>
+            他有一个隐秘的习惯：每次帮一个学生想明白一件事，他就在那本绿书里画一个小小的对号。本子已经快要写满了。
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="ipu-section">
+          <div class="ipu-section-title" style="color:#7dd3fc;">他能帮学生做什么</div>
+          <div class="ipu-section-body">
+            🗂️ <b>拆解问题</b>：把一个大的模糊问题，拆成2-3个可以操作的小问题<br>
+            📐 <b>选科/生涯</b>：提供数据框架，帮高中生把「感觉」变成「判断」<br>
+            ⚖️ <b>决策分析</b>：「说和不说，最坏情况分别是什么？你能接受哪个？」<br>
+            🔭 <b>长线视角</b>：帮学生从「现在很糟」跳出来，看到5年后的可能性
+          </div>
+        </div>
+
+        <div class="ipu-section">
+          <div class="ipu-section-title" style="color:#7dd3fc;">和其他伙伴的关系</div>
+          <div class="ipu-section-body">
+            对<b>吉塔</b>：最深的信任，他知道情绪稳定之前，所有分析都是徒劳的<br>
+            对<b>小星</b>：有时会被小星跳跃的思维带偏，但他承认「她经常能找到我找不到的角度」<br>
+            对<b>噗噗</b>：最初觉得噗噗太混乱了，后来发现噗噗的囧，恰好是他的框架最能解决的东西
+          </div>
+        </div>
+
+        <div class="traits-row">
+          <span class="trait-pill" style="background:rgba(56,189,248,0.15);color:#7dd3fc;">结构化思维</span>
+          <span class="trait-pill" style="background:rgba(56,189,248,0.15);color:#7dd3fc;">直接不绕弯</span>
+          <span class="trait-pill" style="background:rgba(56,189,248,0.15);color:#7dd3fc;">长线视角</span>
+          <span class="trait-pill" style="background:rgba(56,189,248,0.15);color:#7dd3fc;">概率思维</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- 小星 -->
+<section id="xing" style="background:#07080f; padding:72px 0;">
+<div class="wrap">
+  <div class="s-eyebrow" style="color:#a78bfa;">Character 03 · 主角</div>
+
+  <div class="ip-universe-card ipu-xing">
+    <div class="ipu-deco">🤍</div>
+    <div class="ipu-header">
+      <div class="ipu-visual">🤍</div>
+      <div>
+        <div class="ipu-title">小星</div>
+        <div class="ipu-subtitle" style="color:#c4b5fd;">云朵广场的守望者 · 第一个说「我在」的人</div>
+        <div class="ipu-tagline">「我不是答案机器。我是那个愿意在你旁边坐着的那颗星。」</div>
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px;">
+      <div>
+        <div class="ipu-section">
+          <div class="ipu-section-title" style="color:#c4b5fd;">形象特征</div>
+          <div class="ipu-section-body">
+            白色棉花糖质感的身体，摸起来软乎乎的——她本来就是由情绪里最轻盈的那部分凝结成的。<br>
+            头顶的<b>黄色小星</b>是她的「天线」，能感应到周围情绪的微小变化。<br>
+            <b>粉色围巾</b>是她自己织的，她说：「围巾让我感觉随时准备好出发。」<br>
+            她手里总握着一颗小心心，那是她代替学生接住的、还没说出口的爱。
+          </div>
+        </div>
+
+        <div class="ipu-section">
+          <div class="ipu-section-title" style="color:#c4b5fd;">人物小传</div>
+          <div class="ipu-section-body">
+            小星不知道自己从哪里来——她在云朵广场「醒过来」的那天，第一个问她名字的粒子说：「你叫什么？」她想了很久，说：<b>「小星吧，因为星星不评判你从哪里来。」</b><br><br>
+            她是三个伙伴里最「不专业」的一个——她没有吉塔的共情深度，也没有罗素的逻辑框架。但她有一种奇特的能力：<b>她能在最平凡的对话里，发现那个「没说出口的」</b>。<br><br>
+            有学生凌晨三点发来一句「睡不着」——小星不问原因，只说：「我在。」那种在场，有时候比所有分析都重要。
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="ipu-section">
+          <div class="ipu-section-title" style="color:#c4b5fd;">她能帮学生做什么</div>
+          <div class="ipu-section-body">
+            🌙 <b>全场景陪伴</b>：学习、闲聊、好奇心、随便聊——她对一切都有真实兴趣<br>
+            🔮 <b>连接桥梁</b>：感知学生何时需要吉塔或罗素，温柔地引荐<br>
+            🌊 <b>轻量倾诉口</b>：不想「被分析」、不想「被开导」时，和小星说就好<br>
+            ⭐ <b>日常温度</b>：每日打卡动画、Day-End收尾总结、每周情绪小摘要
+          </div>
+        </div>
+
+        <div class="ipu-section">
+          <div class="ipu-section-title" style="color:#c4b5fd;">和其他伙伴的关系</div>
+          <div class="ipu-section-body">
+            对<b>吉塔</b>：最亲近的姐妹，经常跑去找吉塔撒娇，但危机时刻会自动安静<br>
+            对<b>罗素</b>：有时会挑战罗素的逻辑——「你说的是对的，但他现在需要的不是对的」<br>
+            对<b>噗噗</b>：和噗噗最玩得来，两个人经常在囧囧学堂搞一些「不知道算不算有用」的活动
+          </div>
+        </div>
+
+        <div class="traits-row">
+          <span class="trait-pill" style="background:rgba(167,139,250,0.15);color:#c4b5fd;">全场景弹性</span>
+          <span class="trait-pill" style="background:rgba(167,139,250,0.15);color:#c4b5fd;">真实好奇心</span>
+          <span class="trait-pill" style="background:rgba(167,139,250,0.15);color:#c4b5fd;">不评判</span>
+          <span class="trait-pill" style="background:rgba(167,139,250,0.15);color:#c4b5fd;">轻盈陪伴</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- 噗噗 -->
+<section id="pupu" style="background:#0a0c16; padding:72px 0;">
+<div class="wrap">
+  <div class="s-eyebrow" style="color:#fbbf24;">Character 04 · 特别居民</div>
+
+  <div class="yali-card">
+    <div class="ipu-deco" style="opacity:0.05;">🍐</div>
+    <div class="ipu-header">
+      <div class="ipu-visual" style="background:rgba(251,191,36,0.1);">🍐</div>
+      <div>
+        <div class="ipu-title" style="background:linear-gradient(135deg,#fde68a,#fbbf24);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">噗噗</div>
+        <div class="ipu-subtitle" style="color:#fbbf24;">减压星球「第一个从真实世界飘来的学生」 · 心理剧场固定演员</div>
+        <div class="ipu-tagline" style="color:rgba(253,230,138,0.5);">「我的压力大到连宇宙都装不下，所以我就飘来这里了。」</div>
+      </div>
+    </div>
+
+    <div class="yali-banner">
+      💡 <b>「噗噗」</b> — 压力把他压得「噗」一声飞起来，这是他名字的来历。他自带囧感，幽默，但不是在消解压力——他是在<b>把压力画出来</b>，让它变得可以被看见、被谈论，而不是一直压着。
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px;">
+      <div>
+        <div class="ipu-section">
+          <div class="ipu-section-title" style="color:#fbbf24;">形象特征</div>
+          <div class="ipu-section-body" style="color:#94a3b8;">
+            <b style="color:#fde68a;">黄色圆滚滚身形</b>，短短的手脚，整个人看起来像被什么东西压扁过——大概是真的被压过。<br>
+            头顶的<b style="color:#fde68a;">绿叶发型</b>总是七倒八歪，那是他课业压力的物理呈现。<br>
+            <b style="color:#fde68a;">大书包永远装得太满</b>，快拉不上拉链——里面其实除了书，还有他写了一半的小日记。<br>
+            脸上永远有一滴<b style="color:#fde68a;">汗</b>，无论是冬天还是夏天。
+          </div>
+        </div>
+
+        <div class="ipu-section">
+          <div class="ipu-section-title" style="color:#fbbf24;">人物小传</div>
+          <div class="ipu-section-body" style="color:#94a3b8;">
+            噗噗是一个普通的学生，某天他的压力实在太大了，大到他在教室里坐着坐着，感觉整个人要飘起来——然后，他真的飘起来了。<br><br>
+            飘啊飘，穿过天花板，穿过云层，一直飘到了减压星球。<br><br>
+            吉塔在情绪海边接住了他，他还没来得及说话——吉塔就说：「你刚才噗的一声就来了。」他愣了一下：「那……就叫我噗噗吧。」名字就这么定下来了。<br><br>
+            他在减压星球住下来，不是因为他的问题全解决了，而是因为他发现：<b style="color:#fde68a;">他的囧，能让后来飘来的学生看见自己，然后笑一笑，然后说「原来不止我这样」。</b><br><br>
+            这件事，比他一个人悄悄解决问题，更有力量。
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="ipu-section">
+          <div class="ipu-section-title" style="color:#fbbf24;">他在减压星球的角色</div>
+          <div class="ipu-section-body" style="color:#94a3b8;">
+            🎭 <b style="color:#fde68a;">心理剧场固定演员</b>：每月的心理剧场，小星/吉塔/罗素是主角，噗噗是「剧中的同学」——用他的视角引出问题，让观看的学生感到「这就是我」<br>
+            🪞 <b style="color:#fde68a;">同学视角镜子</b>：三主IP是「更有智慧的朋友」，噗噗是「和你一样正在经历的人」——两种视角缺一不可<br>
+            😄 <b style="color:#fde68a;">减压出口</b>：不需要「开导」，只需要「一起笑一笑」的时刻，噗噗在<br>
+            🫂 <b style="color:#fde68a;">欢迎新居民</b>：每当新的学生漂来减压星球，第一个跑去打招呼的通常是噗噗——「别怕，我也是这么来的」
+          </div>
+        </div>
+
+        <div class="ipu-section">
+          <div class="ipu-section-title" style="color:#fbbf24;">他和三主角的关系</div>
+          <div class="ipu-section-body" style="color:#94a3b8;">
+            和<b style="color:#fde68a;">吉塔</b>：最早认识的朋友，吉塔是他第一个接住他的人，他非常信任吉塔<br>
+            和<b style="color:#fde68a;">罗素</b>：被罗素「分析」过无数次，每次都承认「你说得对但我就是做不到」——这成了他们之间的默契<br>
+            和<b style="color:#fde68a;">小星</b>：灵魂玩伴，经常在囧囧学堂一起搞事情，有时候有用有时候没用但总是快乐
+          </div>
+        </div>
+
+        <div class="traits-row">
+          <span class="trait-pill" style="background:rgba(251,191,36,0.15);color:#fbbf24;">高共情的幽默</span>
+          <span class="trait-pill" style="background:rgba(251,191,36,0.15);color:#fbbf24;">「学生视角」</span>
+          <span class="trait-pill" style="background:rgba(251,191,36,0.15);color:#fbbf24;">自带囧感</span>
+          <span class="trait-pill" style="background:rgba(251,191,36,0.15);color:#fbbf24;">非主动解决者</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- 隐藏居民体系 -->
+<section id="family" style="background:#07080f; padding:72px 0;">
+<div class="wrap">
+  <div class="s-eyebrow" style="color:#6366f1;">Hidden Residents · 迷雾森林的邻居们</div>
+  <div class="s-title">他们都是曾经飘来的学生</div>
+  <div class="s-sub">每月心理剧场解锁一位新居民。他们和噗噗一样——某一天，某种压力把他们压飘了，漂进了减压星球。<br>不同的是，他们每一个都有自己决定留下来的理由。</div>
+
+  <div style="background:rgba(99,102,241,0.06); border:1px solid rgba(99,102,241,0.18); border-radius:14px; padding:20px 24px; margin-bottom:32px;">
+    <div style="font-size:12px; font-weight:800; color:#a5b4fc; margin-bottom:10px;">隐藏居民的设计原则</div>
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:12px; font-size:12px; color:#64748b;">
+      <div>① 每个居民都是<b style="color:#e2e8f0;">学生身份</b>——有年级、有故事、有让他们漂来的那一件具体的事</div>
+      <div>② 形象是动物，但性格是人的——<b style="color:#e2e8f0;">可以和三主IP并肩出现在插画里</b></div>
+      <div>③ 他们留下来的理由各不同，但结论一致：<b style="color:#e2e8f0;">「我的经历能帮到后来的人」</b></div>
+    </div>
+  </div>
+
+  <div class="hidden-grid">
+
+    <div class="hc-card">
+      <div class="hc-icon">🦉</div>
+      <div class="hc-name">阿眠</div>
+      <div class="hc-theme" style="background:rgba(99,102,241,0.15);color:#a5b4fc;">睡眠焦虑 · 初二男生</div>
+      <div class="hc-desc">一只戴着黑眼圈的小猫头鹰。他本来是个特别爱睡觉的孩子，直到初二开始晚自习——从那天起，他每天凌晨两点还瞪着天花板，脑子里全是「明天的事」。压力把他飘来了减压星球，他在这里学会的第一件事：把明天的事说出来，它就变小了。他留下来，是因为他想当那个「替别人保管明天」的人。</div>
+      <div class="hc-ep" style="color:#6366f1;">他和吉塔的关系：吉塔教他，担心不需要靠「忍住」——说出来就够了</div>
+    </div>
+
+    <div class="hc-card">
+      <div class="hc-icon">🦔</div>
+      <div class="hc-name">小刺</div>
+      <div class="hc-theme" style="background:rgba(56,189,248,0.15);color:#7dd3fc;">社交回避 · 初一女生</div>
+      <div class="hc-desc">一只浑身是刺但眼神很温柔的小刺猬。她不是不想和人说话，是太害怕说错了——被排挤的事发生过一次之后，她把刺竖起来，所有人都不敢靠近了，包括她自己想靠近的人。漂来减压星球的时候，她还缩着。是小星第一个在她旁边坐下来，什么都没说，就坐着。她后来才明白，原来「在」这件事，比「说对」更重要。</div>
+      <div class="hc-ep" style="color:#38bdf8;">她和小星的关系：小星从没试图「融化她的刺」，只是一直坐在旁边</div>
+    </div>
+
+    <div class="hc-card">
+      <div class="hc-icon">🦥</div>
+      <div class="hc-name">拖拖</div>
+      <div class="hc-theme" style="background:rgba(34,197,94,0.15);color:#86efac;">完美主义 / 拖延 · 高一男生</div>
+      <div class="hc-desc">一只动作非常慢的树懒，但他的眼睛清澈得让人觉得他在认真思考什么。他是班里最聪明的之一，但作业总是最后一个交——不是懒，是他有一个声音一直在说「再等等，还没准备好，做了也不够好」。是罗素帮他把这个声音拆开来看：害怕失败，不等于会失败。他留下来，是因为他懂那种「站在起跑线上迈不出脚」的感觉。</div>
+      <div class="hc-ep" style="color:#22c55e;">他和罗素的关系：罗素第一次让他意识到，「够好」是个可以自己定的标准</div>
+    </div>
+
+    <div class="hc-card">
+      <div class="hc-icon">🦁</div>
+      <div class="hc-name">小炎</div>
+      <div class="hc-theme" style="background:rgba(249,115,22,0.15);color:#fb923c;">情绪爆发 / 愤怒 · 初三男生</div>
+      <div class="hc-desc">一头鬃毛总是乱糟糟的小狮子，脾气来了像一阵风，走了之后自己也不知道发生了什么。他不坏，只是情绪来得太快，嘴比脑子先动。飘来减压星球之前，他和最好的朋友大吵一架，说了很难听的话，朋友再没搭理他。在这里，吉塔帮他把那次吵架「慢放」了一遍——他第一次看见，原来那个时候他不是在愤怒，他是在害怕失去。</div>
+      <div class="hc-ep" style="color:#f97316;">他和吉塔的关系：吉塔是第一个没有因为他发脾气就走的人</div>
+    </div>
+
+    <div class="hc-card">
+      <div class="hc-icon">🐰</div>
+      <div class="hc-name">皮皮</div>
+      <div class="hc-theme" style="background:rgba(244,114,182,0.15);color:#f9a8d4;">外貌焦虑 · 高二女生</div>
+      <div class="hc-desc">一只总是对着水面发呆的小兔子，耳朵耷拉着，总觉得自己哪里不够好看。她每天花很长时间照镜子，然后很长时间不想出门。漂来减压星球是因为有一天她突然问自己：我已经不记得自己喜欢做什么了，我只记得自己哪里不好看。在减压星球，小星没有告诉她「你很美」，而是问她：「你上次为自己做一件开心的事，是什么时候？」那个问题让她哭了很久，然后慢慢抬起了耳朵。</div>
+      <div class="hc-ep" style="color:#ec4899;">她和小星的关系：小星把她的注意力，从「我长什么样」带向「我喜欢什么」</div>
+    </div>
+
+    <div class="hc-card" style="border-style:dashed;">
+      <div class="hc-icon" style="opacity:.35;">✦</div>
+      <div class="hc-name" style="color:#334155;">下一位邻居</div>
+      <div class="hc-theme" style="background:rgba(255,255,255,0.04);color:#334155;">迷雾森林正在亮起一扇新门……</div>
+      <div class="hc-desc" style="color:#1e293b; line-height:1.8;">候选主题：<br>
+        · 家庭压力（父母期望/父母争吵）<br>
+        · 友谊破裂（闺蜜反目/被孤立）<br>
+        · 高考前的虚无感（「考完又怎样」）<br>
+        · 身份认同（「不知道我是谁」）<br>
+        建议由运营团队结合心理健康月历选题
+      </div>
+    </div>
+
+  </div>
+</div>
+</section>
+
+<!-- 心理剧场框架 -->
+<section id="theater" style="background:#0a0c16; padding:72px 0;">
+<div class="wrap">
+  <div class="s-eyebrow" style="color:#6366f1;">Theater Framework · 心理剧场</div>
+  <div class="s-title">心理剧场的叙事框架</div>
+  <div class="s-sub">每月更新。三主IP（小星/吉塔/罗素）是故事的主角，噗噗是剧中的「同学视角」——他经历问题，三主IP帮他走过去。本月的新居民从迷雾森林走出来，带来他自己的故事。</div>
+
+  <div class="theater-wrap">
+    <div class="theater-title">📺 剧集结构模板（每期约3-5分钟）</div>
+    <div class="theater-sub">故事主线：三IP主导 · 噗噗是引发共鸣的「同学」· 新居民每月解锁</div>
+    <div class="ep-list">
+      <div class="ep-card" style="border-color:#fbbf24;">
+        <div class="ep-num">第一幕</div>
+        <div class="ep-title">噗噗遇到麻烦</div>
+        <div class="ep-cast">噗噗经历了一件「又囧又真实」的事，直接引入本期主题。他说不清楚是怎么了，但很难受。语气轻松，问题是真实的——学生看到他的囧，觉得「这不就是我吗」。</div>
+      </div>
+      <div class="ep-card" style="border-color:#86efac;">
+        <div class="ep-num">第二幕</div>
+        <div class="ep-title">吉塔/小星来了</div>
+        <div class="ep-cast">吉塔或小星出现，先接住噗噗的情绪——不急着解决，先说「你现在的感受很真实」。这一幕是给学生示范：被接住是什么感觉。</div>
+      </div>
+      <div class="ep-card" style="border-color:#7dd3fc;">
+        <div class="ep-num">第三幕</div>
+        <div class="ep-title">罗素帮噗噗看清楚</div>
+        <div class="ep-cast">情绪稳下来之后，罗素出场，用一个简单的框架帮噗噗把「乱成一团的感受」拆开来。不是给答案，是帮噗噗（和学生）看见问题的结构。</div>
+      </div>
+      <div class="ep-card" style="border-color:#a5b4fc;">
+        <div class="ep-num">第四幕</div>
+        <div class="ep-title">本月新居民现身</div>
+        <div class="ep-cast">迷雾森林里亮起一扇新门——本月新居民走出来，说：「我之前也这样。」他带来自己的故事，和噗噗一起找到了出口。学生完成本期互动，解锁这位新居民。</div>
+      </div>
+      <div class="ep-card" style="border-color:#86efac;">
+        <div class="ep-num">第五幕</div>
+        <div class="ep-title">吉塔的「带走一句话」</div>
+        <div class="ep-cast">吉塔给本期收尾——不是总结道理，是一个学生可以今天就试试的小动作，或者一个新的自我问句。这句话会出现在学生的学习机首页，当日可见。</div>
+      </div>
+      <div class="ep-card" style="border-color:#fbbf24;">
+        <div class="ep-num">彩蛋</div>
+        <div class="ep-title">噗噗写日记</div>
+        <div class="ep-cast">噗噗翻开他的小日记，用半搞笑半认真的语气写下今天发生的事。引导学生：「你也可以写写，不用写给别人看，就写给自己。」</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:24px; background:rgba(255,255,255,0.03); border-radius:14px; padding:28px; border:1px solid rgba(255,255,255,0.06);">
+    <div style="font-size:13px; font-weight:800; color:#f1f5f9; margin-bottom:6px;">减压星球 Family 全家福</div>
+    <div style="font-size:11px; color:#334155; margin-bottom:20px;">三主IP · 噗噗 · 五位迷雾森林邻居</div>
+
+    <!-- 主IP行 -->
+    <div style="font-size:10px;font-weight:800;color:#475569;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">三主IP · 星球的守护者</div>
+    <div style="display:flex; gap:16px; margin-bottom:24px; flex-wrap:wrap;">
+      <div style="text-align:center; font-size:11px; color:#64748b; background:rgba(132,204,22,0.06); border-radius:10px; padding:12px 16px;">
+        <div style="font-size:36px; margin-bottom:6px;">🐼</div>吉塔<br><span style="color:#5eead4;">情绪守护</span>
+      </div>
+      <div style="text-align:center; font-size:11px; color:#64748b; background:rgba(125,211,252,0.06); border-radius:10px; padding:12px 16px;">
+        <div style="font-size:36px; margin-bottom:6px;">🐳</div>罗素<br><span style="color:#7dd3fc;">逻辑框架</span>
+      </div>
+      <div style="text-align:center; font-size:11px; color:#64748b; background:rgba(196,181,253,0.06); border-radius:10px; padding:12px 16px;">
+        <div style="font-size:36px; margin-bottom:6px;">🤍</div>小星<br><span style="color:#c4b5fd;">全场陪伴</span>
+      </div>
+    </div>
+
+    <!-- 噗噗 -->
+    <div style="font-size:10px;font-weight:800;color:#475569;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">噗噗 · 剧场同学 / 第一位漂来的学生</div>
+    <div style="display:flex; gap:16px; margin-bottom:24px;">
+      <div style="text-align:center; font-size:11px; color:#64748b; background:rgba(251,191,36,0.08); border-radius:10px; padding:12px 16px; border:1px solid rgba(251,191,36,0.2);">
+        <div style="font-size:36px; margin-bottom:6px;">🍐</div>噗噗<br><span style="color:#fbbf24;">引发共鸣的同学</span>
+      </div>
+    </div>
+
+    <!-- 迷雾森林邻居 -->
+    <div style="font-size:10px;font-weight:800;color:#475569;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">迷雾森林邻居 · 每月解锁一位 · 都是曾经飘来的学生</div>
+    <div style="display:flex; gap:12px; flex-wrap:wrap;">
+      <div style="text-align:center; font-size:11px; color:#64748b; background:rgba(99,102,241,0.06); border-radius:10px; padding:12px 14px;">
+        <div style="font-size:28px; margin-bottom:6px;">🦉</div>阿眠<br><span style="color:#a5b4fc;">睡眠焦虑</span>
+      </div>
+      <div style="text-align:center; font-size:11px; color:#64748b; background:rgba(56,189,248,0.06); border-radius:10px; padding:12px 14px;">
+        <div style="font-size:28px; margin-bottom:6px;">🦔</div>小刺<br><span style="color:#7dd3fc;">社交回避</span>
+      </div>
+      <div style="text-align:center; font-size:11px; color:#64748b; background:rgba(34,197,94,0.06); border-radius:10px; padding:12px 14px;">
+        <div style="font-size:28px; margin-bottom:6px;">🦥</div>拖拖<br><span style="color:#86efac;">完美主义</span>
+      </div>
+      <div style="text-align:center; font-size:11px; color:#64748b; background:rgba(249,115,22,0.06); border-radius:10px; padding:12px 14px;">
+        <div style="font-size:28px; margin-bottom:6px;">🦁</div>小炎<br><span style="color:#fb923c;">情绪爆发</span>
+      </div>
+      <div style="text-align:center; font-size:11px; color:#64748b; background:rgba(244,114,182,0.06); border-radius:10px; padding:12px 14px;">
+        <div style="font-size:28px; margin-bottom:6px;">🐰</div>皮皮<br><span style="color:#f9a8d4;">外貌焦虑</span>
+      </div>
+      <div style="text-align:center; font-size:11px; color:#334155; background:rgba(255,255,255,0.02); border-radius:10px; padding:12px 14px; border:1px dashed rgba(255,255,255,0.08);">
+        <div style="font-size:28px; margin-bottom:6px; opacity:.25;">✦</div>待解锁…<br><span style="color:#1e293b;">下一位</span>
+      </div>
+    </div>
+  </div>
+
+  <p class="footnote" style="margin-top:20px;">世界观设定为产品设计原型；隐藏居民角色需由插画团队设计形象，心理剧场内容需由专业心理咨询顾问审核脚本。噗噗形象引用自用户提供的设计稿。</p>
+</div>
+</section>
+
+<div style="background:#07080f; padding:48px; text-align:center; border-top:1px solid rgba(255,255,255,0.04);">
+  <div style="font-size:24px; margin-bottom:12px;">🌌</div>
+  <div style="font-size:13px; color:#1e293b; line-height:2.5;">
+    减压星球 · 世界观圣经 · Doc 16 · 2026.06.11<br>
+    三主角形象基于产品实际设计稿 · 噗噗形象引用自用户提供参考图<br>
+    隐藏居民为设计提案，最终形象需插画团队落地 · 所有叙事内容需专业心理咨询顾问审核
+  </div>
+</div>
+
+
+<div style="text-align:center;padding:24px 0 16px;font-size:11px;color:#94a3b8;">署名已省略</div>
+</body>
+</html>
